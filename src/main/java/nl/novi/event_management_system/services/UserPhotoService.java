@@ -38,12 +38,8 @@ public class UserPhotoService {
     public String storeFile(MultipartFile file) throws IOException{
 
         String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
-        //Path filePath = Paths.get(fileStoragePath + "//" + fileName);
 
         Path filePath = Paths.get(fileStoragePath + File.separator + fileName);
-
-
-        //Path filePath = Paths.get(String.valueOf(fileStoragePath), fileName);
 
         Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 

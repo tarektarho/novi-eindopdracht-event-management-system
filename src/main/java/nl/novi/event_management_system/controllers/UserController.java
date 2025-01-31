@@ -1,97 +1,80 @@
 package nl.novi.event_management_system.controllers;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import nl.novi.event_management_system.dtos.UserDTO;
+import nl.novi.event_management_system.dtos.userDtos.UserCreateDTO;
+import nl.novi.event_management_system.dtos.userDtos.UserResponseDTO;
+import nl.novi.event_management_system.enums.RoleEnum;
 import nl.novi.event_management_system.exceptions.BadRequestException;
+import nl.novi.event_management_system.exceptions.ValidationException;
+import nl.novi.event_management_system.mappers.UserMapper;
+import nl.novi.event_management_system.models.Role;
+import nl.novi.event_management_system.models.User;
+import nl.novi.event_management_system.services.UserPhotoService;
 import nl.novi.event_management_system.services.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.io.IOException;
 import java.net.URI;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+@Tag(name = "User API", description = "User related endpoints")
 @RestController
 @RequestMapping("/api/v1/users")
 public class UserController {
 
-    private final UserService userService;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private UserPhotoService userPhotoService;
 
-    public UserController(UserService userService) {
-        this.userService = userService;
+    @PostMapping("/create")
+    @ResponseStatus(value = HttpStatus.CREATED)
+    public ResponseEntity<UserResponseDTO> createUser(@Valid @RequestBody UserCreateDTO userCreateDTO) {
+        String newUsername = userService.createUser(userCreateDTO);// Todo handle error when email is already exists
+        Set<Role> roleList = userCreateDTO.getRoles();
+        for (Role role : roleList) {
+            if (role != null) {
+                userService.addRole(newUsername, role.getRole());
+            }
+        }
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{username}")
+                .buildAndExpand(newUsername).toUri();
+        return ResponseEntity.created(location).build();
     }
 
-    @GetMapping
-    public ResponseEntity<List<UserDTO>> getUsers() {
-        List<UserDTO> users;
-
-        try {
-            users = userService.getUsers();
-        } catch (Exception e) {
-            // Log error
-            System.out.println(e.getMessage());
-            return ResponseEntity.notFound().build();
-        }
-
+    @GetMapping("/all")
+    public ResponseEntity<List<UserResponseDTO>> getAllUsers() {
+        List<UserResponseDTO> users = userService.getAllUsers();
         return ResponseEntity.ok().body(users);
     }
 
     @GetMapping("/{username}")
-    public ResponseEntity<UserDTO> getUser(@PathVariable("username") String username) {
-        UserDTO user;
-
-        try {
-            user = userService.getUser(username);
-        } catch (Exception e) {
-            // Log error
-            System.out.println(e.getMessage());
-            return ResponseEntity.notFound().build();
-        }
-
-        return ResponseEntity.ok(user);
+    public ResponseEntity<UserResponseDTO> getUser(@PathVariable String username) {
+        return ResponseEntity.ok().body(userService.getUserByUsername(username));
     }
 
-    @PostMapping
-    public ResponseEntity<Object> createUser(@Valid @RequestBody UserDTO userDTO, BindingResult result) {
-        if (result.hasErrors()) {
-            return ResponseEntity.badRequest().body(result.getAllErrors());
-        }
+    @PutMapping(value = "/{username}")
+    public ResponseEntity<UserResponseDTO> updateUser(@PathVariable("username") String username, @RequestBody UserCreateDTO userCreateDTO) {
 
-        String newUsername = userService.createUser(userDTO);
+        userService.updateUser(username, userCreateDTO);
 
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{username}")
-                .buildAndExpand(newUsername).toUri();
-
-        return ResponseEntity.created(location).build();
-    }
-
-    @PutMapping("/{username}")
-    public ResponseEntity<Object> updateUser(@PathVariable String username, @Valid @RequestBody UserDTO userDTO) {
-
-        try {
-            userService.updateUser(username, userDTO);
-        } catch (Exception e) {
-            // Log error
-            System.out.println(e.getMessage());
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.noContent().build();
-
-    }
-
-    @DeleteMapping("/{username}")
-    public ResponseEntity<Void> deleteUser(@PathVariable String username) {
-        userService.deleteUser(username);
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping( "/{username}/roles")
+    @GetMapping(value = "/{username}/roles")
     public ResponseEntity<Object> getUserRoles(@PathVariable("username") String username) {
         return ResponseEntity.ok().body(userService.getRoles(username));
     }
-
 
     @PostMapping(value = "/{username}/roles")
     public ResponseEntity<Object> addUserRole(@PathVariable("username") String username, @RequestBody Map<String, Object> fields) {
@@ -100,8 +83,7 @@ public class UserController {
             String roleName = (String) fields.get("role");
             userService.addRole(username, roleName);
             return ResponseEntity.noContent().build();
-        }
-        catch (BadRequestException ex) {
+        } catch (BadRequestException ex) {
             throw new BadRequestException();
         }
     }
@@ -112,4 +94,52 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
+    @DeleteMapping("/{username}")
+    public String deleteUser(@PathVariable String username) {
+        userService.deleteUser(username);
+        return "User deleted successfully!";
+    }
+
+    @PostMapping("/{username}/photo")
+    public ResponseEntity<UserResponseDTO> addPhotoToUser(@PathVariable String username, @RequestParam("file") MultipartFile file) throws IOException {
+        String url = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path("/users/")
+                .path(Objects.requireNonNull(username.toString()))
+                .path("/photo")
+                .toUriString();
+        String fileName;
+        User user;
+
+        try {
+            fileName = userPhotoService.storeFile(file);
+        } catch (BadRequestException ex) {
+            throw new BadRequestException();
+        }
+
+        try {
+            user = userService.assignPhotoToUser(fileName, username);
+        } catch (BadRequestException ex) {
+            throw new BadRequestException();
+        }
+
+        return ResponseEntity.created(URI.create(url)).body(UserMapper.toUserResponseDTO(user));
+    }
+
+    @GetMapping("/{username}/photo")
+    public ResponseEntity<Resource> getPhotoOfUser(@PathVariable String username, HttpServletRequest request) {
+        Resource resource = userService.getPhotoFromUser(username);
+
+        String mineType;
+
+        try {
+            mineType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
+        } catch (IOException ex) {
+            mineType = "application/octet-stream";
+        }
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+                .header(HttpHeaders.CONTENT_TYPE, mineType)
+                .body(resource);
+    }
 }

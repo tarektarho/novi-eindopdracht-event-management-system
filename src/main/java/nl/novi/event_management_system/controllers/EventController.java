@@ -1,105 +1,70 @@
 package nl.novi.event_management_system.controllers;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import nl.novi.event_management_system.dtos.eventDtos.EventCreateDTO;
 import nl.novi.event_management_system.dtos.eventDtos.EventResponseDTO;
-import nl.novi.event_management_system.mappers.EventMapper;
+import nl.novi.event_management_system.exceptions.EventNotFoundException;
+import nl.novi.event_management_system.exceptions.RecordNotFoundException;
+import nl.novi.event_management_system.exceptions.ValidationException;
+import nl.novi.event_management_system.models.Event;
+import nl.novi.event_management_system.repositories.EventRepository;
 import nl.novi.event_management_system.services.EventService;
-import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.UUID;
 
+@Tag(name = "Event API", description = "Event related endpoints")
 @RestController
 @RequestMapping("/api/v1/events")
 public class EventController {
 
-    private final EventService eventService;
+    @Autowired
+    private EventService eventService;
 
-    public EventController(EventService eventService) {
-        this.eventService = eventService;
-    }
-
-    @GetMapping
-    public ResponseEntity<List<EventResponseDTO>> getEvents() {
-        List<EventResponseDTO> events;
-
-        try {
-            events = EventMapper.toEventResponseDTOList(eventService.getEvents());
-        } catch (Exception e) {
-            return ResponseEntity.notFound().build();
+    @PostMapping("/create")
+    @ResponseStatus(value = HttpStatus.CREATED)
+    public EventResponseDTO createEvent(@Valid @RequestBody EventCreateDTO eventCreateDTO, BindingResult result) {
+        if (result.hasErrors()) {
+            StringBuilder errorMessages = new StringBuilder();
+            result.getAllErrors().forEach(error -> errorMessages.append(error.getDefaultMessage()).append(" "));
+            throw new ValidationException("Validation failed: " + errorMessages);
         }
-
-        return ResponseEntity.ok(events);
+        return eventService.createEvent(eventCreateDTO);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<EventResponseDTO> getEvent(@PathVariable long id) {
-        EventResponseDTO responseDTO;
-
-        try {
-            responseDTO = eventService.getEventById(id);
-        } catch (Exception e) {
-            return ResponseEntity.notFound().build();
-        }
-
-        return ResponseEntity.ok(responseDTO);
+    @ResponseStatus(value = HttpStatus.OK)
+    public EventResponseDTO getEventById(@PathVariable UUID id) {
+        return eventService.findEventById(id);
     }
 
-    @PostMapping
-    public ResponseEntity<Object> createEvent(@Valid @RequestBody EventCreateDTO eventCreateDTO, BindingResult result) {
-        if (result.hasErrors()) {
-            // Collect all the error messages and return them in the response
-            List<String> errorMessages = result.getAllErrors().stream()
-                    .map(ObjectError::getDefaultMessage)
-                    .collect(Collectors.toList());
+    @GetMapping("/organizer/{username}")
+    public List<EventResponseDTO> getEventsByOrganizer(@PathVariable String username) {
+        return eventService.getEventsByOrganizer(username);
+    }
 
-            return ResponseEntity.badRequest().body(errorMessages); // Send 400 with error messages
-        }
-
-        try {
-            // Call the service layer to handle event creation
-            EventResponseDTO eventResponseDTO = eventService.createEvent(eventCreateDTO);
-            return ResponseEntity.status(HttpStatus.CREATED).body(eventResponseDTO);
-        } catch (IllegalArgumentException e) {
-            // Handle custom validation issues
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        } catch (DataIntegrityViolationException e) {
-            // Handle database constraint violations
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Invalid organizer: Referenced user ID does not exist in the database.");
-        } catch (Exception e) {
-            // Catch-all for unexpected exceptions
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("An unexpected error occurred. Please try again later.");
-        }
+    @GetMapping("/all")
+    public List<EventResponseDTO> getAllEvents() {
+        return eventService.getAllEvents();
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<EventResponseDTO> updateEvent(@PathVariable long id, @Valid @RequestBody EventCreateDTO eventCreateDTO) {
-        EventResponseDTO responseDTO;
+    @ResponseStatus(value = HttpStatus.OK)
+    public EventResponseDTO updateEvent(@PathVariable UUID id, @Valid @RequestBody EventCreateDTO eventCreateDTO) {
 
-        try {
-            responseDTO = eventService.updateEvent(id, eventCreateDTO);
-        } catch (Exception e) {
-            return ResponseEntity.notFound().build();
-        }
-
-        return ResponseEntity.ok(responseDTO);
+        return eventService.updateEvent(id, eventCreateDTO);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteEvent(@PathVariable long id) {
-        try {
-            eventService.deleteEvent(id);
-        } catch (Exception e) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.noContent().build();
+    @DeleteMapping("{id}")
+    public ResponseEntity<Void> deleteEvent(@PathVariable UUID id) {
+        boolean isDeleted = eventService.deleteEventById(id);
+
+        return isDeleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
 }

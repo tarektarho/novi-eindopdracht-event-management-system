@@ -1,59 +1,37 @@
 package nl.novi.event_management_system.controllers;
 
-import nl.novi.event_management_system.dtos.FeedbackDTO;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import nl.novi.event_management_system.models.Feedback;
 import nl.novi.event_management_system.services.FeedbackService;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
+import java.util.UUID;
 
+@Tag(name = "Feedback API", description = "Feedback related endpoints")
 @RestController
-@RequestMapping("/api/v1/feedbacks")
+@RequestMapping("/api/v1/feedback")
 public class FeedbackController {
 
-    private final FeedbackService feedbackService;
+    @Autowired
+    private FeedbackService feedbackService;
 
-    public FeedbackController(FeedbackService feedbackService) {
-        this.feedbackService = feedbackService;
+    @PostMapping("/submit")
+    public Feedback submitFeedback(
+            @RequestParam String username,
+            @RequestParam UUID eventId,
+            @RequestParam int rating,
+            @RequestParam String comment) {
+        return feedbackService.submitFeedback(username, eventId, rating, comment);
     }
 
-    @GetMapping
-    public ResponseEntity<List<FeedbackDTO>> getFeedbacks() {
-        List<FeedbackDTO> feedbackList;
-        try {
-            feedbackList = feedbackService.getFeedbacks();
-        } catch (Exception e) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(feedbackList);
+    @GetMapping("/event/{eventId}")
+    public List<Feedback> getFeedbackForEvent(@PathVariable UUID eventId) {
+        return feedbackService.getFeedbackForEvent(eventId);
     }
 
-    @PostMapping
-    public ResponseEntity<FeedbackDTO> createFeedback(@RequestBody FeedbackDTO feedbackDTO) {
-        FeedbackDTO createdFeedback = feedbackService.createFeedback(feedbackDTO);
-        return ResponseEntity.ok(createdFeedback);
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<FeedbackDTO> getFeedback(@PathVariable long id) {
-        FeedbackDTO feedback = feedbackService.getFeedbackById(id);
-        return ResponseEntity.ok(feedback);
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<FeedbackDTO> updateFeedback(@PathVariable long id, @RequestBody FeedbackDTO feedbackDTO) {
-        FeedbackDTO updatedFeedback = feedbackService.updateFeedback(id, feedbackDTO);
-        return ResponseEntity.ok(updatedFeedback);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteFeedback(@PathVariable long id) {
-        try {
-            feedbackService.deleteFeedback(id);
-        } catch (Exception e) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.noContent().build();
+    @GetMapping("/user/{username}")
+    public List<Feedback> getFeedbackByUser(@PathVariable String username) {
+        return feedbackService.getFeedbackByUser(username);
     }
 }

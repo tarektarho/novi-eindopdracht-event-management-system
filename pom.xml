@@ -5,8 +5,8 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.4.1</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <version>3.3.5</version> <!-- Using this version because the latest version is not compatible with security dep -->
+        <relativePath/>
     </parent>
     <groupId>nl.novi</groupId>
     <artifactId>event_management_system</artifactId>
@@ -45,6 +45,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId> <!-- Uses Lombok (@Getter, @Setter, etc.) for cleaner code. -->
+            <artifactId>lombok</artifactId>
+            <version>1.18.34</version>  <!-- Check for the latest version -->
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>io.jsonwebtoken</groupId>

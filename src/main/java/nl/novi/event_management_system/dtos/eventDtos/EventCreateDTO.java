@@ -1,87 +1,38 @@
 package nl.novi.event_management_system.dtos.eventDtos;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.validation.constraints.NotBlank;
-import nl.novi.event_management_system.enums.EventStatus;
-import nl.novi.event_management_system.validators.eventStatus.ValidEventStatus;
+import jakarta.validation.constraints.*;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
+@Getter
+@Setter
 public class EventCreateDTO {
 
-    @NotBlank(message = "Name is mandatory")
+    @NotBlank(message = "Event name cannot be empty")
+    @Size(min = 3, max = 100, message = "Event name must be between 3 and 100 characters")
     private String name;
-    @NotBlank(message = "Location is mandatory")
+
+    @NotBlank(message = "organizer username cannot be empty.")
+    private String organizerUsername;
+
+    @NotBlank(message = "Location cannot be empty")
+    @Size(min = 3, max = 200, message = "Location must be between 3 and 200 characters")
     private String location;
 
-    private String description;
+    @NotNull(message = "Start time is required")
+    @Future(message = "Start time must be in the future")
+    private LocalDateTime startTime;
 
-    @JsonFormat(pattern = "dd-MM-yyyy")
-    private LocalDate startDate;
+    @NotNull(message = "End time is required")
+    @Future(message = "End time must be in the future")
+    private LocalDateTime endTime;
 
-    @JsonFormat(pattern = "dd-MM-yyyy")
-    private LocalDate endDate;
+    @Min(value = 1, message = "Capacity must be at least 1")
+    private int capacity;
 
-    private Integer maxParticipants;
-
-    @ValidEventStatus(message = "Invalid status. Please provide one of the following: ACTIVE, CANCELLED, FINISHED, DELETED, UPCOMING, POSTPONED.")
-    private EventStatus status;
-
-
-    public String getName() {
-        return name;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public LocalDate getStartDate() {
-        return startDate;
-    }
-
-    public LocalDate getEndDate() {
-        return endDate;
-    }
-
-    public Integer getMaxParticipants() {
-        return maxParticipants;
-    }
-
-    public EventStatus getStatus() {
-        return status;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public void setStartDate(LocalDate startDate) {
-        this.startDate = startDate;
-    }
-
-    public void setEndDate(LocalDate endDate) {
-        this.endDate = endDate;
-    }
-
-    public void setMaxParticipants(Integer maxParticipants) {
-        this.maxParticipants = maxParticipants;
-    }
-
-    public void setStatus(EventStatus status) {
-        this.status = status;
-    }
+    @DecimalMin(value = "0.0", inclusive = false, message = "Price must be greater than 0")
+    private double price;
 
 }

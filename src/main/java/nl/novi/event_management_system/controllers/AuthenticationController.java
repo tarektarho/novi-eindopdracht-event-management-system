@@ -1,5 +1,6 @@
 package nl.novi.event_management_system.controllers;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import nl.novi.event_management_system.dtos.authentication.AuthenticationRequest;
 import nl.novi.event_management_system.dtos.authentication.AuthenticationResponse;
 import nl.novi.event_management_system.services.CustomUserDetailsService;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 
+@Tag(name = "Authentication API", description = "Authentication related endpoints")
 @CrossOrigin
 @RestController
 @RequestMapping("/api/v1")

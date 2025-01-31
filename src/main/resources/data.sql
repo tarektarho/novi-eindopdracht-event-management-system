@@ -11,10 +11,14 @@ INSERT INTO roles (username, role) VALUES ('participant', 'ROLE_PARTICIPANT');
 
 
 -- Add event
-INSERT INTO events (name, location, description, start_date, end_date, max_participants, status)
-VALUES ('Annual Tech Conference', 'Amsterdam, Netherlands', 'A conference focusing on the latest in tech innovation.', '2025-04-01', '2025-04-03', 300, 'UPCOMING');
+INSERT INTO events (id, name, organizer_id, location, start_time, end_time, capacity, price)
+VALUES ('c4205e65-fee0-4c4f-9470-88edfc8280e6','Annual Tech Conference', 'admin', 'Netherlands', '2025-06-15T09:00:00', '2025-06-15T18:00:00', '22', 300);
+--
+-- -- Add Feedback
+-- INSERT INTO feedback (comment, rating, username, event_id)
+-- VALUES ('Great event! Learned a lot about new technologies.', 5, 'participant', 1);
+--
 
-
--- Add Feedback
-INSERT INTO feedback (comment, rating, username, event_id)
-VALUES ('Great event! Learned a lot about new technologies.', 5, 'participant', 1);
+-- -- Add Ticket
+INSERT INTO tickets (id, price, purchase_date, ticket_type, ticket_code)
+VALUES ('c4205e65-fee0-4c4f-9470-88edfc8280e5', 10, '2025-06-15T09:00:00', 'FREE', 'c4205e65-fee0-4c4f-9470-88edfc82822');

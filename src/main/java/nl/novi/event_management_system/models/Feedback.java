@@ -1,63 +1,47 @@
 package nl.novi.event_management_system.models;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+@Getter
+@Setter
 @Entity
-@Table(name = "feedback")
+@Table(name = "feedbacks")
 public class Feedback {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-
-    private String comment;
-    private Integer rating; // 1-5
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @ManyToOne
-    @JoinColumn(name = "username")
+    @JoinColumn(name = "username", nullable = false)
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "event_id")
+    @JoinColumn(name = "event_id", nullable = false)
     private Event event;
 
-    public long getId() {
-        return id;
-    }
+    @Column(nullable = false)
+    private int rating; // 1 to 5 stars
 
-    public void setId(long id) {
-        this.id = id;
-    }
+    @Column(columnDefinition = "TEXT")
+    private String comment;
 
-    public String getComment() {
-        return comment;
-    }
+    @Column(nullable = false)
+    private LocalDateTime feedbackDate;
 
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
+    public Feedback() {}
 
-    public Integer getRating() {
-        return rating;
-    }
-
-    public void setRating(Integer rating) {
-        this.rating = rating;
-    }
-
-    public Event getEvent() {
-        return event;
-    }
-
-    public void setEvent(Event event) {
-        this.event = event;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
+    public Feedback(User user, Event event, int rating, String comment) {
         this.user = user;
+        this.event = event;
+        this.rating = rating;
+        this.comment = comment;
+        this.feedbackDate = LocalDateTime.now();
     }
+
 }

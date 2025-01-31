@@ -1,25 +1,26 @@
 package nl.novi.event_management_system.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import nl.novi.event_management_system.enums.TicketStatus;
+import lombok.Getter;
+import lombok.Setter;
+import nl.novi.event_management_system.enums.TicketType;
+import nl.novi.event_management_system.validators.ticketType.ValidTicketType;
 
-import java.time.LocalDate;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.Optional;
+import java.util.UUID;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "tickets")
 public class Ticket {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-
-    private LocalDate date;
-
-    private String qrCode;
-
-
-    @Enumerated(EnumType.STRING)
-    private TicketStatus status; // ASSIGNED, USED
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @ManyToOne
     @JoinColumn(name = "username")
@@ -29,52 +30,42 @@ public class Ticket {
     @JoinColumn(name = "event_id")
     private Event event;
 
-    // Getters and Setters
-    public long getId() {
-        return id;
-    }
+    @Column(nullable = false)
+    private BigDecimal price;
 
-    public void setId(long id) {
-        this.id = id;
-    }
+    @Column(nullable = false, unique = true)
+    private String ticketCode;
 
-    public LocalDate getDate() {
-        return date;
-    }
+    @Column(nullable = false)
+    private LocalDateTime purchaseDate;
 
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    @ValidTicketType
+    private TicketType ticketType;
 
-    public TicketStatus getStatus() {
-        return status;
-    }
+    public Ticket() {}
 
-    public void setStatus(TicketStatus status) {
-        this.status = status;
-    }
-
-    public Event getEvent() {
-        return event;
-    }
-
-    public void setEvent(Event event) {
-        this.event = event;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
+    public Ticket(User user, Event event, BigDecimal price, TicketType ticketType) {
         this.user = user;
+        this.event = event;
+        this.price = price;
+        this.ticketType = ticketType;
+        this.purchaseDate = LocalDateTime.now();
+        this.ticketCode = generateTicketCode();
     }
 
-    public String getQrCode() {
-        return qrCode;
+    public Ticket(User user, Optional<Event> event, BigDecimal price, TicketType ticketType) {
+        this.user = user;
+        this.event = event.orElse(null);
+        this.price = price;
+        this.ticketType = ticketType;
+        this.purchaseDate = LocalDateTime.now();
+        this.ticketCode = generateTicketCode();
     }
 
-    public void setQrCode(String qrCode) {
-        this.qrCode = qrCode;
+    private String generateTicketCode() {
+        return "TICKET-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
     }
+
 }

@@ -43,6 +43,10 @@ public class JwtUtil {
         return claimsResolver.apply(claims);
     }
 
+    public String extractAudience(String token) {
+        return extractClaim(token, Claims::getAudience);
+    }
+
     private Claims extractAllClaims(String token) {
         return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
     }
@@ -69,7 +73,7 @@ public class JwtUtil {
 
     public Boolean validateToken(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
-        return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
+        boolean isAudienceValid = extractAudience(token).equals(AUDIENCE);
+        return username.equals(userDetails.getUsername()) && !isTokenExpired(token) && isAudienceValid;
     }
-
 }

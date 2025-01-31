@@ -1,37 +1,50 @@
 package nl.novi.event_management_system.mappers;
 
-import nl.novi.event_management_system.dtos.TicketDTO;
+import jakarta.validation.Valid;
+import nl.novi.event_management_system.dtos.ticketDtos.TicketCreateDTO;
+import nl.novi.event_management_system.dtos.ticketDtos.TicketResponseDTO;
 import nl.novi.event_management_system.models.Ticket;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class TicketMapper {
 
-    // Convert from Entity to DTO
-    public static TicketDTO toDTO(Ticket ticket) {
-        TicketDTO ticketDTO = new TicketDTO();
-        ticketDTO.setId(ticket.getId());
-        ticketDTO.setDate(ticket.getDate());
-        ticketDTO.setQrCode(ticket.getQrCode());
-        ticketDTO.setStatus(ticket.getStatus());
-        ticketDTO.setUsername(ticket.getUser().getUsername());
-        ticketDTO.setEventId(ticket.getEvent().getId());
-        return ticketDTO;
+    public static TicketResponseDTO toResponseDTO(Ticket ticket) {
+        if(ticket == null) {
+            return null;
+        }
+
+        TicketResponseDTO ticketResponseDTO = new TicketResponseDTO();
+        ticketResponseDTO.setId(ticket.getId());
+        ticketResponseDTO.setTicketCode(ticket.getTicketCode());
+        ticketResponseDTO.setTicketType(ticket.getTicketType());
+        ticketResponseDTO.setPurchaseDate(ticket.getPurchaseDate());
+        ticketResponseDTO.setPrice(ticket.getPrice());
+
+        if(ticket.getUser() != null) {
+            ticketResponseDTO.setUser(UserMapper.toUserResponseDTO(ticket.getUser()));
+        }
+
+        if(ticket.getEvent() != null) {
+            ticketResponseDTO.setEvent(EventMapper.toResponseDTO(ticket.getEvent()));
+        }
+
+        return ticketResponseDTO;
     }
 
-    // Convert from DTO to Entity
-    public static Ticket toEntity(TicketDTO ticketDTO) {
+    public static List<TicketResponseDTO> toResponseDTOList(List<Ticket> tickets) {
+        return tickets.stream()
+                .map(TicketMapper::toResponseDTO)
+                .collect(Collectors.toList());
+    }
+
+    public static Ticket toEntity(@Valid TicketCreateDTO ticketCreateDTO) {
         Ticket ticket = new Ticket();
-        ticket.setId(ticketDTO.getId());
-        ticket.setDate(ticketDTO.getDate());
-        ticket.setQrCode(ticketDTO.getQrCode());
-        ticket.setStatus(ticketDTO.getStatus());
-
-        if (ticketDTO.getUsername() != null) {
-            ticket.getUser().setUsername(ticketDTO.getUsername());
-        }
-
-        if (ticketDTO.getEventId() != 0) {
-            ticket.getEvent().setId(ticketDTO.getEventId());
-        }
+        ticket.setPrice(ticketCreateDTO.getPrice());
+        ticket.setPurchaseDate(ticketCreateDTO.getPurchaseDate());
+        ticket.setTicketType(ticketCreateDTO.getTicketType());
+        ticket.setTicketCode(ticketCreateDTO.getTicketCode());
 
 
         return ticket;

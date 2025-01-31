@@ -2,18 +2,18 @@ package nl.novi.event_management_system.dtos;
 
 public class FeedbackDTO {
 
-    private long id;
+    private Long id;
     private String comment;
     private Integer rating;
     private String username; // User that provided the feedback
-    private long eventId;    // ID of the event the feedback is associated with
+    private Long eventId;    // ID of the event the feedback is associated with
 
     // Getters and Setters
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -41,11 +41,11 @@ public class FeedbackDTO {
         this.username = username;
     }
 
-    public long getEventId() {
+    public Long getEventId() {
         return eventId;
     }
 
-    public void setEventId(long eventId) {
+    public void setEventId(Long eventId) {
         this.eventId = eventId;
     }
 }

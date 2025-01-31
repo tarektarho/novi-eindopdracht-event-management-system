@@ -1,22 +1,26 @@
 package nl.novi.event_management_system.models;
 
 import jakarta.persistence.*;
+import lombok.*;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "users")
+@Getter
+@Setter
 public class User {
 
     @Id
     @Column(nullable = false, unique = true)
-    private String username; // using username as primary key because the security configuration is based on username
+    private String username;
 
-    @Column(nullable = false, length = 255)
-    private String password;
+    @Column(nullable = false, unique = true)
+    private String email;
 
+    @Column(nullable = false)
+    private String password; // Store as a hashed value
 
     @OneToMany(
             targetEntity = Role.class,
@@ -24,100 +28,44 @@ public class User {
             cascade = CascadeType.ALL,
             orphanRemoval = true,
             fetch = FetchType.EAGER)
-    private Set<Role> roles = new HashSet<>(); // user can have multiple roles
+    private Set<Role> roles = new HashSet<>();
 
     @Column(nullable = false)
-    private boolean enabled = true;
+    private Boolean enabled = true; // Account activation status
 
-    @Column
-    private String apikey;
+    @OneToOne
+    private UserPhoto userPhoto; // user can have one profile photo
 
-    @Column
-    private String email;
+    // Relationship: A user can create multiple events (if they are an organizer)
+    @OneToMany(mappedBy = "organizer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Event> eventsOrganized;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    private List<Reservation> reservations;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Feedback> feedbacks;
-
-    // orphanRemoval = true means that if a user is deleted, all tickets related to that user will be deleted as well
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    // Relationship: A user can have multiple tickets (if they are an attendee)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Ticket> tickets;
 
-    public String getUsername() {
-        return username;
-    }
+    // Relationship: A user can submit multiple feedback entries
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Feedback> feedbackList;
 
-    public void setUsername(String username) {
+    public User() {}
+
+    public User(String username, String email, String password) {
         this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
+        this.email = email;
+        this.password = BCrypt.hashpw(password, BCrypt.gensalt());
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        this.password = BCrypt.hashpw(password, BCrypt.gensalt());
     }
 
-    public boolean isEnabled() {
-        return enabled;
-    }
 
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
-
-    public String getApikey() {
-        return apikey;
-    }
-
-    public void setApikey(String apikey) {
-        this.apikey = apikey;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public Set<Role> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
+    public void addRole(Role role) {
+        this.roles.add(role);
     }
 
     public void removeRole(Role role) {
         this.roles.remove(role);
-    }
-
-    public List<Reservation> getReservations() {
-        return reservations;
-    }
-
-    public void setReservations(List<Reservation> reservations) {
-        this.reservations = reservations;
-    }
-
-    public List<Feedback> getFeedbacks() {
-        return feedbacks;
-    }
-
-    public void setFeedbacks(List<Feedback> feedbacks) {
-        this.feedbacks = feedbacks;
-    }
-
-    public List<Ticket> getTickets() {
-        return tickets;
-    }
-
-    public void setTickets(List<Ticket> tickets) {
-        this.tickets = tickets;
     }
 }
