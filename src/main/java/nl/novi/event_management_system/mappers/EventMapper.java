@@ -4,8 +4,6 @@ import jakarta.validation.Valid;
 import nl.novi.event_management_system.dtos.eventDtos.EventCreateDTO;
 import nl.novi.event_management_system.dtos.eventDtos.EventResponseDTO;
 import nl.novi.event_management_system.models.Event;
-import nl.novi.event_management_system.models.User;
-import nl.novi.event_management_system.repositories.UserPhotoRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,7 +18,6 @@ public class EventMapper {
 
         EventResponseDTO dto = new EventResponseDTO();
         dto.setId(event.getId());
-        dto.setOrganizerUsername(event.getOrganizer().getUsername()); // Using username instead of full User object
         dto.setName(event.getName());
         dto.setLocation(event.getLocation());
         dto.setStartTime(event.getStartTime());
@@ -28,19 +25,17 @@ public class EventMapper {
         dto.setCapacity(event.getCapacity());
         dto.setPrice(event.getPrice());
 
-
         if(event.getOrganizer() != null) {
-            dto.setOrganizer(UserMapper.toUserResponseDTO(event.getOrganizer()));
+            dto.setOrganizer(UserMapper.toUserProfileResponseDTO(event.getOrganizer()));
         }
 
-        //Todo implement this when ticket service is ready
-//        if(event.getTickets() != null) {
-//        }
+        if(event.getTickets() != null) {
+            dto.setTicketList(TicketMapper.toResponseDTOList(event.getTickets()));
+        }
 
-        //Todo implement this when feedbackSerivce is implemented.
-//        if(event.getFeedbacks() != null){
-//
-//        }
+        if(event.getFeedbacks() != null) {
+            dto.setFeedbackList(FeedbackMapper.toResponseDTOList(event.getFeedbacks()));
+        }
 
         return dto;
     }

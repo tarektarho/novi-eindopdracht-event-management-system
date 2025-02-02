@@ -31,6 +31,8 @@ public class TicketController {
             result.getAllErrors().forEach(error -> errorMessages.append(error.getDefaultMessage()).append(" "));
             throw new ValidationException("Validation failed: " + errorMessages);
         }
+
+
         return ResponseEntity.status(201).body(ticketService.createTicket(ticketCreateDTO));
     }
 
@@ -52,9 +54,7 @@ public class TicketController {
     }
 
     @DeleteMapping("/{id}")
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> deleteTicket(@PathVariable UUID id) {
-        ticketService.deleteTicketById(id);
         boolean isDeleted = ticketService.deleteTicketById(id);
 
         return isDeleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();

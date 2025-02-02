@@ -23,7 +23,7 @@ public class TicketMapper {
         ticketResponseDTO.setPrice(ticket.getPrice());
 
         if(ticket.getUser() != null) {
-            ticketResponseDTO.setUser(UserMapper.toUserResponseDTO(ticket.getUser()));
+            ticketResponseDTO.setUser(UserMapper.toUserProfileResponseDTO(ticket.getUser()));
         }
 
         if(ticket.getEvent() != null) {

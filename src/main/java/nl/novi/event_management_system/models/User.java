@@ -1,6 +1,8 @@
 package nl.novi.event_management_system.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
@@ -8,15 +10,18 @@ import java.util.*;
 
 @Entity
 @Table(name = "users")
-@Getter
-@Setter
+@Data
 public class User {
 
     @Id
     @Column(nullable = false, unique = true)
+    @NotBlank(message = "Username cannot be blank")
+    @Size(max = 100, message = "Username must not exceed 100 characters")
     private String username;
 
     @Column(nullable = false, unique = true)
+    @NotBlank(message = "Email cannot be blank")
+    @Size(max = 100, message = "Email must not exceed 100 characters")
     private String email;
 
     @Column(nullable = false)

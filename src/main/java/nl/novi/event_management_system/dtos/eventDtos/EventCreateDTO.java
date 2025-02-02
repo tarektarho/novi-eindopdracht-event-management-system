@@ -1,13 +1,12 @@
 package nl.novi.event_management_system.dtos.eventDtos;
 
 import jakarta.validation.constraints.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
-@Getter
-@Setter
+@Data
 public class EventCreateDTO {
 
     @NotBlank(message = "Event name cannot be empty")
@@ -34,5 +33,7 @@ public class EventCreateDTO {
 
     @DecimalMin(value = "0.0", inclusive = false, message = "Price must be greater than 0")
     private double price;
+    private UUID ticketId;
+    private UUID feedbackId;
 
 }

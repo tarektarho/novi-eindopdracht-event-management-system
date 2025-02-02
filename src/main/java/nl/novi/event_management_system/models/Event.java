@@ -19,7 +19,7 @@ public class Event {
     private UUID id;
 
     @ManyToOne
-    @JoinColumn(name = "organizer_id", nullable = false)
+    @JoinColumn(name = "organizer_username")
     private User organizer;
 
     @Column(nullable = false)

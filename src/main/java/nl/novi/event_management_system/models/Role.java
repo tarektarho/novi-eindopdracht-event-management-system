@@ -1,20 +1,20 @@
 package nl.novi.event_management_system.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import java.io.Serializable;
 
 @Entity
 @IdClass(RoleKey.class)  // Composite primary key using RoleKey
 @Table(name = "roles")
-@Getter
-@Setter
+@Data
 public class Role implements Serializable {
 
     @Id
     @Column(nullable = false)
+    @JsonIgnore
     private String username;  // Part of the composite key
 
 

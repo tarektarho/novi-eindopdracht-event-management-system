@@ -1,9 +1,7 @@
 package nl.novi.event_management_system.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import nl.novi.event_management_system.enums.TicketType;
 import nl.novi.event_management_system.validators.ticketType.ValidTicketType;
 
@@ -12,8 +10,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
-@Getter
-@Setter
+@Data
 @Entity
 @Table(name = "tickets")
 public class Ticket {

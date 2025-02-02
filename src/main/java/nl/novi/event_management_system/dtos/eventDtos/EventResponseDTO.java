@@ -1,17 +1,17 @@
 package nl.novi.event_management_system.dtos.eventDtos;
 
-import lombok.Getter;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.Data;
 import nl.novi.event_management_system.dtos.FeedbackDTO;
 import nl.novi.event_management_system.dtos.ticketDtos.TicketResponseDTO;
-import nl.novi.event_management_system.dtos.userDtos.UserResponseDTO;
+import nl.novi.event_management_system.dtos.userDtos.UserProfileDTO;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-@Getter
-@Setter
+@Data
+@JsonInclude(JsonInclude.Include.NON_NULL)  // This will exclude null fields from the response
 public class EventResponseDTO {
     private UUID id;
     private String organizerUsername;
@@ -21,7 +21,7 @@ public class EventResponseDTO {
     private LocalDateTime endTime;
     private int capacity;
     private double price;
-    private UserResponseDTO organizer;
+    private UserProfileDTO organizer;
     private List<TicketResponseDTO> ticketList;
     private List<FeedbackDTO> feedbackList;
 

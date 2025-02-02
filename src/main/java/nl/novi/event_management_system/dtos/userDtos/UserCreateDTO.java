@@ -4,16 +4,14 @@ package nl.novi.event_management_system.dtos.userDtos;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import nl.novi.event_management_system.models.Role;
 
 import java.util.HashSet;
 import java.util.Set;
 
 
-@Getter
-@Setter
+@Data
 public class UserCreateDTO {
 
     @NotEmpty(message = "Username is required")

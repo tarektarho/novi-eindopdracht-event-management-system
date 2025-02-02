@@ -1,10 +1,8 @@
 package nl.novi.event_management_system.dtos.authentication;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 public class AuthenticationRequest {
 
     private String username;

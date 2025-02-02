@@ -4,18 +4,16 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import nl.novi.event_management_system.dtos.eventDtos.EventCreateDTO;
 import nl.novi.event_management_system.dtos.eventDtos.EventResponseDTO;
-import nl.novi.event_management_system.exceptions.EventNotFoundException;
-import nl.novi.event_management_system.exceptions.RecordNotFoundException;
-import nl.novi.event_management_system.exceptions.ValidationException;
-import nl.novi.event_management_system.models.Event;
-import nl.novi.event_management_system.repositories.EventRepository;
 import nl.novi.event_management_system.services.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
@@ -29,13 +27,24 @@ public class EventController {
 
     @PostMapping("/create")
     @ResponseStatus(value = HttpStatus.CREATED)
-    public EventResponseDTO createEvent(@Valid @RequestBody EventCreateDTO eventCreateDTO, BindingResult result) {
+    public ResponseEntity<?> createEvent(@Valid @RequestBody EventCreateDTO eventCreateDTO, BindingResult result) {
         if (result.hasErrors()) {
-            StringBuilder errorMessages = new StringBuilder();
-            result.getAllErrors().forEach(error -> errorMessages.append(error.getDefaultMessage()).append(" "));
-            throw new ValidationException("Validation failed: " + errorMessages);
+            List<String> errors = result.getAllErrors().stream()
+                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                    .toList();
+            return ResponseEntity.badRequest().body(errors);
         }
-        return eventService.createEvent(eventCreateDTO);
+
+        try {
+            EventResponseDTO newEventDTO = eventService.createEvent(eventCreateDTO);
+            URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                    .path("/{id}")
+                    .buildAndExpand(newEventDTO.getId())
+                    .toUri();
+            return ResponseEntity.created(location).body(newEventDTO);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error creating event: " + e.getMessage());
+        }
     }
 
     @GetMapping("/{id}")
@@ -57,14 +66,19 @@ public class EventController {
     @PutMapping("/{id}")
     @ResponseStatus(value = HttpStatus.OK)
     public EventResponseDTO updateEvent(@PathVariable UUID id, @Valid @RequestBody EventCreateDTO eventCreateDTO) {
-
         return eventService.updateEvent(id, eventCreateDTO);
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteEvent(@PathVariable UUID id) {
         boolean isDeleted = eventService.deleteEventById(id);
 
         return isDeleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
+    }
+
+    @PostMapping("/{id}/user/{username}/register")
+    public ResponseEntity<Void> registerUserForEvent(@PathVariable UUID id, @PathVariable String username) {
+        eventService.registerUserForEvent(id, username);
+        return ResponseEntity.noContent().build();
     }
 }

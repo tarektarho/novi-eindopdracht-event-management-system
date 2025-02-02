@@ -142,4 +142,15 @@ public class UserController {
                 .header(HttpHeaders.CONTENT_TYPE, mineType)
                 .body(resource);
     }
+
+    @PostMapping("/{username}/ticket/{ticketId}")
+    public ResponseEntity<UserResponseDTO> assignTicketToUser(@PathVariable String username, @PathVariable UUID ticketId) {
+        return ResponseEntity.ok().body(userService.assignTicketToUser(username, ticketId));
+    }
+
+    @PostMapping("/{username}/feedback/{feedbackId}")
+    public ResponseEntity<UserResponseDTO> assignFeedbackToUser(@PathVariable String username, @PathVariable UUID feedbackId) {
+        return ResponseEntity.ok().body(userService.assignFeedbackToUser(username, feedbackId));
+    }
+
 }

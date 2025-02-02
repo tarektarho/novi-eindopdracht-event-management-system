@@ -3,16 +3,14 @@ package nl.novi.event_management_system.dtos.ticketDtos;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import nl.novi.event_management_system.enums.TicketType;
 import nl.novi.event_management_system.validators.ticketType.ValidTicketType;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
+@Data
 public class TicketCreateDTO {
     @NotNull(message = "Price cannot be empty.")
     private BigDecimal price;
@@ -23,4 +21,5 @@ public class TicketCreateDTO {
     @ValidTicketType
     private TicketType ticketType;
     private Long eventId;
+    private String username;
 }
