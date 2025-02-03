@@ -9,7 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Data
-@JsonInclude(JsonInclude.Include.NON_NULL)  // This will exclude null fields from the response
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserProfileDTO {
         private String username;
         private String email;

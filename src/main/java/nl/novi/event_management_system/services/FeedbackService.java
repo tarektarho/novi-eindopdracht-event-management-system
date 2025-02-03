@@ -109,6 +109,4 @@ public class FeedbackService {
     public List<Feedback> getFeedbackByUser(String username) {
         return feedbackRepository.findByUserUsername(username);
     }
-
-    //public FeedbackDTO assignUserToFeedback
 }

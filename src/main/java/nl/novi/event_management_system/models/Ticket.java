@@ -61,6 +61,13 @@ public class Ticket {
         this.ticketCode = generateTicketCode();
     }
 
+    public Ticket(BigDecimal price, TicketType ticketType, LocalDateTime purchaseDate, String ticketCode) {
+        this.price = price;
+        this.ticketType = ticketType;
+        this.purchaseDate = purchaseDate;
+        this.ticketCode = ticketCode;
+    }
+
     private String generateTicketCode() {
         return "TICKET-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
     }

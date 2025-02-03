@@ -8,8 +8,6 @@ import nl.novi.event_management_system.mappers.TicketMapper;
 import nl.novi.event_management_system.models.*;
 import nl.novi.event_management_system.repositories.TicketRepository;
 import nl.novi.event_management_system.repositories.UserRepository;
-import nl.novi.event_management_system.utils.RandomStringGenerator;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,14 +16,15 @@ import java.util.UUID;
 @Service
 public class TicketService {
 
-    @Autowired
-    private TicketRepository ticketRepository;
-    @Autowired
-    private UserRepository userRepository;
+    private final TicketRepository ticketRepository;
+    private final UserRepository userRepository;
 
+    public TicketService(TicketRepository ticketRepository, UserRepository userRepository) {
+        this.ticketRepository = ticketRepository;
+        this.userRepository = userRepository;
+    }
 
     public TicketResponseDTO createTicket(@Valid TicketCreateDTO ticketCreateDTO) {
-        ticketCreateDTO.setTicketCode(RandomStringGenerator.generateAlphaNumeric(20));
         Ticket ticket = TicketMapper.toEntity(ticketCreateDTO);
 
         if (ticketCreateDTO.getUsername() != null) {
@@ -52,7 +51,6 @@ public class TicketService {
         Ticket storedTicket = ticketRepository.findById(id).orElseThrow(RecordNotFoundException::new);
         Ticket updatedTicket = TicketMapper.toEntity(ticketCreateDTO);
         updatedTicket.setId(storedTicket.getId());
-        updatedTicket.setTicketCode(RandomStringGenerator.generateAlphaNumeric(20));
         Ticket savedTicket = ticketRepository.save(updatedTicket);
         return TicketMapper.toResponseDTO(savedTicket);
     }
@@ -68,16 +66,11 @@ public class TicketService {
 
     }
 
-    //Todo double check if needed
     public List<Ticket> getTicketsForUser(String username) {
         return ticketRepository.findByUserUsername(username);
     }
 
-    //Todo double check if needed
     public List<Ticket> getTicketsForEvent(UUID eventId) {
         return ticketRepository.findByEventId(eventId);
     }
-
-    //assignUserToTicket
-    //assignEventToTicket
 }

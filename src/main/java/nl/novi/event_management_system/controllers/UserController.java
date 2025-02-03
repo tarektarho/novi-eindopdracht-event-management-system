@@ -1,13 +1,11 @@
 package nl.novi.event_management_system.controllers;
 
-import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.tags.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import nl.novi.event_management_system.dtos.userDtos.UserCreateDTO;
 import nl.novi.event_management_system.dtos.userDtos.UserResponseDTO;
-import nl.novi.event_management_system.enums.RoleEnum;
 import nl.novi.event_management_system.exceptions.BadRequestException;
-import nl.novi.event_management_system.exceptions.ValidationException;
 import nl.novi.event_management_system.mappers.UserMapper;
 import nl.novi.event_management_system.models.Role;
 import nl.novi.event_management_system.models.User;
@@ -18,7 +16,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -40,7 +37,7 @@ public class UserController {
     @PostMapping("/create")
     @ResponseStatus(value = HttpStatus.CREATED)
     public ResponseEntity<UserResponseDTO> createUser(@Valid @RequestBody UserCreateDTO userCreateDTO) {
-        String newUsername = userService.createUser(userCreateDTO);// Todo handle error when email is already exists
+        String newUsername = userService.createUser(userCreateDTO);
         Set<Role> roleList = userCreateDTO.getRoles();
         for (Role role : roleList) {
             if (role != null) {

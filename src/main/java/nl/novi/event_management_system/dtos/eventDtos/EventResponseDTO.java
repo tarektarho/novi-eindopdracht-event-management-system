@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Data
-@JsonInclude(JsonInclude.Include.NON_NULL)  // This will exclude null fields from the response
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class EventResponseDTO {
     private UUID id;
     private String organizerUsername;
