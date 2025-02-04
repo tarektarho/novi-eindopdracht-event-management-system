@@ -2,11 +2,11 @@ package nl.novi.event_management_system.dtos.eventDtos;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
-import nl.novi.event_management_system.dtos.FeedbackDTO;
+import nl.novi.event_management_system.dtos.feedbackDtos.FeedbackResponseDTO;
 import nl.novi.event_management_system.dtos.ticketDtos.TicketResponseDTO;
 import nl.novi.event_management_system.dtos.userDtos.UserProfileDTO;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,12 +17,12 @@ public class EventResponseDTO {
     private String organizerUsername;
     private String name;
     private String location;
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
+    private LocalDate startDate;
+    private LocalDate endDate;
     private int capacity;
     private double price;
     private UserProfileDTO organizer;
     private List<TicketResponseDTO> ticketList;
-    private List<FeedbackDTO> feedbackList;
+    private List<FeedbackResponseDTO> feedbackList;
 
 }

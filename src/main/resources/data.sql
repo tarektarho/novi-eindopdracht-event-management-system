@@ -11,7 +11,7 @@ INSERT INTO roles (username, role) VALUES ('participant', 'ROLE_PARTICIPANT');
 
 
 -- Add event
-INSERT INTO events (id, name, organizer_username, location, start_time, end_time, capacity, price)
+INSERT INTO events (id, name, organizer_username, location, start_date, end_date, capacity, price)
 VALUES ('c4205e65-fee0-4c4f-9470-88edfc8280e6','Annual Tech Conference', 'admin', 'Netherlands', '2025-06-15T09:00:00', '2025-06-15T18:00:00', '22', 300);
 --
 -- -- Add Feedback

@@ -58,7 +58,6 @@ class TicketServiceTest {
     @Test
     void createTicketDoesCreateTicketWithCorrectData() {
         // Arrange
-        Ticket ticket = mockTickets.getFirst();
         User user = new User();
         user.setUsername("user1");
 
@@ -84,7 +83,6 @@ class TicketServiceTest {
 
         // Assert
         assertNotNull(result);
-        //assertEquals(TicketMapper.toResponseDTO(ticket), result);
         assertTrue(result.getTicketCode().startsWith("TICKET-"));
 
     }

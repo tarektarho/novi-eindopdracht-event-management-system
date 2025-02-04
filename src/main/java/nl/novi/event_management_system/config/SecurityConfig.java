@@ -1,5 +1,6 @@
 package nl.novi.event_management_system.config;
 
+import nl.novi.event_management_system.enums.RoleEnum;
 import nl.novi.event_management_system.filter.JwtRequestFilter;
 import nl.novi.event_management_system.services.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
@@ -53,23 +54,30 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api-docs/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         // comment this out in case of errors that are not clear.
-                        .requestMatchers("/**").permitAll()
+                        //.requestMatchers("/**").permitAll()
                         .requestMatchers("/api/v1/authenticate").permitAll()
                         .requestMatchers("/api/v1/authenticated").authenticated()
 
-                        // 🔹 Ensure roles are prefixed correctly
-                        .requestMatchers(HttpMethod.POST, "/api/v1/users").hasAuthority("ROLE_ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/api/v1/users/**").hasAuthority("ROLE_ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/api/v1/users/**").hasAuthority("ROLE_ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/api/v1/users/**").hasAuthority("ROLE_ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/v1/users/**").hasAuthority("ROLE_ADMIN")
+                        // Ensure that admin access all endpoints
+                        .requestMatchers("/api/v1/**").hasAuthority(RoleEnum.getRoleName(RoleEnum.ADMIN))
 
-                        .requestMatchers(HttpMethod.POST, "/api/v1/events").hasAnyAuthority("ROLE_ADMIN", "ROLE_ORGANIZER")
-                        .requestMatchers(HttpMethod.GET, "/api/v1/events/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_ORGANIZER")
-                        .requestMatchers(HttpMethod.PUT, "/api/v1/events/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_ORGANIZER")
-                        .requestMatchers(HttpMethod.DELETE, "/api/v1/events/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_ORGANIZER")
 
-                        // Other secured endpoints...
+                        //User endpoints
+                        .requestMatchers(HttpMethod.GET,"/api/v1/users/photo").hasAnyAuthority(RoleEnum.getRoleName(RoleEnum.PARTICIPANT), RoleEnum.getRoleName(RoleEnum.ORGANIZER))
+                        .requestMatchers(HttpMethod.POST,"/api/v1/users/photo").hasAnyAuthority(RoleEnum.getRoleName(RoleEnum.PARTICIPANT), RoleEnum.getRoleName(RoleEnum.ORGANIZER))
+
+                        //Event endpoints
+                        .requestMatchers("/api/v1/events/**").hasAuthority(RoleEnum.getRoleName(RoleEnum.ORGANIZER))
+                        .requestMatchers(HttpMethod.GET, "/api/v1/events/**").hasAuthority(RoleEnum.getRoleName(RoleEnum.PARTICIPANT))
+
+                        //Ticket endpoints
+                        .requestMatchers(HttpMethod.GET, "/api/v1/tickets/**").hasAnyAuthority(RoleEnum.getRoleName(RoleEnum.PARTICIPANT), RoleEnum.getRoleName(RoleEnum.ORGANIZER))
+                        .requestMatchers(HttpMethod.GET, "/api/v1/tickets/**").hasAuthority(RoleEnum.getRoleName(RoleEnum.ORGANIZER))
+
+                        //Feedback endpoints
+                        .requestMatchers(HttpMethod.POST, "/api/v1/feedback/**").hasAnyAuthority(RoleEnum.getRoleName(RoleEnum.PARTICIPANT), RoleEnum.getRoleName(RoleEnum.ORGANIZER))
+                        .requestMatchers(HttpMethod.GET, "/api/v1/feedback/**").hasAnyAuthority(RoleEnum.getRoleName(RoleEnum.PARTICIPANT), RoleEnum.getRoleName(RoleEnum.ORGANIZER))
+
 
                         .anyRequest().denyAll()
                 )

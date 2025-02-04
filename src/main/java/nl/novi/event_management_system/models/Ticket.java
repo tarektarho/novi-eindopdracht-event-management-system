@@ -6,7 +6,7 @@ import nl.novi.event_management_system.enums.TicketType;
 import nl.novi.event_management_system.validators.ticketType.ValidTicketType;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -34,7 +34,7 @@ public class Ticket {
     private String ticketCode;
 
     @Column(nullable = false)
-    private LocalDateTime purchaseDate;
+    private LocalDate purchaseDate;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -48,7 +48,7 @@ public class Ticket {
         this.event = event;
         this.price = price;
         this.ticketType = ticketType;
-        this.purchaseDate = LocalDateTime.now();
+        this.purchaseDate = LocalDate.now();
         this.ticketCode = generateTicketCode();
     }
 
@@ -57,11 +57,11 @@ public class Ticket {
         this.event = event.orElse(null);
         this.price = price;
         this.ticketType = ticketType;
-        this.purchaseDate = LocalDateTime.now();
+        this.purchaseDate = LocalDate.now();
         this.ticketCode = generateTicketCode();
     }
 
-    public Ticket(BigDecimal price, TicketType ticketType, LocalDateTime purchaseDate, String ticketCode) {
+    public Ticket(BigDecimal price, TicketType ticketType, LocalDate purchaseDate, String ticketCode) {
         this.price = price;
         this.ticketType = ticketType;
         this.purchaseDate = purchaseDate;

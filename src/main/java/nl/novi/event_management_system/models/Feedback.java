@@ -3,6 +3,7 @@ package nl.novi.event_management_system.models;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -30,7 +31,7 @@ public class  Feedback {
     private String comment;
 
     @Column(nullable = false)
-    private LocalDateTime feedbackDate;
+    private LocalDate feedbackDate = LocalDate.now();
 
     public Feedback() {}
 
@@ -39,7 +40,7 @@ public class  Feedback {
         this.event = event;
         this.rating = rating;
         this.comment = comment;
-        this.feedbackDate = LocalDateTime.now();
+        this.feedbackDate = LocalDate.now();
     }
 
 }

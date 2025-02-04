@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -29,10 +29,10 @@ public class Event {
     private String location;
 
     @Column(nullable = false)
-    private LocalDateTime startTime;
+    private LocalDate startDate;
 
     @Column(nullable = false)
-    private LocalDateTime endTime;
+    private LocalDate endDate;
 
     @Column(nullable = false)
     private int capacity;
@@ -48,11 +48,11 @@ public class Event {
 
     public Event() {}
 
-    public Event(String name, String location, LocalDateTime startTime, LocalDateTime endTime, int capacity, double price) {
+    public Event(String name, String location, LocalDate startDate, LocalDate endDate, int capacity, double price) {
         this.name = name;
         this.location = location;
-        this.startTime = startTime;
-        this.endTime = endTime;
+        this.startDate = startDate;
+        this.endDate = endDate;
         this.capacity = capacity;
         this.price = price;
     }

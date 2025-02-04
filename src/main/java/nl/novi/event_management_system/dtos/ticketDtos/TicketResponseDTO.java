@@ -7,7 +7,7 @@ import nl.novi.event_management_system.dtos.userDtos.UserProfileDTO;
 import nl.novi.event_management_system.enums.TicketType;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Data
@@ -16,7 +16,7 @@ public class TicketResponseDTO {
     private UUID id;
     private BigDecimal price;
     private String ticketCode;
-    private LocalDateTime purchaseDate;
+    private LocalDate purchaseDate;
     private TicketType ticketType;
     private UserProfileDTO user;
     private EventResponseDTO event;

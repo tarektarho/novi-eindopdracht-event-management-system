@@ -1,7 +1,8 @@
 package nl.novi.event_management_system.services;
 
 import lombok.extern.slf4j.Slf4j;
-import nl.novi.event_management_system.dtos.FeedbackDTO;
+import nl.novi.event_management_system.dtos.feedbackDtos.FeedbackCreateDTO;
+import nl.novi.event_management_system.dtos.feedbackDtos.FeedbackResponseDTO;
 import nl.novi.event_management_system.exceptions.EventNotFoundException;
 import nl.novi.event_management_system.exceptions.RecordNotFoundException;
 import nl.novi.event_management_system.exceptions.UsernameNotFoundException;
@@ -12,7 +13,6 @@ import nl.novi.event_management_system.models.Event;
 import nl.novi.event_management_system.repositories.FeedbackRepository;
 import nl.novi.event_management_system.repositories.UserRepository;
 import nl.novi.event_management_system.repositories.EventRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,37 +22,38 @@ import java.util.UUID;
 @Service
 public class FeedbackService {
 
-    @Autowired
-    private FeedbackRepository feedbackRepository;
+    private final FeedbackRepository feedbackRepository;
+    private final UserRepository userRepository;
+    private final EventRepository eventRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+    public FeedbackService(FeedbackRepository feedbackRepository, UserRepository userRepository, EventRepository eventRepository) {
+        this.feedbackRepository = feedbackRepository;
+        this.userRepository = userRepository;
+        this.eventRepository = eventRepository;
+    }
 
-    @Autowired
-    private EventRepository eventRepository;
-
-    public FeedbackDTO submitFeedback(FeedbackDTO feedbackDTO) {
+    public FeedbackResponseDTO submitFeedback(FeedbackCreateDTO feedbackCreateDTO) {
         User user;
         Event event;
 
-        if (feedbackDTO.getUsername() != null) {
-            user = userRepository.findByUsername(feedbackDTO.getUsername())
-                    .orElseThrow(() -> new UsernameNotFoundException(feedbackDTO.getUsername()));
-            feedbackDTO.setUsername(user.getUsername());
+        if (feedbackCreateDTO.getUsername() != null) {
+            user = userRepository.findByUsername(feedbackCreateDTO.getUsername())
+                    .orElseThrow(() -> new UsernameNotFoundException(feedbackCreateDTO.getUsername()));
+            feedbackCreateDTO.setUsername(user.getUsername());
         }
 
-        if (feedbackDTO.getEventId() != null) {
-            event = eventRepository.findById(feedbackDTO.getEventId())
-                    .orElseThrow(() -> new EventNotFoundException(feedbackDTO.getEventId()));
-            feedbackDTO.setEventId(event.getId());
+        if (feedbackCreateDTO.getEventId() != null) {
+            event = eventRepository.findById(feedbackCreateDTO.getEventId())
+                    .orElseThrow(() -> new EventNotFoundException(feedbackCreateDTO.getEventId()));
+            feedbackCreateDTO.setEventId(event.getId());
         }
 
-        Feedback feedback = FeedbackMapper.toEntity(feedbackDTO);
+        Feedback feedback = FeedbackMapper.toEntity(feedbackCreateDTO);
         feedbackRepository.save(feedback);
         return FeedbackMapper.toResponseDTO(feedback);
     }
 
-    public FeedbackDTO getFeedbackById(UUID id) {
+    public FeedbackResponseDTO getFeedbackById(UUID id) {
         log.info("Fetching feedback from repository with ID: {}", id);
 
         Feedback feedback = feedbackRepository.findById(id)
@@ -62,12 +63,12 @@ public class FeedbackService {
         return FeedbackMapper.toResponseDTO(feedback);
     }
 
-    public List<FeedbackDTO> getAllFeedbacks() {
+    public List<FeedbackResponseDTO> getAllFeedbacks() {
         log.info("Fetching all feedbacks from repository");
         return FeedbackMapper.toResponseDTOList(feedbackRepository.findAll());
     }
 
-    public FeedbackDTO updateFeedback(UUID id, FeedbackDTO feedbackDTO) {
+    public FeedbackResponseDTO updateFeedback(UUID id, FeedbackCreateDTO feedbackCreateDTO) {
         log.info("Updating feedback with ID: {}", id);
 
         // Fetch existing feedback or throw an exception if not found
@@ -75,13 +76,13 @@ public class FeedbackService {
                 .orElseThrow(() -> new RecordNotFoundException("Feedback not found with ID: " + id));
 
         // Map updated values to the existing entity instead of creating a new one
-        existingFeedback.setComment(feedbackDTO.getComment());
-        existingFeedback.setRating(feedbackDTO.getRating());
+        existingFeedback.setComment(feedbackCreateDTO.getComment());
+        existingFeedback.setRating(feedbackCreateDTO.getRating());
 
         // If a username is provided, update the user association
-        if (feedbackDTO.getUsername() != null) {
-            User user = userRepository.findByUsername(feedbackDTO.getUsername())
-                    .orElseThrow(() -> new RecordNotFoundException("User not found with username: " + feedbackDTO.getUsername()));
+        if (feedbackCreateDTO.getUsername() != null) {
+            User user = userRepository.findByUsername(feedbackCreateDTO.getUsername())
+                    .orElseThrow(() -> new RecordNotFoundException("User not found with username: " + feedbackCreateDTO.getUsername()));
             existingFeedback.setUser(user);
         }
 
@@ -102,11 +103,33 @@ public class FeedbackService {
         log.info("Feedback deleted successfully with ID: {}", id);
     }
 
-    public List<Feedback> getFeedbackForEvent(UUID eventId) {
-        return feedbackRepository.findByEventId(eventId);
+    public List<FeedbackResponseDTO> getFeedbackForEvent(UUID eventId) {
+        return FeedbackMapper.toResponseDTOList(feedbackRepository.findByEventId(eventId));
     }
 
-    public List<Feedback> getFeedbackByUser(String username) {
-        return feedbackRepository.findByUserUsername(username);
+    public List<FeedbackResponseDTO> getFeedbackByUser(String username) {
+        return FeedbackMapper.toResponseDTOList(feedbackRepository.findByUserUsername(username));
+    }
+
+    public void assignEventToFeedback(UUID feedbackId, UUID eventId) {
+        Feedback feedback = feedbackRepository.findById(feedbackId)
+                .orElseThrow(() -> new RecordNotFoundException("Feedback not found with ID: " + feedbackId));
+
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new EventNotFoundException(eventId));
+
+        feedback.setEvent(event);
+        feedbackRepository.save(feedback);
+    }
+
+    public void assignUserToFeedback(UUID feedbackId, String username) {
+        Feedback feedback = feedbackRepository.findById(feedbackId)
+                .orElseThrow(() -> new RecordNotFoundException("Feedback not found with ID: " + feedbackId));
+
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException(username));
+
+        feedback.setUser(user);
+        feedbackRepository.save(feedback);
     }
 }

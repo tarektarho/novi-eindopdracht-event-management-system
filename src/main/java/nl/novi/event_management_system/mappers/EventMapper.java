@@ -20,8 +20,8 @@ public class EventMapper {
         dto.setId(event.getId());
         dto.setName(event.getName());
         dto.setLocation(event.getLocation());
-        dto.setStartTime(event.getStartTime());
-        dto.setEndTime(event.getEndTime());
+        dto.setStartDate(event.getStartDate());
+        dto.setEndDate(event.getEndDate());
         dto.setCapacity(event.getCapacity());
         dto.setPrice(event.getPrice());
 
@@ -50,8 +50,8 @@ public class EventMapper {
         Event event = new Event();
         event.setName(eventCreateDTO.getName());
         event.setLocation(eventCreateDTO.getLocation());
-        event.setStartTime(eventCreateDTO.getStartTime());
-        event.setEndTime(eventCreateDTO.getEndTime());
+        event.setStartDate(eventCreateDTO.getStartDate());
+        event.setEndDate(eventCreateDTO.getEndDate());
         event.setCapacity(eventCreateDTO.getCapacity());
         event.setPrice(eventCreateDTO.getPrice());
 

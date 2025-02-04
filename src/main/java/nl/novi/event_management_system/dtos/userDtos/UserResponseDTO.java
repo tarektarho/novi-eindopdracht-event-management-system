@@ -2,7 +2,7 @@ package nl.novi.event_management_system.dtos.userDtos;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
-import nl.novi.event_management_system.dtos.FeedbackDTO;
+import nl.novi.event_management_system.dtos.feedbackDtos.FeedbackResponseDTO;
 import nl.novi.event_management_system.dtos.ticketDtos.TicketResponseDTO;
 import nl.novi.event_management_system.models.Role;
 import nl.novi.event_management_system.models.UserPhoto;
@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Set;
 
 @Data
-@JsonInclude(JsonInclude.Include.NON_NULL)  // This will exclude null fields from the response for cleaner output
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserResponseDTO {
     private String username;
     private String email;
@@ -22,5 +22,5 @@ public class UserResponseDTO {
     private Set<Role> roles = new HashSet<>();
     private UserPhoto userPhoto;
     private List<TicketResponseDTO> tickets = new ArrayList<>();
-    private List<FeedbackDTO> feedbackList = new ArrayList<>();
+    private List<FeedbackResponseDTO> feedbackList = new ArrayList<>();
 }

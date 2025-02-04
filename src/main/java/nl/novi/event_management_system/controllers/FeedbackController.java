@@ -3,10 +3,11 @@ package nl.novi.event_management_system.controllers;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import nl.novi.event_management_system.dtos.FeedbackDTO;
+import nl.novi.event_management_system.dtos.feedbackDtos.FeedbackCreateDTO;
+import nl.novi.event_management_system.dtos.feedbackDtos.FeedbackResponseDTO;
+import nl.novi.event_management_system.exceptions.EventNotFoundException;
 import nl.novi.event_management_system.exceptions.RecordNotFoundException;
 import nl.novi.event_management_system.exceptions.ValidationException;
-import nl.novi.event_management_system.models.Feedback;
 import nl.novi.event_management_system.services.FeedbackService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -30,7 +31,7 @@ public class FeedbackController {
     private FeedbackService feedbackService;
 
     @PostMapping("/submit")
-    public ResponseEntity<?> submitFeedback(@Valid @RequestBody FeedbackDTO feedbackDTO, BindingResult result) {
+    public ResponseEntity<?> submitFeedback(@Valid @RequestBody FeedbackCreateDTO feedbackCreateDTO, BindingResult result) {
         if (result.hasErrors()) {
             List<String> errors = result.getAllErrors().stream()
                     .map(DefaultMessageSourceResolvable::getDefaultMessage)
@@ -39,14 +40,14 @@ public class FeedbackController {
         }
 
         try {
-            FeedbackDTO newFeedbackDTO = feedbackService.submitFeedback(feedbackDTO);
+            FeedbackResponseDTO newFeedbackDTO = feedbackService.submitFeedback(feedbackCreateDTO);
             URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                     .path("/{id}")
                     .buildAndExpand(newFeedbackDTO.getId())
                     .toUri();
             return ResponseEntity.created(location).body(newFeedbackDTO);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error submitting feedback: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
@@ -55,8 +56,8 @@ public class FeedbackController {
         log.info("Fetching feedback with ID: {}", id);
 
         try {
-            FeedbackDTO feedbackDTO = feedbackService.getFeedbackById(id);
-            return ResponseEntity.ok(feedbackDTO);
+            FeedbackResponseDTO feedbackResponseDTO = feedbackService.getFeedbackById(id);
+            return ResponseEntity.ok(feedbackResponseDTO);
         } catch (RecordNotFoundException e) {
             log.warn("Feedback not found with ID: {}", id);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Feedback not found with ID: " + id);
@@ -67,16 +68,16 @@ public class FeedbackController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<FeedbackDTO>> getAllFeedbacks() {
+    public ResponseEntity<List<FeedbackResponseDTO>> getAllFeedbacks() {
         return ResponseEntity.ok().body(feedbackService.getAllFeedbacks());
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateFeedback(@PathVariable UUID id, @Valid @RequestBody FeedbackDTO feedbackDTO) {
+    public ResponseEntity<?> updateFeedback(@PathVariable UUID id, @Valid @RequestBody FeedbackCreateDTO feedbackCreateDTO) {
         log.info("Received request to update feedback with ID: {}", id);
 
         try {
-            FeedbackDTO updatedFeedback = feedbackService.updateFeedback(id, feedbackDTO);
+            FeedbackResponseDTO updatedFeedback = feedbackService.updateFeedback(id, feedbackCreateDTO);
             return ResponseEntity.ok(updatedFeedback);
         } catch (RecordNotFoundException e) {
             log.warn("Feedback or user not found: {}", e.getMessage());
@@ -91,12 +92,12 @@ public class FeedbackController {
     }
 
     @GetMapping("/event/{eventId}")
-    public List<Feedback> getFeedbackForEvent(@PathVariable UUID eventId) {
+    public List<FeedbackResponseDTO> getFeedbackForEvent(@PathVariable UUID eventId) {
         return feedbackService.getFeedbackForEvent(eventId);
     }
 
     @GetMapping("/user/{username}")
-    public List<Feedback> getFeedbackByUser(@PathVariable String username) {
+    public List<FeedbackResponseDTO> getFeedbackByUser(@PathVariable String username) {
         return feedbackService.getFeedbackByUser(username);
     }
 
@@ -114,6 +115,30 @@ public class FeedbackController {
         } catch (Exception e) {
             log.error("Error deleting feedback with ID {}: {}", id, e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error deleting feedback. Please try again later.");
+        }
+    }
+
+    @PostMapping("/{feedbackId}/event/{eventId}")
+    public ResponseEntity<?> assignEventToFeedback(@PathVariable UUID feedbackId, @PathVariable UUID eventId) {
+        try {
+            feedbackService.assignEventToFeedback(feedbackId, eventId);
+            return ResponseEntity.noContent().build();
+        } catch (RecordNotFoundException | EventNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/{feedbackId}/user/{username}")
+    public ResponseEntity<?> assignUserToFeedback(@PathVariable UUID feedbackId, @PathVariable String username) {
+        try {
+            feedbackService.assignUserToFeedback(feedbackId, username);
+            return ResponseEntity.noContent().build();
+        } catch (RecordNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 }

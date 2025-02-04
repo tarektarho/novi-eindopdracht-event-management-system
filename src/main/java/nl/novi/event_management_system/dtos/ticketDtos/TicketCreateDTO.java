@@ -8,7 +8,7 @@ import nl.novi.event_management_system.enums.TicketType;
 import nl.novi.event_management_system.validators.ticketType.ValidTicketType;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Data
@@ -17,7 +17,7 @@ public class TicketCreateDTO {
     private BigDecimal price;
     private String ticketCode = generateTicketCode();
     @NotNull(message = "purchaseDate cannot be empty.")
-    private LocalDateTime purchaseDate;
+    private LocalDate purchaseDate;
     @Enumerated(EnumType.STRING)
     @ValidTicketType
     private TicketType ticketType;

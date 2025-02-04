@@ -37,16 +37,16 @@ public class UserController {
     @PostMapping("/create")
     @ResponseStatus(value = HttpStatus.CREATED)
     public ResponseEntity<UserResponseDTO> createUser(@Valid @RequestBody UserCreateDTO userCreateDTO) {
-        String newUsername = userService.createUser(userCreateDTO);
+        UserResponseDTO newUser = userService.createUser(userCreateDTO);
         Set<Role> roleList = userCreateDTO.getRoles();
         for (Role role : roleList) {
             if (role != null) {
-                userService.addRole(newUsername, role.getRole());
+                userService.addRole(newUser.getUsername(), role.getRole());
             }
         }
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{username}")
-                .buildAndExpand(newUsername).toUri();
-        return ResponseEntity.created(location).build();
+                .buildAndExpand(newUser.getUsername()).toUri();
+        return ResponseEntity.created(location).body(newUser);
     }
 
     @GetMapping("/all")
@@ -101,7 +101,7 @@ public class UserController {
     public ResponseEntity<UserResponseDTO> addPhotoToUser(@PathVariable String username, @RequestParam("file") MultipartFile file) throws IOException {
         String url = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/users/")
-                .path(Objects.requireNonNull(username.toString()))
+                .path(Objects.requireNonNull(username))
                 .path("/photo")
                 .toUriString();
         String fileName;
@@ -124,7 +124,7 @@ public class UserController {
 
     @GetMapping("/{username}/photo")
     public ResponseEntity<Resource> getPhotoOfUser(@PathVariable String username, HttpServletRequest request) {
-        Resource resource = userService.getPhotoFromUser(username);
+        Resource resource = userService.getUserPhoto(username);
 
         String mineType;
 

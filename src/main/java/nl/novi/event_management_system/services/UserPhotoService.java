@@ -23,44 +23,34 @@ import java.util.Objects;
 public class UserPhotoService {
     private final Path fileStoragePath;
     private final String fileStorageLocation;
-    private final UserPhotoRepository repo;
+    private final UserPhotoRepository userPhotoRepository;
 
-    public UserPhotoService(@Value("${my.upload_location}") String fileStorageLocation, UserPhotoRepository repo) throws IOException{
+    public UserPhotoService(@Value("${my.upload_location}") String fileStorageLocation, UserPhotoRepository userPhotoRepository) throws IOException {
         fileStoragePath = Paths.get(fileStorageLocation).toAbsolutePath().normalize();
         this.fileStorageLocation = fileStorageLocation;
-        this.repo = repo;
-
+        this.userPhotoRepository = userPhotoRepository;
         Files.createDirectories(fileStoragePath);
-
-
     }
 
-    public String storeFile(MultipartFile file) throws IOException{
-
+    public String storeFile(MultipartFile file) throws IOException {
         String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
-
         Path filePath = Paths.get(fileStoragePath + File.separator + fileName);
-
         Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-
-        repo.save(new UserPhoto(fileName));
+        userPhotoRepository.save(new UserPhoto(fileName));
         return fileName;
     }
 
 
     public Resource downLoadFile(String fileName) {
-
         Path path = Paths.get(fileStorageLocation).toAbsolutePath().resolve(fileName);
-
         Resource resource;
-
         try {
             resource = new UrlResource(path.toUri());
         } catch (MalformedURLException e) {
             throw new FileDownloadException("Issue in reading the file", e);
         }
 
-        if(resource.exists()&& resource.isReadable()) {
+        if (resource.exists() && resource.isReadable()) {
             return resource;
         } else {
             throw new FileDownloadException("the file doesn't exist or not readable");
