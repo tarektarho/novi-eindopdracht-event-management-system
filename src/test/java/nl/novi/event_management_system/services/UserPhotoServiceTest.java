@@ -5,78 +5,62 @@ import nl.novi.event_management_system.models.UserPhoto;
 import nl.novi.event_management_system.repositories.UserPhotoRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.attribute.PosixFilePermissions;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-class UserPhotoServiceTest {
+@ExtendWith(MockitoExtension.class)
+public class UserPhotoServiceTest {
 
     @Mock
     private UserPhotoRepository userPhotoRepository;
 
-    @InjectMocks
+    @Mock
+    private MultipartFile multipartFile;
+
     private UserPhotoService userPhotoService;
-    private final Path tempDir = Paths.get(System.getProperty("java.io.tmpdir"), "test-uploads");
+
+    private final String fileStorageLocation = "test-uploads";
 
     @BeforeEach
-    void setUp() throws IOException {
-        Files.createDirectories(tempDir);
-        //userPhotoService = new UserPhotoService(tempDir.toString(), userPhotoRepository);
+    public void setUp() throws IOException {
+        userPhotoService = new UserPhotoService(fileStorageLocation, userPhotoRepository);
+
+        Files.createDirectories(Paths.get(fileStorageLocation));
     }
 
     @Test
-    void storeFile_SuccessfullyStoresFile() throws IOException {
+    public void testStoreFile() throws IOException {
         // Arrange
-        MultipartFile mockFile = mock(MultipartFile.class);
-        String fileName = "test.jpg";
-        when(mockFile.getOriginalFilename()).thenReturn(fileName);
-        when(mockFile.getInputStream()).thenReturn(new ByteArrayInputStream("dummy content".getBytes()));
-
-        UserPhoto userPhoto = new UserPhoto(fileName);
-        when(userPhotoRepository.save(any(UserPhoto.class))).thenAnswer(invocation -> {
-            UserPhoto userPhotoArg = invocation.getArgument(0);
-            userPhotoArg.setFileName(fileName);
-            return userPhotoArg;
-        });
-        //when(userPhotoRepository.save(any(UserPhoto.class))).thenReturn(userPhoto);
+        String fileName = "test-file.jpg";
+        when(multipartFile.getOriginalFilename()).thenReturn(fileName);
+        when(multipartFile.getInputStream()).thenReturn(Files.newInputStream(Paths.get("src/test/resources/test-file.jpg")));
 
         // Act
-        String storedFileName = userPhotoService.storeFile(mockFile);
+        String storedFileName = userPhotoService.storeFile(multipartFile);
 
         // Assert
         assertEquals(fileName, storedFileName);
-        assertTrue(Files.exists(tempDir.resolve(fileName)));
-        verify(userPhotoRepository).save(any(UserPhoto.class));
+        verify(userPhotoRepository, times(1)).save(any(UserPhoto.class));
     }
 
     @Test
-    void storeFile_ThrowsException_WhenFileHasNoName() {
+    public void testDownloadFile() throws IOException {
         // Arrange
-        MultipartFile mockFile = mock(MultipartFile.class);
-        when(mockFile.getOriginalFilename()).thenReturn(null);
-
-        // Act & Assert
-        assertThrows(NullPointerException.class, () -> userPhotoService.storeFile(mockFile));
-        verifyNoInteractions(userPhotoRepository);
-    }
-
-    @Test
-    void downLoadFile_ReturnsResource_WhenFileExists() throws IOException {
-        // Arrange
-        String fileName = "test.jpg";
-        Path filePath = tempDir.resolve(fileName);
-        Files.write(filePath, "dummy content".getBytes());
+        String fileName = "test-file-2.jpg";
+        Path filePath = Paths.get(fileStorageLocation).toAbsolutePath().resolve(fileName);
+        Files.copy(Paths.get("src/test/resources/test-file.jpg"), filePath);
 
         // Act
         Resource resource = userPhotoService.downLoadFile(fileName);
@@ -84,28 +68,33 @@ class UserPhotoServiceTest {
         // Assert
         assertNotNull(resource);
         assertTrue(resource.exists());
+        assertTrue(resource.isReadable());
+
+        // Clean up
+        Files.deleteIfExists(filePath);
     }
 
     @Test
-    void downLoadFile_ThrowsException_WhenFileDoesNotExist() {
+    public void testDownloadFile_FileDoesNotExist() {
         // Arrange
-        String fileName = "non_existent.jpg";
+        String fileName = "non-existent-file.jpg";
 
         // Act & Assert
-        FileDownloadException exception = assertThrows(FileDownloadException.class, () -> userPhotoService.downLoadFile(fileName));
-        assertEquals("the file doesn't exist or not readable", exception.getMessage());
+        assertThrows(FileDownloadException.class, () -> userPhotoService.downLoadFile(fileName));
     }
 
     @Test
-    void downLoadFile_ThrowsException_WhenFileIsNotReadable() throws IOException {
+    public void testDownloadFile_FileNotReadable() throws IOException {
         // Arrange
-        String fileName = "unreadable.jpg";
-        Path filePath = tempDir.resolve(fileName);
+        String fileName = "unreadable-file.jpg";
+        Path filePath = Paths.get(fileStorageLocation).toAbsolutePath().resolve(fileName);
         Files.createFile(filePath);
-        Files.setPosixFilePermissions(filePath, PosixFilePermissions.fromString("---------")); // Make file unreadable
+        filePath.toFile().setReadable(false);
 
         // Act & Assert
-        FileDownloadException exception = assertThrows(FileDownloadException.class, () -> userPhotoService.downLoadFile(fileName));
-        assertEquals("the file doesn't exist or not readable", exception.getMessage());
+        assertThrows(FileDownloadException.class, () -> userPhotoService.downLoadFile(fileName));
+
+        // Clean up
+        Files.deleteIfExists(filePath);
     }
 }

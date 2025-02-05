@@ -7,6 +7,9 @@ target/
 ## uploads
 uploads
 
+## Tests
+test-uploads
+
 ### STS ###
 .apt_generated
 .classpath
