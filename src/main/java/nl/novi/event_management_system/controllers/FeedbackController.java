@@ -80,7 +80,7 @@ public class FeedbackController {
             FeedbackResponseDTO updatedFeedback = feedbackService.updateFeedback(id, feedbackCreateDTO);
             return ResponseEntity.ok(updatedFeedback);
         } catch (RecordNotFoundException e) {
-            log.warn("Feedback or user not found: {}", e.getMessage());
+            log.warn("Feedback not found: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (ValidationException e) {
             log.warn("Validation error: {}", e.getMessage());
@@ -93,12 +93,12 @@ public class FeedbackController {
 
     @GetMapping("/event/{eventId}")
     public List<FeedbackResponseDTO> getFeedbackForEvent(@PathVariable UUID eventId) {
-        return feedbackService.getFeedbackForEvent(eventId);
+        return feedbackService.getEventFeedback(eventId);
     }
 
     @GetMapping("/user/{username}")
     public List<FeedbackResponseDTO> getFeedbackByUser(@PathVariable String username) {
-        return feedbackService.getFeedbackByUser(username);
+        return feedbackService.getUserFeedback(username);
     }
 
     @DeleteMapping("/{id}")

@@ -33,21 +33,6 @@ public class FeedbackService {
     }
 
     public FeedbackResponseDTO submitFeedback(FeedbackCreateDTO feedbackCreateDTO) {
-        User user;
-        Event event;
-
-        if (feedbackCreateDTO.getUsername() != null) {
-            user = userRepository.findByUsername(feedbackCreateDTO.getUsername())
-                    .orElseThrow(() -> new UsernameNotFoundException(feedbackCreateDTO.getUsername()));
-            feedbackCreateDTO.setUsername(user.getUsername());
-        }
-
-        if (feedbackCreateDTO.getEventId() != null) {
-            event = eventRepository.findById(feedbackCreateDTO.getEventId())
-                    .orElseThrow(() -> new EventNotFoundException(feedbackCreateDTO.getEventId()));
-            feedbackCreateDTO.setEventId(event.getId());
-        }
-
         Feedback feedback = FeedbackMapper.toEntity(feedbackCreateDTO);
         feedbackRepository.save(feedback);
         return FeedbackMapper.toResponseDTO(feedback);
@@ -78,13 +63,8 @@ public class FeedbackService {
         // Map updated values to the existing entity instead of creating a new one
         existingFeedback.setComment(feedbackCreateDTO.getComment());
         existingFeedback.setRating(feedbackCreateDTO.getRating());
+        existingFeedback.setId(id);
 
-        // If a username is provided, update the user association
-        if (feedbackCreateDTO.getUsername() != null) {
-            User user = userRepository.findByUsername(feedbackCreateDTO.getUsername())
-                    .orElseThrow(() -> new RecordNotFoundException("User not found with username: " + feedbackCreateDTO.getUsername()));
-            existingFeedback.setUser(user);
-        }
 
         // Save the updated feedback
         Feedback savedFeedback = feedbackRepository.save(existingFeedback);
@@ -103,11 +83,11 @@ public class FeedbackService {
         log.info("Feedback deleted successfully with ID: {}", id);
     }
 
-    public List<FeedbackResponseDTO> getFeedbackForEvent(UUID eventId) {
+    public List<FeedbackResponseDTO> getEventFeedback(UUID eventId) {
         return FeedbackMapper.toResponseDTOList(feedbackRepository.findByEventId(eventId));
     }
 
-    public List<FeedbackResponseDTO> getFeedbackByUser(String username) {
+    public List<FeedbackResponseDTO> getUserFeedback(String username) {
         return FeedbackMapper.toResponseDTOList(feedbackRepository.findByUserUsername(username));
     }
 

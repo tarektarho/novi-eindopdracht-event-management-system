@@ -36,6 +36,13 @@ public class UserMapper {
         return userResponseDTO;
     }
 
+    public static List<UserResponseDTO> toUserResponseDTOList(List<User> users) {
+
+        return users.stream()
+                .map(UserMapper::toUserResponseDTO)
+                .collect(Collectors.toList());
+    }
+
     public static UserProfileDTO toUserProfileResponseDTO(User user) {
 
         UserProfileDTO userProfileDTO = new UserProfileDTO();
@@ -48,13 +55,6 @@ public class UserMapper {
         }
 
         return userProfileDTO;
-    }
-
-    public static List<UserResponseDTO> toUserResponseDTOList(List<User> users) {
-
-        return users.stream()
-                .map(UserMapper::toUserResponseDTO)
-                .collect(Collectors.toList());
     }
 
     public static User toUserEntity(UserCreateDTO userCreateDTO) {

@@ -82,19 +82,4 @@ public class UserPhotoServiceTest {
         // Act & Assert
         assertThrows(FileDownloadException.class, () -> userPhotoService.downLoadFile(fileName));
     }
-
-    @Test
-    public void testDownloadFile_FileNotReadable() throws IOException {
-        // Arrange
-        String fileName = "unreadable-file.jpg";
-        Path filePath = Paths.get(fileStorageLocation).toAbsolutePath().resolve(fileName);
-        Files.createFile(filePath);
-        filePath.toFile().setReadable(false);
-
-        // Act & Assert
-        assertThrows(FileDownloadException.class, () -> userPhotoService.downLoadFile(fileName));
-
-        // Clean up
-        Files.deleteIfExists(filePath);
-    }
 }

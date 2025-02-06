@@ -2,8 +2,6 @@ package nl.novi.event_management_system.dtos.eventDtos;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
-import nl.novi.event_management_system.dtos.feedbackDtos.FeedbackResponseDTO;
-import nl.novi.event_management_system.dtos.ticketDtos.TicketResponseDTO;
 import nl.novi.event_management_system.dtos.userDtos.UserProfileDTO;
 
 import java.time.LocalDate;
@@ -22,7 +20,8 @@ public class EventResponseDTO {
     private int capacity;
     private double price;
     private UserProfileDTO organizer;
-    private List<TicketResponseDTO> ticketList;
-    private List<FeedbackResponseDTO> feedbackList;
+    private List<EventIdInputDTO> ticketList;
+    private List<EventIdInputDTO> feedbackList;
+    private List<EventParticipantUsernameDTO> participants;
 
 }

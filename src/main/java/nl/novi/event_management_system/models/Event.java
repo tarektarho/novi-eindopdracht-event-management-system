@@ -1,15 +1,16 @@
 package nl.novi.event_management_system.models;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
 @Entity
 @Table(name = "events")
 public class Event {
@@ -40,13 +41,29 @@ public class Event {
     @Column(nullable = false)
     private double price;
 
-    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
-    private List<Ticket> tickets;
+    @ManyToMany
+    @JoinTable(
+            name = "event_tickets",
+            joinColumns = @JoinColumn(name = "event_id"),
+            inverseJoinColumns = @JoinColumn(name = "ticket_id")
+    )
+    private List<Ticket> tickets = new ArrayList<>();
 
-    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
-    private List<Feedback> feedbacks;
+    @ManyToMany
+    @JoinTable(
+            name = "event_feedback",
+            joinColumns = @JoinColumn(name = "event_id"),
+            inverseJoinColumns = @JoinColumn(name = "feedback_id")
+    )
+    private List<Feedback> feedbacks = new ArrayList<>();
 
-    public Event() {}
+    @ManyToMany
+    @JoinTable(
+            name = "event_participants",
+            joinColumns = @JoinColumn(name = "event_id"),
+            inverseJoinColumns = @JoinColumn(name = "username")
+    )
+    private List<User> participants = new ArrayList<>();
 
     public Event(String name, String location, LocalDate startDate, LocalDate endDate, int capacity, double price) {
         this.name = name;

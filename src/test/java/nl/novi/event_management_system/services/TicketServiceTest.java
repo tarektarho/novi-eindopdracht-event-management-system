@@ -17,7 +17,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -43,7 +43,7 @@ class TicketServiceTest {
 
     private final BigDecimal price = new BigDecimal("100.11");
     private final TicketType ticketType = TicketType.STANDARD;
-    private final LocalDateTime purchaseDate = LocalDateTime.parse("2025-06-15T09:00:00");
+    private final LocalDate purchaseDate = LocalDate.parse("2025-06-15");
     private final String ticketCode = "TICKET-52034A9C";
 
 
@@ -51,7 +51,7 @@ class TicketServiceTest {
     void setUp() {
         mockTickets = Arrays.asList(
                 new Ticket(price, ticketType,purchaseDate, ticketCode),
-                new Ticket(price, TicketType.VIP, LocalDateTime.parse("2025-06-15T09:00:00"), ticketCode)
+                new Ticket(price, TicketType.VIP, LocalDate.parse("2025-06-15"), ticketCode)
         );
     }
 

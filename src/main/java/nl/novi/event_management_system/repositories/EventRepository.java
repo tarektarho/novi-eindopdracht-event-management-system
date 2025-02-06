@@ -12,5 +12,6 @@ import java.util.UUID;
 public interface EventRepository extends JpaRepository<Event, UUID> {
     Optional<Event> findEventById(UUID id);
     List<Event> findByOrganizerUsername(String username);
+    List<Event> findByParticipantsUsername(String username);
 
 }

@@ -122,7 +122,7 @@ class UserServiceTest {
         User user = new User(username, email, password);
         user.setRoles(Set.of(new Role("admin", RoleEnum.getRoleName(RoleEnum.ADMIN))));
 
-        when(userRepository.findByUsername(username)).thenReturn(java.util.Optional.of(user));
+        when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
 
         // Act
         UserResponseDTO userResponseDTO = userService.getUserByUsername(username);
@@ -155,7 +155,7 @@ class UserServiceTest {
         User user = new User(username, email, password);
 
         when(userRepository.existsById(username)).thenReturn(true);
-        when(userRepository.findById(username)).thenReturn(java.util.Optional.of(user));
+        when(userRepository.findById(username)).thenReturn(Optional.of(user));
 
         // Act
         userService.updateUser(username, newUser);

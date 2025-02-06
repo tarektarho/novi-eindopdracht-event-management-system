@@ -44,10 +44,11 @@ public class UserPhotoService {
     public Resource downLoadFile(String fileName) {
         Path path = Paths.get(fileStorageLocation).toAbsolutePath().resolve(fileName);
         Resource resource;
+
         try {
             resource = new UrlResource(path.toUri());
         } catch (MalformedURLException e) {
-            throw new FileDownloadException("Issue in reading the file", e);
+            throw new FileDownloadException("Issue in reading the file", e); //Todo cover this line with test.
         }
 
         if (resource.exists() && resource.isReadable()) {
