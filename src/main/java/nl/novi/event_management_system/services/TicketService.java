@@ -7,7 +7,6 @@ import nl.novi.event_management_system.exceptions.RecordNotFoundException;
 import nl.novi.event_management_system.mappers.TicketMapper;
 import nl.novi.event_management_system.models.*;
 import nl.novi.event_management_system.repositories.TicketRepository;
-import nl.novi.event_management_system.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,24 +14,14 @@ import java.util.UUID;
 
 @Service
 public class TicketService {
-
     private final TicketRepository ticketRepository;
-    private final UserRepository userRepository;
 
-    public TicketService(TicketRepository ticketRepository, UserRepository userRepository) {
+    public TicketService(TicketRepository ticketRepository) {
         this.ticketRepository = ticketRepository;
-        this.userRepository = userRepository;
     }
 
     public TicketResponseDTO createTicket(@Valid TicketCreateDTO ticketCreateDTO) {
         Ticket ticket = TicketMapper.toEntity(ticketCreateDTO);
-
-        if (ticketCreateDTO.getUsername() != null) {
-            User user = userRepository.findByUsername(ticketCreateDTO.getUsername())
-                    .orElseThrow(() -> new RecordNotFoundException("User not found."));
-            ticket.setUser(user);
-        }
-
         return TicketMapper.toResponseDTO(ticketRepository.save(ticket));
     }
 
@@ -64,13 +53,5 @@ public class TicketService {
         }
         return false;
 
-    }
-
-    public List<Ticket> getTicketsForUser(String username) {
-        return ticketRepository.findByUserUsername(username);
-    }
-
-    public List<Ticket> getTicketsForEvent(UUID eventId) {
-        return ticketRepository.findByEventId(eventId);
     }
 }

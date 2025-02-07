@@ -6,9 +6,7 @@ import nl.novi.event_management_system.enums.TicketType;
 import nl.novi.event_management_system.exceptions.RecordNotFoundException;
 import nl.novi.event_management_system.mappers.TicketMapper;
 import nl.novi.event_management_system.models.Ticket;
-import nl.novi.event_management_system.models.User;
 import nl.novi.event_management_system.repositories.TicketRepository;
-import nl.novi.event_management_system.repositories.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,45 +27,30 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class TicketServiceTest {
-
     @Mock
     private TicketRepository ticketRepository;
-    @Mock
-    private UserRepository userRepository;
-
-
     @InjectMocks
     private TicketService ticketService;
-
     private List<Ticket> mockTickets;
-
     private final BigDecimal price = new BigDecimal("100.11");
     private final TicketType ticketType = TicketType.STANDARD;
     private final LocalDate purchaseDate = LocalDate.parse("2025-06-15");
     private final String ticketCode = "TICKET-52034A9C";
 
-
     @BeforeEach
     void setUp() {
         mockTickets = Arrays.asList(
-                new Ticket(price, ticketType,purchaseDate, ticketCode),
-                new Ticket(price, TicketType.VIP, LocalDate.parse("2025-06-15"), ticketCode)
+                new Ticket(price, ticketType, purchaseDate, ticketCode),
+                new Ticket(price, TicketType.VIP, purchaseDate, ticketCode)
         );
     }
 
     @Test
     void createTicketDoesCreateTicketWithCorrectData() {
         // Arrange
-        User user = new User();
-        user.setUsername("user1");
-
-        // Mock finding the user
-        when(userRepository.findByUsername("user1")).thenReturn(Optional.of(user));
-
-        // Mock ticket save
         when(ticketRepository.save(any(Ticket.class))).thenAnswer(invocation -> {
             Ticket savedTicket = invocation.getArgument(0);
-            savedTicket.setId(UUID.randomUUID()); // Simulating database ID generation
+            savedTicket.setId(UUID.randomUUID());
             return savedTicket;
         });
 
@@ -76,7 +59,6 @@ class TicketServiceTest {
         ticketCreateDTO.setPrice(price);
         ticketCreateDTO.setTicketType(ticketType);
         ticketCreateDTO.setPurchaseDate(purchaseDate);
-        ticketCreateDTO.setUsername("user1"); // Add username
 
         // Act
         TicketResponseDTO result = ticketService.createTicket(ticketCreateDTO);
@@ -85,26 +67,6 @@ class TicketServiceTest {
         assertNotNull(result);
         assertTrue(result.getTicketCode().startsWith("TICKET-"));
 
-    }
-
-    @Test
-    void createTicketThrowsExceptionWhenUserNotFound() {
-        // Arrange
-        TicketCreateDTO ticketCreateDTO = new TicketCreateDTO();
-        ticketCreateDTO.setTicketCode(ticketCode);
-        ticketCreateDTO.setPrice(price);
-        ticketCreateDTO.setTicketType(ticketType);
-        ticketCreateDTO.setPurchaseDate(purchaseDate);
-        ticketCreateDTO.setUsername("user"); // Non-existent user
-
-        // Mock userRepository to return empty (simulating user not found)
-        when(userRepository.findByUsername("user")).thenReturn(Optional.empty());
-
-        // Act & Assert
-        assertThrows(RecordNotFoundException.class, () -> ticketService.createTicket(ticketCreateDTO));
-
-        //act
-        assertThrows(RecordNotFoundException.class, () -> ticketService.createTicket(ticketCreateDTO));
     }
 
     @Test
@@ -217,29 +179,5 @@ class TicketServiceTest {
 
         // Assert
         assertFalse(result);
-    }
-
-    @Test
-    void getTicketsForUser() {
-        //arrange
-        when(ticketRepository.findByUserUsername("user1")).thenReturn(mockTickets);
-
-        //act
-        List<Ticket> result = ticketService.getTicketsForUser("user1");
-
-        //assert
-        assertEquals(mockTickets, result);
-    }
-
-    @Test
-    void getTicketsForEvent() {
-        //arrange
-        when(ticketRepository.findByEventId(mockTickets.getFirst().getId())).thenReturn(mockTickets);
-
-        //act
-        List<Ticket> result = ticketService.getTicketsForEvent(mockTickets.getFirst().getId());
-
-        //assert
-        assertEquals(mockTickets, result);
     }
 }

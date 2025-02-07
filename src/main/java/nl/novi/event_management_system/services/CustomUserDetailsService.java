@@ -1,9 +1,8 @@
 package nl.novi.event_management_system.services;
 
 import nl.novi.event_management_system.dtos.userDtos.UserResponseDTO;
-import nl.novi.event_management_system.exceptions.RecordNotFoundException;
+import nl.novi.event_management_system.exceptions.UsernameNotFoundException;
 import nl.novi.event_management_system.models.Role;
-import nl.novi.event_management_system.models.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,6 +26,10 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) {
         UserResponseDTO userResponseDTO = userService.getUserByUsername(username);
+
+        if (userResponseDTO == null) {
+            throw new UsernameNotFoundException("User with username '" + username + "' not found.");
+        }
 
         String password = userResponseDTO.getPassword();
 

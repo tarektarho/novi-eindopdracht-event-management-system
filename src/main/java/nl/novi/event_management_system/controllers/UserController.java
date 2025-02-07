@@ -3,6 +3,8 @@ package nl.novi.event_management_system.controllers;
 import io.swagger.v3.oas.annotations.tags.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
+import nl.novi.event_management_system.dtos.RoleCreateDTO;
 import nl.novi.event_management_system.dtos.userDtos.UserCreateDTO;
 import nl.novi.event_management_system.dtos.userDtos.UserResponseDTO;
 import nl.novi.event_management_system.exceptions.BadRequestException;
@@ -11,7 +13,6 @@ import nl.novi.event_management_system.models.Role;
 import nl.novi.event_management_system.models.User;
 import nl.novi.event_management_system.services.UserPhotoService;
 import nl.novi.event_management_system.services.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -24,15 +25,19 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.*;
 
+@Slf4j
 @Tag(name = "User API", description = "User related endpoints")
 @RestController
 @RequestMapping("/api/v1/users")
 public class UserController {
 
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private UserPhotoService userPhotoService;
+    private final UserService userService;
+    private final UserPhotoService userPhotoService;
+
+    public UserController(UserService userService, UserPhotoService userPhotoService) {
+        this.userService = userService;
+        this.userPhotoService = userPhotoService;
+    }
 
     @PostMapping("/create")
     @ResponseStatus(value = HttpStatus.CREATED)
@@ -73,15 +78,21 @@ public class UserController {
         return ResponseEntity.ok().body(userService.getRoles(username));
     }
 
-    @PostMapping(value = "/{username}/roles")
-    public ResponseEntity<Object> addUserRole(@PathVariable("username") String username, @RequestBody Map<String, Object> fields) {
-        // Role has to be prefixed with "ROLE_" to be compliant with Spring Security
+
+    @PostMapping("/{username}/roles")
+    public ResponseEntity<Object> addUserRole(
+            @PathVariable("username") String username,
+            @Valid @RequestBody RoleCreateDTO roleCreateDTO) {
+
         try {
-            String roleName = (String) fields.get("role");
-            userService.addRole(username, roleName);
+            userService.addRole(username, roleCreateDTO.getRole());
             return ResponseEntity.noContent().build();
         } catch (BadRequestException ex) {
-            throw new BadRequestException();
+            log.error("Failed to add role '{}' to user '{}': {}", roleCreateDTO.getRole(), username, ex.getMessage());
+            return ResponseEntity.badRequest().body("Error: " + ex.getMessage());
+        } catch (Exception ex) {
+            log.error("Unexpected error while assigning role to user '{}': {}", username, ex.getMessage());
+            return ResponseEntity.internalServerError().body("An unexpected error occurred.");
         }
     }
 
@@ -110,13 +121,15 @@ public class UserController {
         try {
             fileName = userPhotoService.storeFile(file);
         } catch (BadRequestException ex) {
-            throw new BadRequestException();
+            log.error("Error: " + ex.getMessage());
+            return  ResponseEntity.badRequest().build();
         }
 
         try {
             user = userService.assignPhotoToUser(fileName, username);
         } catch (BadRequestException ex) {
-            throw new BadRequestException();
+            log.error("Error: " + ex.getMessage());
+            return ResponseEntity.badRequest().build();
         }
 
         return ResponseEntity.created(URI.create(url)).body(UserMapper.toUserResponseDTO(user));

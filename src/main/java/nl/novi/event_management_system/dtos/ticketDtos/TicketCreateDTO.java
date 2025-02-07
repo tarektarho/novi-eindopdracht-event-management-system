@@ -21,8 +21,6 @@ public class TicketCreateDTO {
     @Enumerated(EnumType.STRING)
     @ValidTicketType
     private TicketType ticketType;
-    private Long eventId;
-    private String username;
 
     private String generateTicketCode() {
         return "TICKET-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();

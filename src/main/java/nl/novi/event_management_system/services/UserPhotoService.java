@@ -40,7 +40,6 @@ public class UserPhotoService {
         return fileName;
     }
 
-
     public Resource downLoadFile(String fileName) {
         Path path = Paths.get(fileStorageLocation).toAbsolutePath().resolve(fileName);
         Resource resource;

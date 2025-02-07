@@ -12,12 +12,12 @@ INSERT INTO roles (username, role) VALUES ('participant', 'ROLE_PARTICIPANT');
 
 -- Add event
 INSERT INTO events (id, name, organizer_username, location, start_date, end_date, capacity, price)
-VALUES ('c4205e65-fee0-4c4f-9470-88edfc8280e6','Annual Tech Conference', 'admin', 'Netherlands', '2025-06-15T09:00:00', '2025-06-15T18:00:00', '22', 300);
+VALUES ('c4205e65-fee0-4c4f-9470-88edfc8280e6','Annual Tech Conference', 'admin', 'Netherlands', '2025-06-15', '2025-06-15', '22', 300);
 --
 -- -- Add Feedback
 INSERT INTO feedbacks (comment, rating, username, feedback_date, id)
-VALUES ('Great event! Learned a lot about new technologies.', 5, 'admin', '2025-06-15T09:00:00', 'c4205e65-fee0-4c4f-9470-88edfc8280e2');
+VALUES ('Great event! Learned a lot about new technologies.', 5, 'admin', '2025-06-15', 'c4205e65-fee0-4c4f-9470-88edfc8280e2');
 
 -- -- Add Ticket
 INSERT INTO tickets (id, price, purchase_date, ticket_type, ticket_code)
-VALUES ('c4205e65-fee0-4c4f-9470-88edfc8280e5', 10, '2025-06-15T09:00:00', 'FREE', 'c4205e65-fee0-4c4f-9470-88edfc82822');
+VALUES ('c4205e65-fee0-4c4f-9470-88edfc8280e5', 10, '2025-06-15', 'FREE', 'c4205e65-fee0-4c4f-9470-88edfc82822');

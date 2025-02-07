@@ -5,10 +5,8 @@ import jakarta.validation.Valid;
 import jakarta.validation.ValidationException;
 import nl.novi.event_management_system.dtos.ticketDtos.TicketCreateDTO;
 import nl.novi.event_management_system.dtos.ticketDtos.TicketResponseDTO;
-import nl.novi.event_management_system.models.Ticket;
 import nl.novi.event_management_system.services.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -31,8 +29,6 @@ public class TicketController {
             result.getAllErrors().forEach(error -> errorMessages.append(error.getDefaultMessage()).append(" "));
             throw new ValidationException("Validation failed: " + errorMessages);
         }
-
-
         return ResponseEntity.status(201).body(ticketService.createTicket(ticketCreateDTO));
     }
 
@@ -42,31 +38,18 @@ public class TicketController {
     }
 
     @GetMapping("/{id}")
-    @ResponseStatus(value = HttpStatus.OK)
-    public TicketResponseDTO getTicketById(@PathVariable UUID id) {
-        return ticketService.getTicketById(id);
+    public ResponseEntity<TicketResponseDTO> getTicketById(@PathVariable UUID id) {
+        return ResponseEntity.ok(ticketService.getTicketById(id));
     }
 
     @PutMapping("/{id}")
-    @ResponseStatus(value = HttpStatus.OK)
-    public TicketResponseDTO updateTicket(@PathVariable UUID id, @Valid @RequestBody TicketCreateDTO ticketCreateDTO) {
-        return ticketService.updateTicket(id, ticketCreateDTO);
+    public ResponseEntity<TicketResponseDTO> updateTicket(@PathVariable UUID id, @Valid @RequestBody TicketCreateDTO ticketCreateDTO) {
+        return ResponseEntity.ok(ticketService.updateTicket(id, ticketCreateDTO));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTicket(@PathVariable UUID id) {
         boolean isDeleted = ticketService.deleteTicketById(id);
-
         return isDeleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
-    }
-
-    @GetMapping("/user/{username}")
-    public List<Ticket> getTicketsForUser(@PathVariable String username) {
-        return ticketService.getTicketsForUser(username);
-    }
-
-    @GetMapping("/event/{eventId}")
-    public List<Ticket> getTicketsForEvent(@PathVariable UUID eventId) {
-        return ticketService.getTicketsForEvent(eventId);
     }
 }

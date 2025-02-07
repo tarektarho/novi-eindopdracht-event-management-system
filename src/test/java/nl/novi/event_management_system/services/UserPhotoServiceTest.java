@@ -9,6 +9,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.io.Resource;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -21,6 +22,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
+@ContextConfiguration(classes = {UserPhotoService.class})
 public class UserPhotoServiceTest {
 
     @Mock
@@ -78,6 +80,15 @@ public class UserPhotoServiceTest {
     public void testDownloadFile_FileDoesNotExist() {
         // Arrange
         String fileName = "non-existent-file.jpg";
+
+        // Act & Assert
+        assertThrows(FileDownloadException.class, () -> userPhotoService.downLoadFile(fileName));
+    }
+
+    @Test
+    public void testDownloadFile_MalformedURL() {
+        // Arrange
+        String fileName = "invalid-file:///"; // Invalid file name to simulate MalformedURLException
 
         // Act & Assert
         assertThrows(FileDownloadException.class, () -> userPhotoService.downLoadFile(fileName));
