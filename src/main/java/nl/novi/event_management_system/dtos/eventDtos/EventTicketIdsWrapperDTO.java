@@ -5,6 +5,6 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class EventIdInputWrapperDTO {
-    private List<EventIdInputDTO> ids;
+public class EventTicketIdsWrapperDTO {
+    private List<EventTicketIdDTO> ticketIds;
 }

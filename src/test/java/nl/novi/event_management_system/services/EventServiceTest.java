@@ -1,10 +1,7 @@
 package nl.novi.event_management_system.services;
 
 import jakarta.transaction.Transactional;
-import nl.novi.event_management_system.dtos.eventDtos.EventCreateDTO;
-import nl.novi.event_management_system.dtos.eventDtos.EventIdInputDTO;
-import nl.novi.event_management_system.dtos.eventDtos.EventParticipantUsernameDTO;
-import nl.novi.event_management_system.dtos.eventDtos.EventResponseDTO;
+import nl.novi.event_management_system.dtos.eventDtos.*;
 import nl.novi.event_management_system.dtos.userDtos.UserProfileDTO;
 import nl.novi.event_management_system.exceptions.EventNotFoundException;
 import nl.novi.event_management_system.exceptions.RecordNotFoundException;
@@ -458,10 +455,10 @@ class EventServiceTest {
         when(ticketRepository.findById(ticketId_1)).thenReturn(Optional.of(ticket1));
         when(ticketRepository.findById(ticketId_2)).thenReturn(Optional.of(ticket2));
 
-        List<EventIdInputDTO> ticketIdList = new ArrayList<>();
+        List<EventTicketIdDTO> ticketIdList = new ArrayList<>();
 
-        ticketIdList.add(new EventIdInputDTO(ticketId_1));
-        ticketIdList.add(new EventIdInputDTO(ticketId_2));
+        ticketIdList.add(new EventTicketIdDTO(ticketId_1));
+        ticketIdList.add(new EventTicketIdDTO(ticketId_2));
 
         // Act
         eventService.addTicketsToEvent(eventId, ticketIdList);
@@ -477,8 +474,8 @@ class EventServiceTest {
         // Arrange
         when(eventRepository.findEventById(eventId)).thenReturn(Optional.empty());
 
-        List<EventIdInputDTO> ticketIdList = new ArrayList<>();
-        ticketIdList.add(new EventIdInputDTO(UUID.randomUUID()));
+        List<EventTicketIdDTO> ticketIdList = new ArrayList<>();
+        ticketIdList.add(new EventTicketIdDTO(UUID.randomUUID()));
 
         // Act & Assert
         assertThrows(EventNotFoundException.class, () -> eventService.addTicketsToEvent(eventId, ticketIdList));
@@ -492,8 +489,8 @@ class EventServiceTest {
         when(eventRepository.findEventById(eventId)).thenReturn(Optional.of(event));
         when(ticketRepository.findById(any())).thenReturn(Optional.empty());
 
-        List<EventIdInputDTO> ticketIdList = new ArrayList<>();
-        ticketIdList.add(new EventIdInputDTO(UUID.randomUUID()));
+        List<EventTicketIdDTO> ticketIdList = new ArrayList<>();
+        ticketIdList.add(new EventTicketIdDTO(UUID.randomUUID()));
 
         // Act & Assert
         assertThrows(RecordNotFoundException.class, () -> eventService.addTicketsToEvent(eventId, ticketIdList));
@@ -503,7 +500,7 @@ class EventServiceTest {
 
     @Test
     public void testAddTicketsToEventThrowsIllegalArgumentException() {
-        List<EventIdInputDTO> ticketIdList = new ArrayList<>();
+        List<EventTicketIdDTO> ticketIdList = new ArrayList<>();
 
         // Act & Assert
         assertThrows(IllegalArgumentException.class, () -> eventService.addTicketsToEvent(eventId, ticketIdList));
@@ -526,7 +523,7 @@ class EventServiceTest {
         when(ticketRepository.findById(ticketId)).thenReturn(Optional.of(ticket));
 
         // Act
-        eventService.removeTicketFromEvent(eventId, new EventIdInputDTO(ticketId));
+        eventService.removeTicketFromEvent(eventId, new EventTicketIdDTO(ticketId));
 
         // Assert
         verify(eventRepository, times(1)).findEventById(eventId);
@@ -539,7 +536,7 @@ class EventServiceTest {
         when(eventRepository.findEventById(eventId)).thenReturn(Optional.empty());
 
         // Act & Assert
-        assertThrows(EventNotFoundException.class, () -> eventService.removeTicketFromEvent(eventId, new EventIdInputDTO(UUID.randomUUID())));
+        assertThrows(EventNotFoundException.class, () -> eventService.removeTicketFromEvent(eventId, new EventTicketIdDTO(UUID.randomUUID())));
         verify(eventRepository, times(1)).findEventById(eventId);
         verify(eventRepository, never()).save(any());
     }
@@ -551,7 +548,7 @@ class EventServiceTest {
         when(ticketRepository.findById(any())).thenReturn(Optional.empty());
 
         // Act & Assert
-        assertThrows(RecordNotFoundException.class, () -> eventService.removeTicketFromEvent(eventId, new EventIdInputDTO(UUID.randomUUID())));
+        assertThrows(RecordNotFoundException.class, () -> eventService.removeTicketFromEvent(eventId, new EventTicketIdDTO(UUID.randomUUID())));
         verify(eventRepository, times(1)).findEventById(eventId);
         verify(eventRepository, never()).save(any());
     }
@@ -563,7 +560,7 @@ class EventServiceTest {
         when(ticketRepository.findById(any())).thenReturn(Optional.of(new Ticket()));
 
         // Act & Assert
-        assertThrows(IllegalStateException.class, () -> eventService.removeTicketFromEvent(eventId, new EventIdInputDTO(null)));
+        assertThrows(IllegalStateException.class, () -> eventService.removeTicketFromEvent(eventId, new EventTicketIdDTO(null)));
         verify(eventRepository, never()).save(any());
     }
 
@@ -573,9 +570,9 @@ class EventServiceTest {
         // Arrange
         UUID feedbackId_1 = UUID.randomUUID();
         UUID feedbackId_2 = UUID.randomUUID();
-        List<EventIdInputDTO> feedbackIdList = new ArrayList<>();
-        feedbackIdList.add(new EventIdInputDTO(feedbackId_1));
-        feedbackIdList.add(new EventIdInputDTO(feedbackId_2));
+        List<EventFeedbackIdDTO> feedbackIdList = new ArrayList<>();
+        feedbackIdList.add(new EventFeedbackIdDTO(feedbackId_1));
+        feedbackIdList.add(new EventFeedbackIdDTO(feedbackId_2));
         when(eventRepository.findEventById(eventId)).thenReturn(Optional.of(event));
         when(feedbackRepository.findById(feedbackId_1)).thenReturn(Optional.of(new Feedback()));
         when(feedbackRepository.findById(feedbackId_2)).thenReturn(Optional.of(new Feedback()));
@@ -591,7 +588,7 @@ class EventServiceTest {
     @Test
     public void testAddFeedbacksToEventThrowsIllegalArgumentException() {
         // Arrange
-        List<EventIdInputDTO> feedbackIdList = new ArrayList<>();
+        List<EventFeedbackIdDTO> feedbackIdList = new ArrayList<>();
 
         // Act & Assert
         assertThrows(IllegalArgumentException.class, () -> eventService.AddFeedbacksToEvent(eventId, feedbackIdList));
@@ -602,8 +599,8 @@ class EventServiceTest {
     public void testAddFeedbacksToEventThrowsEventNotFoundException() {
         // Arrange
         when(eventRepository.findEventById(eventId)).thenReturn(Optional.empty());
-        List<EventIdInputDTO> feedbackIdList = new ArrayList<>();
-        feedbackIdList.add(new EventIdInputDTO(UUID.randomUUID()));
+        List<EventFeedbackIdDTO> feedbackIdList = new ArrayList<>();
+        feedbackIdList.add(new EventFeedbackIdDTO(UUID.randomUUID()));
 
         // Act & Assert
         assertThrows(EventNotFoundException.class, () -> eventService.AddFeedbacksToEvent(eventId, feedbackIdList));
@@ -617,8 +614,8 @@ class EventServiceTest {
         when(eventRepository.findEventById(eventId)).thenReturn(Optional.of(event));
         when(feedbackRepository.findById(any())).thenReturn(Optional.empty());
 
-        List<EventIdInputDTO> feedbackIdList = new ArrayList<>();
-        feedbackIdList.add(new EventIdInputDTO(UUID.randomUUID()));
+        List<EventFeedbackIdDTO> feedbackIdList = new ArrayList<>();
+        feedbackIdList.add(new EventFeedbackIdDTO(UUID.randomUUID()));
 
         // Act & Assert
         assertThrows(RecordNotFoundException.class, () -> eventService.AddFeedbacksToEvent(eventId, feedbackIdList));
@@ -642,7 +639,7 @@ class EventServiceTest {
         when(feedbackRepository.findById(feedbackId)).thenReturn(Optional.of(feedback));
 
         // Act
-        eventService.removeFeedbackFromEvent(eventId, new EventIdInputDTO(feedbackId));
+        eventService.removeFeedbackFromEvent(eventId, new EventFeedbackIdDTO(feedbackId));
 
         // Assert
         verify(eventRepository, times(1)).findEventById(eventId);
@@ -655,7 +652,7 @@ class EventServiceTest {
         when(eventRepository.findEventById(eventId)).thenReturn(Optional.empty());
 
         // Act & Assert
-        assertThrows(EventNotFoundException.class, () -> eventService.removeFeedbackFromEvent(eventId, new EventIdInputDTO(UUID.randomUUID())));
+        assertThrows(EventNotFoundException.class, () -> eventService.removeFeedbackFromEvent(eventId, new EventFeedbackIdDTO(UUID.randomUUID())));
         verify(eventRepository, times(1)).findEventById(eventId);
         verify(eventRepository, never()).save(any());
     }
@@ -667,7 +664,7 @@ class EventServiceTest {
         when(feedbackRepository.findById(any())).thenReturn(Optional.empty());
 
         // Act & Assert
-        assertThrows(RecordNotFoundException.class, () -> eventService.removeFeedbackFromEvent(eventId, new EventIdInputDTO(UUID.randomUUID())));
+        assertThrows(RecordNotFoundException.class, () -> eventService.removeFeedbackFromEvent(eventId, new EventFeedbackIdDTO(UUID.randomUUID())));
         verify(eventRepository, times(1)).findEventById(eventId);
         verify(eventRepository, never()).save(any());
     }
@@ -675,9 +672,9 @@ class EventServiceTest {
     @Test
     public void testRemoveFeedbackThrowsIllegalArgumentException() {
         // Arrange
-        EventIdInputDTO feedbackId = new EventIdInputDTO(null);
+        EventFeedbackIdDTO feedbackId = new EventFeedbackIdDTO(null);
         when(eventRepository.findEventById(eventId)).thenReturn(Optional.of(event));
-        when(feedbackRepository.findById(feedbackId.getId())).thenReturn(Optional.of(new Feedback()));
+        when(feedbackRepository.findById(feedbackId.getFeedbackId())).thenReturn(Optional.of(new Feedback()));
 
         // Act & Assert
         assertThrows(IllegalStateException.class, () -> eventService.removeFeedbackFromEvent(eventId, feedbackId));

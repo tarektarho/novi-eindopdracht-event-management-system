@@ -30,6 +30,8 @@ public class FeedbackController {
     @Autowired
     private FeedbackService feedbackService;
 
+    String FETCH_FEEDBACK_ERROR_MESSAGE = "An error occurred while retrieving feedback.";
+
     @PostMapping("/submit")
     public ResponseEntity<?> submitFeedback(@Valid @RequestBody FeedbackCreateDTO feedbackCreateDTO, BindingResult result) {
         if (result.hasErrors()) {
@@ -63,7 +65,7 @@ public class FeedbackController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Feedback not found with ID: " + id);
         } catch (Exception e) {
             log.error("Error retrieving feedback with ID {}: {}", id, e.getMessage(), e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while retrieving feedback.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(FETCH_FEEDBACK_ERROR_MESSAGE);
         }
     }
 
@@ -118,7 +120,7 @@ public class FeedbackController {
         }
     }
 
-    @PostMapping("/{feedbackId}/event/{eventId}")
+    @PatchMapping("/{feedbackId}/event/{eventId}")
     public ResponseEntity<?> assignEventToFeedback(@PathVariable UUID feedbackId, @PathVariable UUID eventId) {
         try {
             feedbackService.assignEventToFeedback(feedbackId, eventId);
@@ -130,7 +132,7 @@ public class FeedbackController {
         }
     }
 
-    @PostMapping("/{feedbackId}/user/{username}")
+    @PatchMapping("/{feedbackId}/user/{username}")
     public ResponseEntity<?> assignUserToFeedback(@PathVariable UUID feedbackId, @PathVariable String username) {
         try {
             feedbackService.assignUserToFeedback(feedbackId, username);

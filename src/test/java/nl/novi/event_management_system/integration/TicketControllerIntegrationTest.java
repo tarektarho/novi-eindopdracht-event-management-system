@@ -63,6 +63,17 @@ public class TicketControllerIntegrationTest {
     }
 
     @Test
+    void testCreateTicketReturnsBadRequest() throws Exception {
+        mockMvc.perform(post("/api/v1/tickets/create")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\n" +
+                                "    \"price\": 100.11,\n" +
+                                "    \"ticketType\": \"STANDARD\"\n" +
+                                "}"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     void testGetAllTickets() throws Exception {
         mockMvc.perform(get("/api/v1/tickets/all")
                         .contentType(MediaType.APPLICATION_JSON))

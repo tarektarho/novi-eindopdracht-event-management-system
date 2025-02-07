@@ -3,10 +3,7 @@ package nl.novi.event_management_system.services;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import nl.novi.event_management_system.dtos.eventDtos.EventCreateDTO;
-import nl.novi.event_management_system.dtos.eventDtos.EventResponseDTO;
-import nl.novi.event_management_system.dtos.eventDtos.EventParticipantUsernameDTO;
-import nl.novi.event_management_system.dtos.eventDtos.EventIdInputDTO;
+import nl.novi.event_management_system.dtos.eventDtos.*;
 import nl.novi.event_management_system.exceptions.EventNotFoundException;
 import nl.novi.event_management_system.exceptions.RecordNotFoundException;
 import nl.novi.event_management_system.exceptions.UsernameNotFoundException;
@@ -26,6 +23,7 @@ import java.util.*;
 @Slf4j
 @Service
 public class EventService {
+    String LOG_MESSAGE_EVENT_NOT_FOUND = "Event not found with ID: {}";
 
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
@@ -38,7 +36,6 @@ public class EventService {
         this.feedbackRepository = feedbackRepository;
         this.ticketRepository = ticketRepository;
     }
-
 
     public EventResponseDTO createEvent(@Valid EventCreateDTO eventCreateDTO) {
         Event event = EventMapper.toEntity(eventCreateDTO);
@@ -74,7 +71,6 @@ public class EventService {
         Event savedEvent = eventRepository.save(updatedEvent);
 
         return EventMapper.toResponseDTO(savedEvent);
-
     }
 
     public boolean deleteEventById(UUID id) {
@@ -100,7 +96,7 @@ public class EventService {
         // Find the event
         Event event = eventRepository.findEventById(eventId)
                 .orElseThrow(() -> {
-                    log.error("Event not found with ID: {}", eventId);
+                    log.error(LOG_MESSAGE_EVENT_NOT_FOUND, eventId);
                     return new EventNotFoundException(eventId);
                 });
 
@@ -148,9 +144,8 @@ public class EventService {
         log.info("Successfully removed participant '{}' from event '{}'", participantDTO.getUsername(), eventId);
     }
 
-
     @Transactional
-    public void addTicketsToEvent(UUID eventId, List<EventIdInputDTO> ticketIdDTOList) {
+    public void addTicketsToEvent(UUID eventId, List<EventTicketIdDTO> ticketIdDTOList) {
         log.info("Adding ticket to event with ID: {}", eventId);
 
         if (ticketIdDTOList == null || ticketIdDTOList.isEmpty()) {
@@ -160,14 +155,14 @@ public class EventService {
         // Find the event
         Event event = eventRepository.findEventById(eventId)
                 .orElseThrow(() -> {
-                    log.error("Event not found with ID: {}", eventId);
+                    log.error(LOG_MESSAGE_EVENT_NOT_FOUND, eventId);
                     return new EventNotFoundException(eventId);
                 });
 
         List<Ticket> tickets = new ArrayList<>();
 
-        for (EventIdInputDTO ticketIdDTO : ticketIdDTOList) {
-            UUID ticketId = ticketIdDTO.getId();
+        for (EventTicketIdDTO ticketIdDTO : ticketIdDTOList) {
+            UUID ticketId = ticketIdDTO.getTicketId();
             Ticket ticket = ticketRepository.findById(ticketId)
                     .orElseThrow(() -> {
                         log.error("Ticket not found with ID: {}", ticketId);
@@ -176,7 +171,6 @@ public class EventService {
             tickets.add(ticket);
             log.info("Added ticket with ID: {}", ticketId);
         }
-
 
         // Add tickets to the event (avoid duplicates)
         Set<Ticket> uniqueTickets = new HashSet<>(event.getTickets());
@@ -189,26 +183,26 @@ public class EventService {
     }
 
     @Transactional
-    public void removeTicketFromEvent(UUID eventId, EventIdInputDTO ticketIdDTO) {
-        log.info("Attempting to remove ticket '{}' from event '{}'", ticketIdDTO.getId(), eventId);
+    public void removeTicketFromEvent(UUID eventId, EventTicketIdDTO ticketIdDTO) {
+        log.info("Attempting to remove ticket '{}' from event '{}'", ticketIdDTO.getTicketId(), eventId);
 
         Event event = eventRepository.findEventById(eventId)
                 .orElseThrow(() -> new EventNotFoundException(eventId));
 
-        Ticket ticket = ticketRepository.findById(ticketIdDTO.getId())
-                .orElseThrow(() -> new RecordNotFoundException("Ticket not found with ID: " + ticketIdDTO.getId()));
+        Ticket ticket = ticketRepository.findById(ticketIdDTO.getTicketId())
+                .orElseThrow(() -> new RecordNotFoundException("Ticket not found with ID: " + ticketIdDTO.getTicketId()));
 
         if (!event.getTickets().remove(ticket)) {
-            log.warn("Ticket '{}' was not found in event '{}'", ticketIdDTO.getId(), eventId);
+            log.warn("Ticket '{}' was not found in event '{}'", ticketIdDTO.getTicketId(), eventId);
             throw new IllegalStateException("Ticket is not registered for this event.");
         }
 
         eventRepository.save(event);
-        log.info("Successfully removed ticket '{}' from event '{}'", ticketIdDTO.getId(), eventId);
+        log.info("Successfully removed ticket '{}' from event '{}'", ticketIdDTO.getTicketId(), eventId);
     }
 
     @Transactional
-    public void AddFeedbacksToEvent(UUID eventId, List<EventIdInputDTO> feedbackIdDTOList) {
+    public void AddFeedbacksToEvent(UUID eventId, List<EventFeedbackIdDTO> feedbackIdDTOList) {
         log.info("Adding feedback to event with ID: {}", eventId);
 
         if (feedbackIdDTOList == null || feedbackIdDTOList.isEmpty()) {
@@ -218,14 +212,14 @@ public class EventService {
         // Find the event
         Event event = eventRepository.findEventById(eventId)
                 .orElseThrow(() -> {
-                    log.error("Event not found with ID: {}", eventId);
+                    log.error(LOG_MESSAGE_EVENT_NOT_FOUND, eventId);
                     return new EventNotFoundException(eventId);
                 });
 
         List<Feedback> feedbacks = new ArrayList<>();
 
-        for (EventIdInputDTO feedbackIdDTO : feedbackIdDTOList) {
-            UUID feedbackId = feedbackIdDTO.getId();
+        for (EventFeedbackIdDTO feedbackIdDTO : feedbackIdDTOList) {
+            UUID feedbackId = feedbackIdDTO.getFeedbackId();
             Feedback feedback = feedbackRepository.findById(feedbackId)
                     .orElseThrow(() -> {
                         log.error("Feedback not found with ID: {}", feedbackId);
@@ -246,25 +240,22 @@ public class EventService {
         log.info("Feedback added successfully to event with ID: {}", eventId);
     }
 
-
     @Transactional
-    public void removeFeedbackFromEvent(UUID eventId, EventIdInputDTO feedbackIdDTO) {
-        log.info("Attempting to remove feedback '{}' from event '{}'", feedbackIdDTO.getId(), eventId);
+    public void removeFeedbackFromEvent(UUID eventId, EventFeedbackIdDTO feedbackIdDTO) {
+        log.info("Attempting to remove feedback '{}' from event '{}'", feedbackIdDTO.getFeedbackId(), eventId);
 
         Event event = eventRepository.findEventById(eventId)
                 .orElseThrow(() -> new EventNotFoundException(eventId));
 
-        Feedback feedback = feedbackRepository.findById(feedbackIdDTO.getId())
-                .orElseThrow(() -> new RecordNotFoundException("Feedback not found with ID: " + feedbackIdDTO.getId()));
+        Feedback feedback = feedbackRepository.findById(feedbackIdDTO.getFeedbackId())
+                .orElseThrow(() -> new RecordNotFoundException("Feedback not found with ID: " + feedbackIdDTO.getFeedbackId()));
 
         if (!event.getFeedbacks().remove(feedback)) {
-            log.warn("Feedback '{}' was not found in event '{}'", feedbackIdDTO.getId(), eventId);
+            log.warn("Feedback '{}' was not found in event '{}'", feedbackIdDTO.getFeedbackId(), eventId);
             throw new IllegalStateException("Feedback is not registered for this event.");
         }
 
         eventRepository.save(event);
-        log.info("Successfully removed feedback '{}' from event '{}'", feedbackIdDTO.getId(), eventId);
+        log.info("Successfully removed feedback '{}' from event '{}'", feedbackIdDTO.getFeedbackId(), eventId);
     }
-
-
 }

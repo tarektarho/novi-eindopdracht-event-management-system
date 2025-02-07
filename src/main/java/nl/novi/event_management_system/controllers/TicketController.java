@@ -7,6 +7,7 @@ import nl.novi.event_management_system.dtos.ticketDtos.TicketCreateDTO;
 import nl.novi.event_management_system.dtos.ticketDtos.TicketResponseDTO;
 import nl.novi.event_management_system.services.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -23,13 +24,13 @@ public class TicketController {
     private TicketService ticketService;
 
     @PostMapping("/create")
-    public ResponseEntity<TicketResponseDTO> createTicket(@Valid @RequestBody TicketCreateDTO ticketCreateDTO, BindingResult result) {
+    public ResponseEntity<?> createTicket(@Valid @RequestBody TicketCreateDTO ticketCreateDTO, BindingResult result) {
         if (result.hasErrors()) {
             StringBuilder errorMessages = new StringBuilder();
             result.getAllErrors().forEach(error -> errorMessages.append(error.getDefaultMessage()).append(" "));
-            throw new ValidationException("Validation failed: " + errorMessages);
+          return ResponseEntity.badRequest().body(errorMessages.toString());
         }
-        return ResponseEntity.status(201).body(ticketService.createTicket(ticketCreateDTO));
+        return ResponseEntity.status(HttpStatus.CREATED).body(ticketService.createTicket(ticketCreateDTO));
     }
 
     @GetMapping("/all")

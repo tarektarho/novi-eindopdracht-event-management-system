@@ -20,8 +20,8 @@ public class EventResponseDTO {
     private int capacity;
     private double price;
     private UserProfileDTO organizer;
-    private List<EventIdInputDTO> ticketList;
-    private List<EventIdInputDTO> feedbackList;
+    private List<EventTicketIdDTO> ticketList;
+    private List<EventFeedbackIdDTO> feedbackList;
     private List<EventParticipantUsernameDTO> participants;
 
 }

@@ -88,11 +88,11 @@ public class EventMapper {
      * @param tickets The list of Ticket entities to map.
      * @return A list of EventTicketIdDTOs.
      */
-    private static List<EventIdInputDTO> mapTicketsToDTO(List<Ticket> tickets) {
+    private static List<EventTicketIdDTO> mapTicketsToDTO(List<Ticket> tickets) {
         return Optional.ofNullable(tickets)
                 .orElseGet(List::of)
                 .stream()
-                .map(ticket -> EventIdInputMapper.toIdDTO(ticket.getId()))
+                .map(ticket -> EventIdInputMapper.toTicketIdDTO(ticket.getId()))
                 .collect(Collectors.toList());
     }
 
@@ -102,11 +102,11 @@ public class EventMapper {
      * @param feedbacks The list of Feedback entities to map.
      * @return A list of EventIdInputDTOs.
      */
-    private static List<EventIdInputDTO> mapFeedbacksToDTO(List<Feedback> feedbacks) {
+    private static List<EventFeedbackIdDTO> mapFeedbacksToDTO(List<Feedback> feedbacks) {
         return Optional.ofNullable(feedbacks)
                 .orElseGet(List::of)
                 .stream()
-                .map(feedback -> EventIdInputMapper.toIdDTO(feedback.getId()))
+                .map(feedback -> EventIdInputMapper.toFeedbackIdDTO(feedback.getId()))
                 .collect(Collectors.toList());
     }
 

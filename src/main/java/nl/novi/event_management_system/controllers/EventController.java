@@ -3,10 +3,7 @@ package nl.novi.event_management_system.controllers;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import nl.novi.event_management_system.dtos.eventDtos.EventCreateDTO;
-import nl.novi.event_management_system.dtos.eventDtos.EventResponseDTO;
-import nl.novi.event_management_system.dtos.eventDtos.EventParticipantUsernameWrapperDTO;
-import nl.novi.event_management_system.dtos.eventDtos.EventIdInputWrapperDTO;
+import nl.novi.event_management_system.dtos.eventDtos.*;
 import nl.novi.event_management_system.exceptions.UsernameNotFoundException;
 import nl.novi.event_management_system.services.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,7 +77,7 @@ public class EventController {
         return isDeleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
 
-    @PostMapping("/{eventId}/assign-participants")
+    @PatchMapping("/{eventId}/assign-participants")
     public ResponseEntity<String> assignParticipantToEvent(
             @PathVariable UUID eventId,
             @RequestBody EventParticipantUsernameWrapperDTO wrapper) {
@@ -90,10 +87,10 @@ public class EventController {
         } catch (UsernameNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
-        return ResponseEntity.ok("Participants assigned successfully");
+        return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/{eventId}/remove-participants")
+    @PatchMapping("/{eventId}/remove-participants")
     public ResponseEntity<Map<String, Object>> removeParticipantsFromEvent(
             @PathVariable UUID eventId,
             @RequestBody EventParticipantUsernameWrapperDTO wrapper) {
@@ -126,35 +123,35 @@ public class EventController {
         }
     }
 
-    @PostMapping("/{eventId}/add-tickets")
-    public ResponseEntity<String> addTicketsToEvent(
+    @PatchMapping("/{eventId}/add-tickets")
+    public ResponseEntity<?> addTicketsToEvent(
             @PathVariable UUID eventId,
-            @RequestBody EventIdInputWrapperDTO wrapper) {
+            @RequestBody EventTicketIdsWrapperDTO wrapper) {
 
         try {
-            eventService.addTicketsToEvent(eventId, wrapper.getIds());
+            eventService.addTicketsToEvent(eventId, wrapper.getTicketIds());
         } catch (UsernameNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
-        return ResponseEntity.ok("Tickets added successfully");
+        return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/{eventId}/remove-tickets")
+    @PatchMapping("/{eventId}/remove-tickets")
     public ResponseEntity<Map<String, Object>> removeTicketsFromEvent(
             @PathVariable UUID eventId,
-            @RequestBody EventIdInputWrapperDTO wrapper) {
+            @RequestBody EventTicketIdsWrapperDTO wrapper) {
 
         List<String> removedTickets = new ArrayList<>();
         Map<String, String> failedTickets = new HashMap<>();
 
-        wrapper.getIds().forEach(ticket -> {
+        wrapper.getTicketIds().forEach(ticket -> {
             try {
                 eventService.removeTicketFromEvent(eventId, ticket);
-                removedTickets.add(ticket.getId().toString());
+                removedTickets.add(ticket.getTicketId().toString());
             } catch (UsernameNotFoundException e) {
-                failedTickets.put(ticket.getId().toString(), e.getMessage());
+                failedTickets.put(ticket.getTicketId().toString(), e.getMessage());
             } catch (Exception e) {
-                failedTickets.put(ticket.getId().toString(), "Unexpected error occurred.");
+                failedTickets.put(ticket.getTicketId().toString(), "Unexpected error occurred.");
             }
         });
 
@@ -172,39 +169,38 @@ public class EventController {
         }
     }
 
-    @PostMapping("/{eventId}/add-feedback")
-    public ResponseEntity<String> addFeedbackToEvent(
+    @PatchMapping("/{eventId}/add-feedback")
+    public ResponseEntity<?> addFeedbackToEvent(
             @PathVariable UUID eventId,
-            @RequestBody EventIdInputWrapperDTO wrapper) {
+            @RequestBody EventFeedbackIdWrapperDTO eventFeedbackIdWrapperDTO) {
 
         try {
-            eventService.AddFeedbacksToEvent(eventId, wrapper.getIds());
+            eventService.AddFeedbacksToEvent(eventId, eventFeedbackIdWrapperDTO.getFeedbackIds());
         } catch (UsernameNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
-        return ResponseEntity.ok("Feedback added successfully");
+        return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/{eventId}/remove-feedback")
+    @PatchMapping("/{eventId}/remove-feedback")
     public ResponseEntity<Map<String, Object>> removeFeedbackFromEvent(
             @PathVariable UUID eventId,
-            @RequestBody EventIdInputWrapperDTO wrapper) {
+            @RequestBody EventFeedbackIdWrapperDTO eventFeedbackIdWrapperDTO) {
 
         List<String> removedFeedbacks = new ArrayList<>();
         Map<String, String> failedFeedbacks = new HashMap<>();
 
-        wrapper.getIds().forEach(feedback -> {
+        eventFeedbackIdWrapperDTO.getFeedbackIds().forEach(feedback -> {
             try {
                 eventService.removeFeedbackFromEvent(eventId, feedback);
-                removedFeedbacks.add(feedback.getId().toString());
+                removedFeedbacks.add(feedback.getFeedbackId().toString());
             } catch (UsernameNotFoundException e) {
-                failedFeedbacks.put(feedback.getId().toString(), e.getMessage());
+                failedFeedbacks.put(feedback.getFeedbackId().toString(), e.getMessage());
             } catch (Exception e) {
-                failedFeedbacks.put(feedback.getId().toString(), "Unexpected error occurred.");
+                failedFeedbacks.put(feedback.getFeedbackId().toString(), "Unexpected error occurred.");
             }
         });
 
-        // Construct response
         Map<String, Object> response = new HashMap<>();
         response.put("removed", removedFeedbacks);
         response.put("failed", failedFeedbacks);

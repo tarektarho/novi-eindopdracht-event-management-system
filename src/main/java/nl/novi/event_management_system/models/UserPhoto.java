@@ -8,10 +8,8 @@ import lombok.*;
 @Data
 @NoArgsConstructor
 public class UserPhoto {
-
     @Id
     private String fileName;
-
 
     public UserPhoto(String fileName) {
         this.fileName = fileName;

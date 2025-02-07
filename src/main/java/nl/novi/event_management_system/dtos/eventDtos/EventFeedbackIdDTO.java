@@ -10,7 +10,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class EventIdInputDTO {
-    @NotNull(message = "Id is mandatory")
-    private UUID id;
+public class EventFeedbackIdDTO {
+    @NotNull(message = "feedback ID is mandatory")
+    private UUID feedbackId;
 }
