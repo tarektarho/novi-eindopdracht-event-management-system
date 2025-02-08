@@ -62,12 +62,7 @@ public class EventService {
         Event storedEvent = eventRepository.findEventById(id).orElseThrow(() -> new EventNotFoundException(id));
         Event updatedEvent = EventMapper.toEntity(eventCreateDTO);
         updatedEvent.setId(storedEvent.getId());
-        User user = new User();
-        if (eventCreateDTO.getOrganizerUsername() != null) {
-            user = userRepository.findByUsername(eventCreateDTO.getOrganizerUsername())
-                    .orElseThrow(() -> new UsernameNotFoundException(eventCreateDTO.getOrganizerUsername()));
-        }
-        updatedEvent.setOrganizer(user);
+
         Event savedEvent = eventRepository.save(updatedEvent);
 
         return EventMapper.toResponseDTO(savedEvent);
@@ -82,6 +77,45 @@ public class EventService {
             return true;
         }
         return false;
+    }
+
+    public EventResponseDTO assignOrganizerToEvent(UUID eventId, String organizerUsername) {
+        log.info("Assigning organizer '{}' to event '{}'", organizerUsername, eventId);
+
+        Event event = eventRepository.findEventById(eventId)
+                .orElseThrow(() -> new EventNotFoundException(eventId));
+
+        User organizer = userRepository.findByUsername(organizerUsername)
+                .orElseThrow(() -> new UsernameNotFoundException(organizerUsername));
+
+        event.setOrganizer(organizer);
+        eventRepository.save(event);
+
+        log.info("Successfully assigned organizer '{}' to event '{}'", organizerUsername, eventId);
+        return EventMapper.toResponseDTO(event);
+    }
+
+    public EventResponseDTO removeOrganizerFromEvent(UUID eventId, String organizerUsername) {
+        log.info("Removing organizer '{}' from event '{}'", organizerUsername, eventId);
+
+        Event event = eventRepository.findEventById(eventId)
+                .orElseThrow(() -> new EventNotFoundException(eventId));
+
+        if (event.getOrganizer() == null) {
+            log.warn("Event '{}' does not have an organizer", eventId);
+            throw new IllegalStateException("Event does not have an organizer");
+        }
+
+        if (!event.getOrganizer().getUsername().equals(organizerUsername)) {
+            log.warn("Organizer '{}' is not assigned to event '{}'", organizerUsername, eventId);
+            throw new IllegalStateException("Organizer is not assigned to this event");
+        }
+
+        event.setOrganizer(null);
+        eventRepository.save(event);
+
+        log.info("Successfully removed organizer '{}' from event '{}'", organizerUsername, eventId);
+        return EventMapper.toResponseDTO(event);
     }
 
     @Transactional

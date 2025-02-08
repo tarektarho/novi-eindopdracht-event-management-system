@@ -14,6 +14,10 @@ import java.util.stream.Collectors;
 public class UserMapper {
 
     public static UserResponseDTO toUserResponseDTO(User user) {
+        if (user == null) {
+            return null;
+        }
+
         UserResponseDTO userResponseDTO = new UserResponseDTO();
         userResponseDTO.setUsername(user.getUsername());
         userResponseDTO.setEmail(user.getEmail());

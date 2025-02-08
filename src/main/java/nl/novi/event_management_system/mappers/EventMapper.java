@@ -33,6 +33,10 @@ public class EventMapper {
         dto.setCapacity(event.getCapacity());
         dto.setPrice(event.getPrice());
 
+        if (event.getOrganizer() != null) {
+            dto.setOrganizerUsername(event.getOrganizer().getUsername());
+        }
+
         // Map organizer
         Optional.ofNullable(event.getOrganizer())
                 .ifPresent(organizer -> dto.setOrganizer(UserMapper.toUserProfileResponseDTO(organizer)));

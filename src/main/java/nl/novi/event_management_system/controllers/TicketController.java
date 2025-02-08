@@ -2,7 +2,6 @@ package nl.novi.event_management_system.controllers;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import jakarta.validation.ValidationException;
 import nl.novi.event_management_system.dtos.ticketDtos.TicketCreateDTO;
 import nl.novi.event_management_system.dtos.ticketDtos.TicketResponseDTO;
 import nl.novi.event_management_system.services.TicketService;
@@ -20,8 +19,11 @@ import java.util.UUID;
 @RequestMapping("/api/v1/tickets")
 public class TicketController {
 
-    @Autowired
-    private TicketService ticketService;
+    private final TicketService ticketService;
+
+    public TicketController(TicketService ticketService) {
+        this.ticketService = ticketService;
+    }
 
     @PostMapping("/create")
     public ResponseEntity<?> createTicket(@Valid @RequestBody TicketCreateDTO ticketCreateDTO, BindingResult result) {

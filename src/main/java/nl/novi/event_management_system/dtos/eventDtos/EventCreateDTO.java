@@ -5,13 +5,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Data
 @NoArgsConstructor
 public class EventCreateDTO {
-    private UUID id;
     @NotBlank(message = "Event name cannot be empty")
     @Size(min = 3, max = 100, message = "Event name must be between 3 and 100 characters")
     private String name;
@@ -34,7 +31,4 @@ public class EventCreateDTO {
     @DecimalMin(value = "0.0", inclusive = false, message = "Price must be greater than 0")
     private double price;
 
-    private String organizerUsername;
-    private UUID ticketId;
-    private UUID feedbackId;
 }

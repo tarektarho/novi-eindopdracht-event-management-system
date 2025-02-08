@@ -2,7 +2,6 @@ package nl.novi.event_management_system.services;
 
 import jakarta.transaction.Transactional;
 import nl.novi.event_management_system.dtos.eventDtos.*;
-import nl.novi.event_management_system.dtos.userDtos.UserProfileDTO;
 import nl.novi.event_management_system.exceptions.EventNotFoundException;
 import nl.novi.event_management_system.exceptions.RecordNotFoundException;
 import nl.novi.event_management_system.exceptions.UsernameNotFoundException;
@@ -46,12 +45,12 @@ class EventServiceTest {
     private UUID eventId;
     private EventCreateDTO eventCreateDTO;
     private Event storedEvent;
-    private User organizer;
     private List<Event> listOfEvents;
     private List<EventParticipantUsernameDTO> participantUsernameDTOList;
     private Event event;
     private User participant1;
     private User participant2;
+    private User organizer;
 
     private final String updatedEventName = "Updated Event";
     private final String updatedEventLocation = "Updated Location";
@@ -80,7 +79,6 @@ class EventServiceTest {
         eventCreateDTO.setEndDate(updatedEventEndDate);
         eventCreateDTO.setCapacity(updatedEventCapacity);
         eventCreateDTO.setPrice(updatedEventPrice);
-        eventCreateDTO.setOrganizerUsername(organizerUsername);
 
         storedEvent = new Event();
         storedEvent.setId(eventId);
@@ -90,9 +88,6 @@ class EventServiceTest {
         storedEvent.setEndDate(originalEventEndDate);
         storedEvent.setCapacity(originalEventCapacity);
         storedEvent.setPrice(originalEventPrice);
-
-        organizer = new User();
-        organizer.setUsername(organizerUsername);
 
         listOfEvents = List.of(storedEvent, storedEvent);
 
@@ -109,6 +104,9 @@ class EventServiceTest {
 
         participant2 = new User();
         participant2.setUsername("user2");
+
+        organizer = new User();
+        organizer.setUsername(organizerUsername);
     }
 
     @Test
@@ -178,8 +176,6 @@ class EventServiceTest {
         // Arrange
         when(eventRepository.existsById(eventId)).thenReturn(true);
         when(eventRepository.findEventById(eventId)).thenReturn(Optional.of(storedEvent));
-        when(userRepository.findByUsername(eventCreateDTO.getOrganizerUsername()))
-                .thenReturn(Optional.of(organizer));
         when(eventRepository.save(any(Event.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // Act
@@ -193,39 +189,9 @@ class EventServiceTest {
         assertEquals(eventCreateDTO.getEndDate(), responseDTO.getEndDate());
         assertEquals(eventCreateDTO.getCapacity(), responseDTO.getCapacity());
         assertEquals(eventCreateDTO.getPrice(), responseDTO.getPrice());
-        assertEquals(organizer.getUsername(), responseDTO.getOrganizer().getUsername());
 
         verify(eventRepository, times(1)).existsById(eventId);
         verify(eventRepository, times(1)).findEventById(eventId);
-        verify(userRepository, times(1)).findByUsername(eventCreateDTO.getOrganizerUsername());
-        verify(eventRepository, times(1)).save(any(Event.class));
-    }
-
-    @Test
-    public void testUpdateEvent_SuccessWithoutOrganizer() {
-        // Arrange
-        eventCreateDTO.setOrganizerUsername(null); // No organizer provided
-
-        when(eventRepository.existsById(eventId)).thenReturn(true);
-        when(eventRepository.findEventById(eventId)).thenReturn(Optional.of(storedEvent));
-        when(eventRepository.save(any(Event.class))).thenAnswer(invocation -> invocation.getArgument(0));
-
-        // Act
-        EventResponseDTO responseDTO = eventService.updateEvent(eventId, eventCreateDTO);
-
-        // Assert
-        assertNotNull(responseDTO);
-        assertEquals(eventCreateDTO.getName(), responseDTO.getName());
-        assertEquals(eventCreateDTO.getLocation(), responseDTO.getLocation());
-        assertEquals(eventCreateDTO.getStartDate(), responseDTO.getStartDate());
-        assertEquals(eventCreateDTO.getEndDate(), responseDTO.getEndDate());
-        assertEquals(eventCreateDTO.getCapacity(), responseDTO.getCapacity());
-        assertEquals(eventCreateDTO.getPrice(), responseDTO.getPrice());
-        assertEquals(responseDTO.getOrganizer(), new UserProfileDTO());
-
-        verify(eventRepository, times(1)).existsById(eventId);
-        verify(eventRepository, times(1)).findEventById(eventId);
-        verify(userRepository, never()).findByUsername(any()); // No organizer lookup
         verify(eventRepository, times(1)).save(any(Event.class));
     }
 
@@ -242,21 +208,6 @@ class EventServiceTest {
         verify(eventRepository, never()).save(any());
     }
 
-    @Test
-    public void testUpdateEvent_OrganizerNotFound() {
-        // Arrange
-        when(eventRepository.existsById(eventId)).thenReturn(true);
-        when(eventRepository.findEventById(eventId)).thenReturn(Optional.of(storedEvent));
-        when(userRepository.findByUsername(eventCreateDTO.getOrganizerUsername()))
-                .thenReturn(Optional.empty());
-
-        // Act & Assert
-        assertThrows(UsernameNotFoundException.class, () -> eventService.updateEvent(eventId, eventCreateDTO));
-        verify(eventRepository, times(1)).existsById(eventId);
-        verify(eventRepository, times(1)).findEventById(eventId);
-        verify(userRepository, times(1)).findByUsername(eventCreateDTO.getOrganizerUsername());
-        verify(eventRepository, never()).save(any());
-    }
 
     @Test
     public void testDeleteEventById_EventFoundAndDeleted() {
@@ -301,6 +252,92 @@ class EventServiceTest {
         verify(eventRepository, never()).existsById(any());
         verify(eventRepository, never()).deleteById(any());
     }
+
+    @Test
+    public void testAssignOrganizerToEvent_Success() {
+        // Arrange
+        when(eventRepository.findEventById(eventId)).thenReturn(Optional.of(event));
+        when(userRepository.findByUsername(organizerUsername)).thenReturn(Optional.of(organizer));
+        when(eventRepository.save(event)).thenReturn(event);
+
+        // Act
+        eventService.assignOrganizerToEvent(eventId, organizerUsername);
+
+        // Assert
+        assertEquals(organizer, event.getOrganizer());
+        verify(eventRepository, times(1)).findEventById(eventId);
+        verify(userRepository, times(1)).findByUsername(organizerUsername);
+        verify(eventRepository, times(1)).save(event);
+    }
+
+    @Test
+    public void testAssignOrganizerToEventThrowsEventNotFoundException() {
+        // Arrange
+        when(eventRepository.findEventById(eventId)).thenReturn(Optional.empty());
+
+        // Act & Assert
+        assertThrows(EventNotFoundException.class, () -> eventService.assignOrganizerToEvent(eventId, organizerUsername));
+        verify(eventRepository, times(1)).findEventById(eventId);
+        verify(userRepository, never()).findByUsername(any());
+        verify(eventRepository, never()).save(any());
+    }
+
+    @Test
+    public void testAssignOrganizerToEventThrowsUsernameNotFoundException() {
+        // Arrange
+        when(eventRepository.findEventById(eventId)).thenReturn(Optional.of(event));
+        when(userRepository.findByUsername(organizerUsername)).thenReturn(Optional.empty());
+
+        // Act & Assert
+        assertThrows(UsernameNotFoundException.class, () -> eventService.assignOrganizerToEvent(eventId, organizerUsername));
+        verify(eventRepository, times(1)).findEventById(eventId);
+        verify(userRepository, times(1)).findByUsername(organizerUsername);
+        verify(eventRepository, never()).save(any());
+    }
+
+    @Test
+    public void testRemoveOrganizerFromEvent_Success() {
+        // Arrange
+        event.setOrganizer(organizer);
+
+        when(eventRepository.findEventById(eventId)).thenReturn(Optional.of(event));
+        when(eventRepository.save(event)).thenReturn(event);
+
+        // Act
+        eventService.removeOrganizerFromEvent(eventId, organizerUsername);
+
+        // Assert
+        assertNull(event.getOrganizer());
+        verify(eventRepository, times(1)).findEventById(eventId);
+        verify(eventRepository, times(1)).save(event);
+    }
+
+    @Test
+    public void testRemoveOrganizerFromEventThrowsIllegalStateException() {
+        // Arrange
+        when(eventRepository.findEventById(eventId)).thenReturn(Optional.of(event));
+
+        // Act & Assert
+        assertThrows(IllegalStateException.class, () -> eventService.removeOrganizerFromEvent(eventId, organizerUsername));
+        verify(eventRepository, times(1)).findEventById(eventId);
+        verify(eventRepository, never()).save(any());
+    }
+
+    @Test
+    public void testRemoveOrganizerFromEventThrowsIllegalStateExceptionWhenUserDoNotMatch() {
+        // Arrange
+        User anotherOrganizer = new User();
+        anotherOrganizer.setUsername("another_organizer");
+        event.setOrganizer(anotherOrganizer);
+
+        when(eventRepository.findEventById(eventId)).thenReturn(Optional.of(event));
+
+        // Act & Assert
+        assertThrows(IllegalStateException.class, () -> eventService.removeOrganizerFromEvent(eventId, organizerUsername));
+        verify(eventRepository, times(1)).findEventById(eventId);
+        verify(eventRepository, never()).save(any());
+    }
+
 
     @Test
     public void testAssignParticipantToEvent_ParticipantListIsNull() {
