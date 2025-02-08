@@ -31,11 +31,23 @@ public class UserController {
     private final UserService userService;
     private final UserPhotoService userPhotoService;
 
+    /**
+     * Constructor
+     *
+     * @param userService      UserService
+     * @param userPhotoService UserPhotoService
+     */
     public UserController(UserService userService, UserPhotoService userPhotoService) {
         this.userService = userService;
         this.userPhotoService = userPhotoService;
     }
 
+    /**
+     * Create a new user
+     *
+     * @param userCreateDTO UserCreateDTO
+     * @return ResponseEntity<UserResponseDTO>
+     */
     @PostMapping("/create")
     public ResponseEntity<UserResponseDTO> createUser(@Valid @RequestBody UserCreateDTO userCreateDTO) {
         UserResponseDTO newUser = userService.createUser(userCreateDTO);
@@ -44,29 +56,59 @@ public class UserController {
         return ResponseEntity.created(location).body(newUser);
     }
 
+    /**
+     * Get all users
+     *
+     * @return ResponseEntity<List < UserResponseDTO>>
+     */
     @GetMapping("/all")
     public ResponseEntity<List<UserResponseDTO>> getAllUsers() {
         List<UserResponseDTO> users = userService.getAllUsers();
         return ResponseEntity.ok().body(users);
     }
 
+    /**
+     * Get a user by username
+     *
+     * @param username String
+     * @return ResponseEntity<UserResponseDTO>
+     */
     @GetMapping("/{username}")
     public ResponseEntity<UserResponseDTO> getUser(@PathVariable String username) {
         return ResponseEntity.ok().body(userService.getUserByUsername(username));
     }
 
+    /**
+     * Update a user
+     *
+     * @param username      String
+     * @param userCreateDTO UserCreateDTO
+     * @return ResponseEntity<UserResponseDTO>
+     */
     @PutMapping(value = "/{username}")
     public ResponseEntity<UserResponseDTO> updateUser(@PathVariable("username") String username, @RequestBody UserCreateDTO userCreateDTO) {
         userService.updateUser(username, userCreateDTO);
         return ResponseEntity.noContent().build();
     }
 
+    /**
+     * Get all roles of a user
+     *
+     * @param username String
+     * @return ResponseEntity<Object>
+     */
     @GetMapping(value = "/{username}/roles")
     public ResponseEntity<Object> getUserRoles(@PathVariable("username") String username) {
         return ResponseEntity.ok().body(userService.getRoles(username));
     }
 
-
+    /**
+     * Add a role to a user
+     *
+     * @param username      String
+     * @param roleCreateDTO RoleCreateDTO
+     * @return ResponseEntity<Void>
+     */
     @PostMapping("/{username}/roles")
     public ResponseEntity<Void> addUserRole(
             @PathVariable("username") String username,
@@ -76,18 +118,39 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
+    /**
+     * Delete a role from a user
+     *
+     * @param username String
+     * @param role     String
+     * @return ResponseEntity<Object>
+     */
     @DeleteMapping(value = "/{username}/roles/{role}")
     public ResponseEntity<Object> deleteUserRole(@PathVariable("username") String username, @PathVariable("role") String role) {
         userService.removeRole(username, role);
         return ResponseEntity.noContent().build();
     }
 
+    /**
+     * Delete a user
+     *
+     * @param username String
+     * @return String
+     */
     @DeleteMapping("/{username}")
     public String deleteUser(@PathVariable String username) {
         userService.deleteUser(username);
         return "User deleted successfully!";
     }
 
+    /**
+     * Add a photo to a user
+     *
+     * @param username String
+     * @param file     MultipartFile
+     * @return ResponseEntity<UserResponseDTO>
+     * @throws IOException IOException
+     */
     @PostMapping("/{username}/photo")
     public ResponseEntity<UserResponseDTO> addPhotoToUser(
             @PathVariable String username,
@@ -106,6 +169,13 @@ public class UserController {
                 .body(UserMapper.toUserResponseDTO(user));
     }
 
+    /**
+     * Get the photo of a user
+     *
+     * @param username String
+     * @param request  HttpServletRequest
+     * @return ResponseEntity<Resource>
+     */
     @GetMapping("/{username}/photo")
     public ResponseEntity<Resource> getPhotoOfUser(@PathVariable String username, HttpServletRequest request) {
         Resource resource = userService.getUserPhoto(username);
@@ -120,11 +190,24 @@ public class UserController {
                 .body(resource);
     }
 
+    /**
+     * Delete the photo of a user
+     *
+     * @param username String
+     * @return ResponseEntity<Object>
+     */
     @PatchMapping("/{username}/ticket/{ticketId}")
     public ResponseEntity<UserResponseDTO> assignTicketToUser(@PathVariable String username, @PathVariable UUID ticketId) {
         return ResponseEntity.ok().body(userService.assignTicketToUser(username, ticketId));
     }
 
+    /**
+     * Assign a feedback to a user
+     *
+     * @param username   String
+     * @param feedbackId UUID
+     * @return ResponseEntity<UserResponseDTO>
+     */
     @PatchMapping("/{username}/feedback/{feedbackId}")
     public ResponseEntity<UserResponseDTO> assignFeedbackToUser(@PathVariable String username, @PathVariable UUID feedbackId) {
         return ResponseEntity.ok().body(userService.assignFeedbackToUser(username, feedbackId));

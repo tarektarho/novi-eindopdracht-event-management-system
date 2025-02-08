@@ -19,12 +19,22 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Objects;
 
+/**
+ * A service class that handles the storage and retrieval of user photos.
+ */
 @Service
 public class UserPhotoService {
     private final Path fileStoragePath;
     private final String fileStorageLocation;
     private final UserPhotoRepository userPhotoRepository;
 
+    /**
+     * Constructor for the UserPhotoService class.
+     *
+     * @param fileStorageLocation The location where the files are stored.
+     * @param userPhotoRepository The repository for user photos.
+     * @throws IOException If an I/O error occurs.
+     */
     public UserPhotoService(@Value("${my.upload_location}") String fileStorageLocation, UserPhotoRepository userPhotoRepository) throws IOException {
         fileStoragePath = Paths.get(fileStorageLocation).toAbsolutePath().normalize();
         this.fileStorageLocation = fileStorageLocation;
@@ -32,6 +42,13 @@ public class UserPhotoService {
         Files.createDirectories(fileStoragePath);
     }
 
+    /**
+     * Stores a file in the file storage location.
+     *
+     * @param file The file to store.
+     * @return The name of the file.
+     * @throws IOException If an I/O error occurs.
+     */
     public String storeFile(MultipartFile file) throws IOException {
         String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
         Path filePath = Paths.get(fileStoragePath + File.separator + fileName);
@@ -40,6 +57,12 @@ public class UserPhotoService {
         return fileName;
     }
 
+    /**
+     * Retrieves a file from the file storage location.
+     *
+     * @param fileName The name of the file to retrieve.
+     * @return The file as a Resource.
+     */
     public Resource downLoadFile(String fileName) {
         Path path = Paths.get(fileStorageLocation).toAbsolutePath().resolve(fileName);
         Resource resource;

@@ -13,6 +13,12 @@ import java.util.stream.Collectors;
 @Component
 public class UserMapper {
 
+    /**
+     * Maps a User object to a UserResponseDTO object
+     *
+     * @param user User
+     * @return UserResponseDTO
+     */
     public static UserResponseDTO toUserResponseDTO(User user) {
         if (user == null) {
             return null;
@@ -40,6 +46,12 @@ public class UserMapper {
         return userResponseDTO;
     }
 
+    /**
+     * Maps a list of User objects to a list of UserResponseDTO objects
+     *
+     * @param users List of User
+     * @return List of UserResponseDTO
+     */
     public static List<UserResponseDTO> toUserResponseDTOList(List<User> users) {
 
         return users.stream()
@@ -47,6 +59,12 @@ public class UserMapper {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Maps a User object to a UserProfileDTO object
+     *
+     * @param user User
+     * @return UserProfileDTO
+     */
     public static UserProfileDTO toUserProfileResponseDTO(User user) {
 
         UserProfileDTO userProfileDTO = new UserProfileDTO();
@@ -61,6 +79,12 @@ public class UserMapper {
         return userProfileDTO;
     }
 
+    /**
+     * Converts a UserCreateDTO to a User entity.
+     *
+     * @param userCreateDTO The UserCreateDTO to convert.
+     * @return The corresponding User entity.
+     */
     public static User toUserEntity(UserCreateDTO userCreateDTO) {
         User user = new User();
         user.setUsername(userCreateDTO.getUsername());

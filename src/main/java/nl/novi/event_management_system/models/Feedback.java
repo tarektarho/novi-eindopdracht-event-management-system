@@ -9,7 +9,7 @@ import java.util.UUID;
 @Data
 @Entity
 @Table(name = "feedbacks")
-public class  Feedback {
+public class Feedback {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -32,7 +32,8 @@ public class  Feedback {
     @Column(nullable = false)
     private LocalDate feedbackDate = LocalDate.now();
 
-    public Feedback() {}
+    public Feedback() {
+    }
 
     public Feedback(User user, Event event, int rating, String comment) {
         this.user = user;
