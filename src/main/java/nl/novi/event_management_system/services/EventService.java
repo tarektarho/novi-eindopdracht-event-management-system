@@ -20,6 +20,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+/**
+ * This class contains the business logic for the Event entity.
+ */
 @Slf4j
 @Service
 public class EventService {
@@ -30,6 +33,14 @@ public class EventService {
     private final FeedbackRepository feedbackRepository;
     private final TicketRepository ticketRepository;
 
+    /**
+     * Constructor for the EventService class.
+     *
+     * @param eventRepository    The repository for the Event entity.
+     * @param userRepository     The repository for the User entity.
+     * @param feedbackRepository The repository for the Feedback entity.
+     * @param ticketRepository   The repository for the Ticket entity.
+     */
     public EventService(EventRepository eventRepository, UserRepository userRepository, FeedbackRepository feedbackRepository, TicketRepository ticketRepository) {
         this.eventRepository = eventRepository;
         this.userRepository = userRepository;
@@ -37,26 +48,55 @@ public class EventService {
         this.ticketRepository = ticketRepository;
     }
 
+    /**
+     * Creates a new event.
+     *
+     * @param eventCreateDTO The DTO containing the information for the event.
+     * @return The DTO containing the information for the created event.
+     */
     public EventResponseDTO createEvent(@Valid EventCreateDTO eventCreateDTO) {
         Event event = EventMapper.toEntity(eventCreateDTO);
         eventRepository.save(event);
         return EventMapper.toResponseDTO(event);
     }
 
+    /**
+     * Retrieves an event by its ID.
+     *
+     * @param id The ID of the event to retrieve.
+     * @return The DTO containing the information for the event.
+     */
     public EventResponseDTO findEventById(UUID id) {
         Event event = eventRepository.findById(id).orElseThrow(() -> new EventNotFoundException(id));
         return EventMapper.toResponseDTO(event);
     }
 
+    /**
+     * Retrieves all events.
+     *
+     * @return A list of DTOs containing the information for all events.
+     */
     public List<EventResponseDTO> getEventsByOrganizer(String username) {
 
         return EventMapper.toResponseDTOList(eventRepository.findByOrganizerUsername(username));
     }
 
+    /**
+     * Retrieves all events.
+     *
+     * @return A list of DTOs containing the information for all events.
+     */
     public List<EventResponseDTO> getAllEvents() {
         return EventMapper.toResponseDTOList(eventRepository.findAll());
     }
 
+    /**
+     * Updates an event.
+     *
+     * @param id             The ID of the event to update.
+     * @param eventCreateDTO The DTO containing the information for the updated event.
+     * @return The DTO containing the information for the updated event.
+     */
     public EventResponseDTO updateEvent(UUID id, EventCreateDTO eventCreateDTO) {
         if (!eventRepository.existsById(id)) throw new EventNotFoundException(id);
         Event storedEvent = eventRepository.findEventById(id).orElseThrow(() -> new EventNotFoundException(id));
@@ -68,6 +108,12 @@ public class EventService {
         return EventMapper.toResponseDTO(savedEvent);
     }
 
+    /**
+     * Deletes an event by its ID.
+     *
+     * @param id The ID of the event to delete.
+     * @return True if the event was deleted, false if the event was not found.
+     */
     public boolean deleteEventById(UUID id) {
         eventRepository.findEventById(id)
                 .orElseThrow(() -> new EventNotFoundException(id));
@@ -79,7 +125,13 @@ public class EventService {
         return false;
     }
 
-    public EventResponseDTO assignOrganizerToEvent(UUID eventId, String organizerUsername) {
+    /**
+     * Assigns an organizer to an event.
+     *
+     * @param eventId           The ID of the event to assign the organizer to.
+     * @param organizerUsername The username of the organizer to assign to the event.
+     */
+    public void assignOrganizerToEvent(UUID eventId, String organizerUsername) {
         log.info("Assigning organizer '{}' to event '{}'", organizerUsername, eventId);
 
         Event event = eventRepository.findEventById(eventId)
@@ -90,12 +142,16 @@ public class EventService {
 
         event.setOrganizer(organizer);
         eventRepository.save(event);
-
         log.info("Successfully assigned organizer '{}' to event '{}'", organizerUsername, eventId);
-        return EventMapper.toResponseDTO(event);
     }
 
-    public EventResponseDTO removeOrganizerFromEvent(UUID eventId, String organizerUsername) {
+    /**
+     * Removes an organizer from an event.
+     *
+     * @param eventId           The ID of the event to remove the organizer from.
+     * @param organizerUsername The username of the organizer to remove from the event.
+     */
+    public void removeOrganizerFromEvent(UUID eventId, String organizerUsername) {
         log.info("Removing organizer '{}' from event '{}'", organizerUsername, eventId);
 
         Event event = eventRepository.findEventById(eventId)
@@ -115,9 +171,14 @@ public class EventService {
         eventRepository.save(event);
 
         log.info("Successfully removed organizer '{}' from event '{}'", organizerUsername, eventId);
-        return EventMapper.toResponseDTO(event);
     }
 
+    /**
+     * Assigns a location to an event.
+     *
+     * @param eventId                         The ID of the event to assign the location to.
+     * @param eventParticipantUsernameDTOList The DTO containing participants usernames to assign to the event.
+     */
     @Transactional
     public void assignParticipantToEvent(UUID eventId, List<EventParticipantUsernameDTO> eventParticipantUsernameDTOList) {
         log.info("Assigning participants to event with ID: {}", eventId);
@@ -159,6 +220,12 @@ public class EventService {
         log.info("Participants assigned successfully to event with ID: {}", eventId);
     }
 
+    /**
+     * Removes a participant from an event.
+     *
+     * @param eventId        The ID of the event to remove the participant from.
+     * @param participantDTO The DTO containing the participant username to remove from the event.
+     */
     @Transactional
     public void removeParticipantFromEvent(UUID eventId, EventParticipantUsernameDTO participantDTO) {
         log.info("Attempting to remove participant '{}' from event '{}'", participantDTO.getUsername(), eventId);
@@ -178,6 +245,12 @@ public class EventService {
         log.info("Successfully removed participant '{}' from event '{}'", participantDTO.getUsername(), eventId);
     }
 
+    /**
+     * Assigns a location to an event.
+     *
+     * @param eventId         The ID of the event to assign the location to.
+     * @param ticketIdDTOList The DTO containing the ticket IDs to assign to the event.
+     */
     @Transactional
     public void addTicketsToEvent(UUID eventId, List<EventTicketIdDTO> ticketIdDTOList) {
         log.info("Adding ticket to event with ID: {}", eventId);
@@ -193,8 +266,10 @@ public class EventService {
                     return new EventNotFoundException(eventId);
                 });
 
+        // Create a list to hold the tickets
         List<Ticket> tickets = new ArrayList<>();
 
+        // Iterate over the list of DTOs to find and add tickets
         for (EventTicketIdDTO ticketIdDTO : ticketIdDTOList) {
             UUID ticketId = ticketIdDTO.getTicketId();
             Ticket ticket = ticketRepository.findById(ticketId)
@@ -216,6 +291,12 @@ public class EventService {
         log.info("Ticket added successfully to event with ID: {}", eventId);
     }
 
+    /**
+     * Removes a ticket from an event.
+     *
+     * @param eventId     The ID of the event to remove the ticket from.
+     * @param ticketIdDTO The DTO containing the ticket ID to remove from the event.
+     */
     @Transactional
     public void removeTicketFromEvent(UUID eventId, EventTicketIdDTO ticketIdDTO) {
         log.info("Attempting to remove ticket '{}' from event '{}'", ticketIdDTO.getTicketId(), eventId);
@@ -235,6 +316,12 @@ public class EventService {
         log.info("Successfully removed ticket '{}' from event '{}'", ticketIdDTO.getTicketId(), eventId);
     }
 
+    /**
+     * Assigns a location to an event.
+     *
+     * @param eventId           The ID of the event to assign the location to.
+     * @param feedbackIdDTOList The DTO containing the feedback IDs to assign to the event.
+     */
     @Transactional
     public void AddFeedbacksToEvent(UUID eventId, List<EventFeedbackIdDTO> feedbackIdDTOList) {
         log.info("Adding feedback to event with ID: {}", eventId);
@@ -250,8 +337,10 @@ public class EventService {
                     return new EventNotFoundException(eventId);
                 });
 
+        // Create a list to hold the feedbacks
         List<Feedback> feedbacks = new ArrayList<>();
 
+        // Iterate over the list of DTOs to find and add feedbacks
         for (EventFeedbackIdDTO feedbackIdDTO : feedbackIdDTOList) {
             UUID feedbackId = feedbackIdDTO.getFeedbackId();
             Feedback feedback = feedbackRepository.findById(feedbackId)
@@ -274,6 +363,12 @@ public class EventService {
         log.info("Feedback added successfully to event with ID: {}", eventId);
     }
 
+    /**
+     * Removes a feedback from an event.
+     *
+     * @param eventId       The ID of the event to remove the feedback from.
+     * @param feedbackIdDTO The DTO containing the feedback ID to remove from the event.
+     */
     @Transactional
     public void removeFeedbackFromEvent(UUID eventId, EventFeedbackIdDTO feedbackIdDTO) {
         log.info("Attempting to remove feedback '{}' from event '{}'", feedbackIdDTO.getFeedbackId(), eventId);

@@ -41,7 +41,8 @@ public class Ticket {
     @ValidTicketType
     private TicketType ticketType;
 
-    public Ticket() {}
+    public Ticket() {
+    }
 
     public Ticket(User user, Event event, BigDecimal price, TicketType ticketType) {
         this.user = user;

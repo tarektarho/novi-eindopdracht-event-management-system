@@ -10,8 +10,14 @@ import java.util.stream.Collectors;
 
 public class FeedbackMapper {
 
+    /**
+     * Maps a Feedback object to a FeedbackResponseDTO object
+     *
+     * @param feedback Feedback
+     * @return FeedbackResponseDTO
+     */
     public static FeedbackResponseDTO toResponseDTO(Feedback feedback) {
-        if(feedback == null) {
+        if (feedback == null) {
             return null;
         }
 

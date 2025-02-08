@@ -23,6 +23,12 @@ public class CustomUserDetailsService implements UserDetailsService {
         this.userService = userService;
     }
 
+    /**
+     * Loads a user by their username.
+     *
+     * @param username The username of the user to load.
+     * @return The user details of the user.
+     */
     @Override
     public UserDetails loadUserByUsername(String username) {
         UserResponseDTO userResponseDTO = userService.getUserByUsername(username);
@@ -39,12 +45,11 @@ public class CustomUserDetailsService implements UserDetailsService {
             roles = new HashSet<>();  // Ensure roles is not null
         }
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-        for (Role role: roles) {
+        for (Role role : roles) {
             grantedAuthorities.add(new SimpleGrantedAuthority(role.getRole()));
         }
 
         boolean isEnabled = userResponseDTO.getEnabled() != null ? userResponseDTO.getEnabled() : false;
-
 
         return new org.springframework.security.core.userdetails.User(username, password, isEnabled,
                 true, true, true, grantedAuthorities);

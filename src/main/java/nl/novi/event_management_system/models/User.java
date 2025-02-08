@@ -54,7 +54,8 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Feedback> feedbackList;
 
-    public User() {}
+    public User() {
+    }
 
     public User(String username, String email, String password) {
         this.username = username;
