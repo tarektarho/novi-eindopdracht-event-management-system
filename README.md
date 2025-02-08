@@ -72,12 +72,6 @@ Also, create `.env.example` to guide other developers.
 2. Ensure Maven is installed and configured.
 3. Start the application using intelliJ IDEA by running the `EventManagementSystemApplication` class.
 
-### **Running with Java**
-Alternatively, you can run the generated JAR file:
-```bash
-java -jar target/event_management_system-0.0.1-SNAPSHOT.jar
-```
-
 ---
 
 ## **API Documentation**
