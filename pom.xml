@@ -49,7 +49,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId> <!-- Uses Lombok (@Getter, @Setter, etc.) for cleaner code. -->
             <artifactId>lombok</artifactId>
-            <version>1.18.34</version>  <!-- Check for the latest version -->
+            <version>1.18.34</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
