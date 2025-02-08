@@ -27,6 +27,12 @@ public class FeedbackController {
         this.feedbackService = feedbackService;
     }
 
+    /**
+     * Submit a new feedback
+     *
+     * @param feedbackCreateDTO FeedbackCreateDTO
+     * @return ResponseEntity<?>
+     */
     @PostMapping("/submit")
     public ResponseEntity<?> submitFeedback(@Valid @RequestBody FeedbackCreateDTO feedbackCreateDTO, BindingResult result) {
         if (result.hasErrors()) {
@@ -45,33 +51,69 @@ public class FeedbackController {
         return ResponseEntity.created(location).body(newFeedbackDTO);
     }
 
+    /**
+     * Get feedback by ID
+     *
+     * @param id UUID
+     * @return ResponseEntity<FeedbackResponseDTO>
+     */
     @GetMapping("/{id}")
     public ResponseEntity<FeedbackResponseDTO> getFeedbackById(@PathVariable UUID id) {
         log.info("Fetching feedback with ID: {}", id);
         return ResponseEntity.ok(feedbackService.getFeedbackById(id));
     }
 
+    /**
+     * Get all feedbacks
+     *
+     * @return ResponseEntity<List < FeedbackResponseDTO>>
+     */
     @GetMapping("/all")
     public ResponseEntity<List<FeedbackResponseDTO>> getAllFeedbacks() {
         return ResponseEntity.ok().body(feedbackService.getAllFeedbacks());
     }
 
+    /**
+     * Update feedback by ID
+     *
+     * @param id                UUID
+     * @param feedbackCreateDTO FeedbackCreateDTO
+     * @return ResponseEntity<FeedbackResponseDTO>
+     */
     @PutMapping("/{id}")
     public ResponseEntity<FeedbackResponseDTO> updateFeedback(@PathVariable UUID id, @Valid @RequestBody FeedbackCreateDTO feedbackCreateDTO) {
         log.info("Received request to update feedback with ID: {}", id);
         return ResponseEntity.ok(feedbackService.updateFeedback(id, feedbackCreateDTO));
     }
 
+    /**
+     * Delete feedback by ID
+     *
+     * @param eventId UUID
+     * @return ResponseEntity<Void>
+     */
     @GetMapping("/event/{eventId}")
     public List<FeedbackResponseDTO> getFeedbackForEvent(@PathVariable UUID eventId) {
         return feedbackService.getEventFeedback(eventId);
     }
 
+    /**
+     * Get feedback by user
+     *
+     * @param username String
+     * @return List<FeedbackResponseDTO>
+     */
     @GetMapping("/user/{username}")
     public List<FeedbackResponseDTO> getFeedbackByUser(@PathVariable String username) {
         return feedbackService.getUserFeedback(username);
     }
 
+    /**
+     * Delete feedback by ID
+     *
+     * @param id UUID
+     * @return ResponseEntity<Void>
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteFeedback(@PathVariable UUID id) {
         log.info("Received request to delete feedback with ID: {}", id);
@@ -80,12 +122,26 @@ public class FeedbackController {
         return ResponseEntity.noContent().build(); // 204 No Content
     }
 
+    /**
+     * Assign an event to a feedback
+     *
+     * @param feedbackId UUID
+     * @param eventId    UUID
+     * @return ResponseEntity<Void>
+     */
     @PatchMapping("/{feedbackId}/event/{eventId}")
     public ResponseEntity<Void> assignEventToFeedback(@PathVariable UUID feedbackId, @PathVariable UUID eventId) {
         feedbackService.assignEventToFeedback(feedbackId, eventId);
         return ResponseEntity.noContent().build();
     }
 
+    /**
+     * Assign a user to a feedback
+     *
+     * @param feedbackId UUID
+     * @param username   String
+     * @return ResponseEntity<?>
+     */
     @PatchMapping("/{feedbackId}/user/{username}")
     public ResponseEntity<?> assignUserToFeedback(@PathVariable UUID feedbackId, @PathVariable String username) {
         feedbackService.assignUserToFeedback(feedbackId, username);

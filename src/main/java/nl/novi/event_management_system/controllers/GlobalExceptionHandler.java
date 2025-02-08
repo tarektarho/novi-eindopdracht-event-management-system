@@ -28,6 +28,12 @@ import java.util.Map;
 public class GlobalExceptionHandler {
     Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
+    /**
+     * Handles RecordNotFoundException and returns a 404 Not Found response.
+     *
+     * @param recordNotFoundException the exception to handle
+     * @return a ResponseEntity containing the error response
+     */
     @ExceptionHandler(RecordNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<ErrorResponseDTO> handleNotFoundException(RecordNotFoundException recordNotFoundException) {
@@ -40,6 +46,12 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
+    /**
+     * Handles BadRequestException and returns a 400 Bad Request response.
+     *
+     * @param badRequestException the exception to handle
+     * @return a ResponseEntity containing the error response
+     */
     @ExceptionHandler(BadRequestException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<ErrorResponseDTO> handleBadRequestException(BadRequestException badRequestException) {
@@ -52,6 +64,12 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
+    /**
+     * Handles InternalAuthenticationServiceException and returns a 401 Unauthorized response.
+     *
+     * @param internalAuthenticationServiceException the exception to handle
+     * @return a ResponseEntity containing the error response
+     */
     @ExceptionHandler(InternalAuthenticationServiceException.class)
     public ResponseEntity<ErrorResponseDTO> handleNotFoundException(InternalAuthenticationServiceException internalAuthenticationServiceException) {
         ErrorResponseDTO errorResponse = new ErrorResponseDTO(
@@ -60,35 +78,64 @@ public class GlobalExceptionHandler {
                 LocalDateTime.now()
         );
         return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
-
     }
 
+    /**
+     * Handles IllegalArgumentException and returns a 400 Bad Request response.
+     *
+     * @param ex the exception to handle
+     * @return a ResponseEntity containing the error message
+     */
     @ExceptionHandler(value = IllegalArgumentException.class)
     public ResponseEntity<String> handleIllegalArgument(IllegalArgumentException ex) {
         logger.warn(ex.getMessage());
         return ResponseEntity.badRequest().body("Invalid input: " + ex.getMessage());
     }
 
+    /**
+     * Handles IOException and returns a 500 Internal Server Error response.
+     *
+     * @param exception the exception to handle
+     * @return a ResponseEntity containing the error message
+     */
     @ExceptionHandler(value = IOException.class)
-    public ResponseEntity<String> exception(IOException exception){
+    public ResponseEntity<String> exception(IOException exception) {
         String message = "Problem with file storage" + exception.getMessage();
         logger.warn(message);
         return ResponseEntity.internalServerError().body(message);
     }
 
+    /**
+     * Handles generic Exception and returns a 500 Internal Server Error response.
+     *
+     * @param exception the exception to handle
+     * @return a ResponseEntity containing the error message
+     */
     @ExceptionHandler(value = Exception.class)
-    public ResponseEntity<String> exception(Exception exception){
+    public ResponseEntity<String> exception(Exception exception) {
         String message = "An unexpected error occurred: " + exception.getMessage();
         logger.error(message);
         return ResponseEntity.internalServerError().body(message);
     }
 
+    /**
+     * Handles ValidationException and returns a 400 Bad Request response.
+     *
+     * @param exception the exception to handle
+     * @return a ResponseEntity containing the error message
+     */
     @ExceptionHandler(value = ValidationException.class)
     public ResponseEntity<String> handleValidationException(ValidationException exception) {
         logger.warn(exception.getMessage());
         return ResponseEntity.badRequest().body("Validation failed: " + exception.getMessage());
     }
 
+    /**
+     * Handles HttpMessageNotReadableException and returns a 400 Bad Request response.
+     *
+     * @param ex the exception to handle
+     * @return a ResponseEntity containing the error response
+     */
     @ExceptionHandler(HttpMessageNotReadableException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<ErrorResponseDTO> handleJsonParseException(HttpMessageNotReadableException ex) {
@@ -110,6 +157,12 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(errorResponse);
     }
 
+    /**
+     * Handles UsernameNotFoundException and returns a 404 Not Found response.
+     *
+     * @param ex the exception to handle
+     * @return a ResponseEntity containing the error response
+     */
     @ExceptionHandler(UsernameNotFoundException.class)
     public ResponseEntity<Map<String, String>> handleUsernameNotFound(UsernameNotFoundException ex) {
         Map<String, String> errorResponse = new HashMap<>();
