@@ -109,7 +109,7 @@ public class UserController {
      * @param roleCreateDTO RoleCreateDTO
      * @return ResponseEntity<Void>
      */
-    @PostMapping("/{username}/roles")
+    @PatchMapping("/{username}/roles")
     public ResponseEntity<Void> addUserRole(
             @PathVariable("username") String username,
             @Valid @RequestBody RoleCreateDTO roleCreateDTO) {
@@ -119,13 +119,13 @@ public class UserController {
     }
 
     /**
-     * Delete a role from a user
+     *  Delete a role from a user
      *
      * @param username String
      * @param role     String
      * @return ResponseEntity<Object>
      */
-    @DeleteMapping(value = "/{username}/roles/{role}")
+    @PatchMapping(value = "/{username}/roles/{role}")
     public ResponseEntity<Object> deleteUserRole(@PathVariable("username") String username, @PathVariable("role") String role) {
         userService.removeRole(username, role);
         return ResponseEntity.noContent().build();

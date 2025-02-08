@@ -92,59 +92,59 @@ API Docs:
 | **GET** | `/api/v1/authenticated` | Any authenticated user |
 
 ### **User API**
-| Method | Endpoint | Access |
-|--------|---------|--------|
-| **GET** | `/api/v1/users/{username}` | Admin |
-| **PUT** | `/api/v1/users/{username}` | Admin |
-| **DELETE** | `/api/v1/users/{username}` | Admin |
-| **POST** | `/api/v1/users/{username}/ticket/{ticketId}` | Admin |
-| **GET** | `/api/v1/users/{username}/roles` | Admin |
-| **POST** | `/api/v1/users/{username}/roles` | Admin |
-| **DELETE** | `/api/v1/users/{username}/roles/{role}` | Admin |
-| **GET** | `/api/v1/users/{username}/photo` | Organizer, Participant |
-| **POST** | `/api/v1/users/{username}/photo` | Organizer, Participant |
-| **GET** | `/api/v1/users/all` | Admin |
-| **POST** | `/api/v1/users/create` | Admin |
+| Method     | Endpoint | Access                        |
+|------------|---------|-------------------------------|
+| **GET**    | `/api/v1/users/{username}` | Admin, Organizer                       |
+| **PUT**    | `/api/v1/users/{username}` | Admin, Organizer              |
+| **DELETE** | `/api/v1/users/{username}` | Admin                         |
+| **PATCH**  | `/api/v1/users/{username}/ticket/{ticketId}` | Admin, Organizer              |
+| **GET**    | `/api/v1/users/{username}/roles` | Admin                         |
+| **PATCH**  | `/api/v1/users/{username}/roles` | Admin                         |
+| **PATCH**  | `/api/v1/users/{username}/roles/{role}` | Admin                         |
+| **GET**    | `/api/v1/users/{username}/photo` | Admin, Organizer, Participant |
+| **POST**   | `/api/v1/users/{username}/photo` | Admin, Organizer, Participant |
+| **GET**    | `/api/v1/users/all` | Admin, Organizer              |
+| **POST**   | `/api/v1/users/create` | Public                        |
 
 ### **Event API**
-| Method | Endpoint | Access |
-|--------|---------|--------|
-| **GET** | `/api/v1/events/{id}` | Participant |
-| **PUT** | `/api/v1/events/{id}` | Organizer |
-| **DELETE** | `/api/v1/events/{id}` | Organizer |
-| **POST** | `/api/v1/events/{eventId}/remove-tickets` | Organizer |
-| **POST** | `/api/v1/events/{eventId}/remove-participants` | Organizer |
-| **POST** | `/api/v1/events/{eventId}/remove-feedback` | Organizer |
-| **POST** | `/api/v1/events/{eventId}/assign-participants` | Organizer |
-| **POST** | `/api/v1/events/{eventId}/add-tickets` | Organizer |
-| **POST** | `/api/v1/events/{eventId}/add-feedback` | Organizer |
-| **POST** | `/api/v1/events/create` | Organizer |
-| **GET** | `/api/v1/events/organizer/{username}` | Organizer |
-| **GET** | `/api/v1/events/all` | Admin |
+| Method     | Endpoint | Access                        |
+|------------|---------|-------------------------------|
+| **GET**    | `/api/v1/events/{id}` | Admin, Organizer, Participant |
+| **PUT**    | `/api/v1/events/{id}` | Admin, Organizer              |
+| **DELETE** | `/api/v1/events/{id}` | Admin, Organizer              |
+| **PATCH**  | `/api/v1/events/{eventId}/remove-tickets` | Admin, Organizer              |
+| **PATCH**  | `/api/v1/events/{eventId}/remove-participants` | Admin, Organizer              |
+| **PATCH**  | `/api/v1/events/{eventId}/remove-feedback` | Admin, Organizer              |
+| **PATCH**  | `/api/v1/events/{eventId}/assign-participants` | Admin, Organizer              |
+| **PATCH**  | `/api/v1/events/{eventId}/add-tickets` | Admin, Organizer              |
+| **PATCH**  | `/api/v1/events/{eventId}/add-feedback` | Admin, Organizer, Participant            |
+| **POST**   | `/api/v1/events/create` | Admin, Organizer              |
+| **GET**    | `/api/v1/events/organizer/{username}` | Admin, Organizer, Participant |
+| **GET**    | `/api/v1/events/all` | Admin, Organizer, Participant |
 
 ### **Ticket API**
-| Method | Endpoint | Access |
-|--------|---------|--------|
-| **GET** | `/api/v1/tickets/{id}` | Organizer, Participant |
-| **PUT** | `/api/v1/tickets/{id}` | Organizer |
-| **DELETE** | `/api/v1/tickets/{id}` | Organizer |
-| **POST** | `/api/v1/tickets/create` | Organizer |
-| **GET** | `/api/v1/tickets/user/{username}` | Organizer, Participant |
-| **GET** | `/api/v1/tickets/event/{eventId}` | Organizer, Participant |
-| **GET** | `/api/v1/tickets/all` | Organizer |
+| Method | Endpoint | Access                        |
+|--------|---------|-------------------------------|
+| **GET** | `/api/v1/tickets/{id}` | Admin, Organizer, Participant |
+| **PUT** | `/api/v1/tickets/{id}` | Admin, Organizer              |
+| **DELETE** | `/api/v1/tickets/{id}` | Admin, Organizer              |
+| **POST** | `/api/v1/tickets/create` | Admin, Organizer              |
+| **GET** | `/api/v1/tickets/user/{username}` | Admin, Organizer, Participant |
+| **GET** | `/api/v1/tickets/event/{eventId}` | Admin, Organizer, Participant |
+| **GET** | `/api/v1/tickets/all` | Admin, Organizer, Participant            |
 
 ### **Feedback API**
-| Method | Endpoint | Access |
-|--------|---------|--------|
-| **GET** | `/api/v1/feedback/{id}` | Organizer, Participant |
-| **PUT** | `/api/v1/feedback/{id}` | Organizer |
-| **DELETE** | `/api/v1/feedback/{id}` | Organizer |
-| **POST** | `/api/v1/feedback/{feedbackId}/user/{username}` | Organizer, Participant |
-| **POST** | `/api/v1/feedback/{feedbackId}/event/{eventId}` | Organizer, Participant |
-| **POST** | `/api/v1/feedback/submit` | Organizer, Participant |
-| **GET** | `/api/v1/feedback/user/{username}` | Organizer, Participant |
-| **GET** | `/api/v1/feedback/event/{eventId}` | Organizer, Participant |
-| **GET** | `/api/v1/feedback/all` | Admin |
+| Method | Endpoint | Access                        |
+|--------|---------|-------------------------------|
+| **GET** | `/api/v1/feedback/{id}` | Admin, Organizer, Participant |
+| **PUT** | `/api/v1/feedback/{id}` | Admin, Organizer              |
+| **DELETE** | `/api/v1/feedback/{id}` | Admin, Organizer              |
+| **POST** | `/api/v1/feedback/{feedbackId}/user/{username}` | Admin, Organizer, Participant |
+| **POST** | `/api/v1/feedback/{feedbackId}/event/{eventId}` | Admin, Organizer, Participant |
+| **POST** | `/api/v1/feedback/submit` | Admin, Organizer, Participant |
+| **GET** | `/api/v1/feedback/user/{username}` | Admin, Organizer, Participant |
+| **GET** | `/api/v1/feedback/event/{eventId}` | Admin, Organizer, Participant |
+| **GET** | `/api/v1/feedback/all` | Admin, Organizer, Participant                       |
 
 ---
 
