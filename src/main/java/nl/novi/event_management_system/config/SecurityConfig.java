@@ -61,10 +61,14 @@ public class SecurityConfig {
                         // Ensure that admin access all endpoints
                         .requestMatchers("/api/v1/**").hasAuthority(RoleEnum.getRoleName(RoleEnum.ADMIN))
 
-
                         //User endpoints
+                        .requestMatchers(HttpMethod.POST,"/api/v1/users/create").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/api/v1/users/all").hasAnyAuthority(RoleEnum.getRoleName(RoleEnum.ORGANIZER))
                         .requestMatchers(HttpMethod.GET,"/api/v1/users/photo").hasAnyAuthority(RoleEnum.getRoleName(RoleEnum.PARTICIPANT), RoleEnum.getRoleName(RoleEnum.ORGANIZER))
                         .requestMatchers(HttpMethod.POST,"/api/v1/users/photo").hasAnyAuthority(RoleEnum.getRoleName(RoleEnum.PARTICIPANT), RoleEnum.getRoleName(RoleEnum.ORGANIZER))
+                        .requestMatchers(HttpMethod.PATCH,"/api/v1/users/{username}/ticket/{ticketId}").hasAnyAuthority(RoleEnum.getRoleName(RoleEnum.ORGANIZER))
+                        .requestMatchers(HttpMethod.PUT,"/api/v1/users/{username}").hasAnyAuthority(RoleEnum.getRoleName(RoleEnum.ORGANIZER))
+                        .requestMatchers(HttpMethod.GET,"/api/v1/users/{username}").hasAnyAuthority(RoleEnum.getRoleName(RoleEnum.ORGANIZER))
 
                         //Event endpoints
                         .requestMatchers("/api/v1/events/**").hasAuthority(RoleEnum.getRoleName(RoleEnum.ORGANIZER))
@@ -72,12 +76,12 @@ public class SecurityConfig {
 
                         //Ticket endpoints
                         .requestMatchers(HttpMethod.GET, "/api/v1/tickets/**").hasAnyAuthority(RoleEnum.getRoleName(RoleEnum.PARTICIPANT), RoleEnum.getRoleName(RoleEnum.ORGANIZER))
-                        .requestMatchers(HttpMethod.GET, "/api/v1/tickets/**").hasAuthority(RoleEnum.getRoleName(RoleEnum.ORGANIZER))
+                        .requestMatchers("/api/v1/tickets/**").hasAuthority(RoleEnum.getRoleName(RoleEnum.ORGANIZER))
 
                         //Feedback endpoints
                         .requestMatchers(HttpMethod.POST, "/api/v1/feedback/**").hasAnyAuthority(RoleEnum.getRoleName(RoleEnum.PARTICIPANT), RoleEnum.getRoleName(RoleEnum.ORGANIZER))
-                        .requestMatchers(HttpMethod.GET, "/api/v1/feedback/**").hasAnyAuthority(RoleEnum.getRoleName(RoleEnum.PARTICIPANT), RoleEnum.getRoleName(RoleEnum.ORGANIZER))
-
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/feedback/**").hasAnyAuthority(RoleEnum.getRoleName(RoleEnum.PARTICIPANT), RoleEnum.getRoleName(RoleEnum.ORGANIZER))
+                        .requestMatchers(HttpMethod.GET, "/api/v1/feedback/**").hasAuthority(RoleEnum.getRoleName(RoleEnum.ORGANIZER))
 
                         .anyRequest().denyAll()
                 )
