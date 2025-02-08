@@ -47,7 +47,7 @@
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.projectlombok</groupId> <!-- Uses Lombok (@Getter, @Setter, etc.) for cleaner code. -->
+            <groupId>org.projectlombok</groupId> <!-- Uses Lombok (@Getter, @Setter, etc.) for cleaner code -->
             <artifactId>lombok</artifactId>
             <version>1.18.34</version>
             <scope>provided</scope>
@@ -84,7 +84,7 @@
             <version>3.0.0</version>
         </dependency>
 
-        <!-- test Everything with scope test doesn't go to prod -->
+        <!-- Test dependencies -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -108,7 +108,7 @@
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
         </dependency>
-        <!-- end test -->
+        <!-- End test -->
     </dependencies>
 
     <build>
@@ -119,5 +119,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>
