@@ -1,7 +1,6 @@
 package nl.novi.event_management_system.models;
 
 import jakarta.persistence.*;
-import lombok.Data;
 import nl.novi.event_management_system.enums.TicketType;
 import nl.novi.event_management_system.validators.ticketType.ValidTicketType;
 
@@ -10,7 +9,6 @@ import java.time.LocalDate;
 import java.util.Optional;
 import java.util.UUID;
 
-@Data
 @Entity
 @Table(name = "tickets")
 public class Ticket {
@@ -74,6 +72,62 @@ public class Ticket {
         this.ticketType = ticketType;
         this.purchaseDate = purchaseDate;
         this.ticketCode = generateTicketCode();
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public Event getEvent() {
+        return event;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public String getTicketCode() {
+        return ticketCode;
+    }
+
+    public LocalDate getPurchaseDate() {
+        return purchaseDate;
+    }
+
+    public TicketType getTicketType() {
+        return ticketType;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void setEvent(Event event) {
+        this.event = event;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+
+    public void setTicketCode(String ticketCode) {
+        this.ticketCode = ticketCode;
+    }
+
+    public void setPurchaseDate(LocalDate purchaseDate) {
+        this.purchaseDate = purchaseDate;
+    }
+
+    public void setTicketType(TicketType ticketType) {
+        this.ticketType = ticketType;
     }
 
     private String generateTicketCode() {

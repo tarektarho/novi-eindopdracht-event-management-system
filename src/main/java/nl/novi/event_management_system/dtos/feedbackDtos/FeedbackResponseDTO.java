@@ -1,16 +1,10 @@
 package nl.novi.event_management_system.dtos.feedbackDtos;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.UUID;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class FeedbackResponseDTO {
     private UUID id;
@@ -19,4 +13,66 @@ public class FeedbackResponseDTO {
     private String username;
     private LocalDate feedbackDate;
     private UUID eventId;
+
+    public FeedbackResponseDTO() {
+    }
+
+    public FeedbackResponseDTO(UUID id, String comment, int rating, String username, LocalDate feedbackDate, UUID eventId) {
+        this.id = id;
+        this.comment = comment;
+        this.rating = rating;
+        this.username = username;
+        this.feedbackDate = feedbackDate;
+        this.eventId = eventId;
+    }
+
+    // Getters and Setters
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
+    public int getRating() {
+        return rating;
+    }
+
+    public void setRating(int rating) {
+        this.rating = rating;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public LocalDate getFeedbackDate() {
+        return feedbackDate;
+    }
+
+    public void setFeedbackDate(LocalDate feedbackDate) {
+        this.feedbackDate = feedbackDate;
+    }
+
+    public UUID getEventId() {
+        return eventId;
+    }
+
+    public void setEventId(UUID eventId) {
+        this.eventId = eventId;
+    }
 }

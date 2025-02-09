@@ -3,7 +3,6 @@ package nl.novi.event_management_system.controllers;
 import io.swagger.v3.oas.annotations.tags.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import lombok.extern.slf4j.Slf4j;
 import nl.novi.event_management_system.dtos.RoleCreateDTO;
 import nl.novi.event_management_system.dtos.userDtos.UserCreateDTO;
 import nl.novi.event_management_system.dtos.userDtos.UserResponseDTO;
@@ -22,7 +21,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.*;
 
-@Slf4j
 @Tag(name = "User API", description = "User related endpoints")
 @RestController
 @RequestMapping("/api/v1/users")

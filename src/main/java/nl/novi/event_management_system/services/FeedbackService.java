@@ -1,6 +1,6 @@
 package nl.novi.event_management_system.services;
 
-import lombok.extern.slf4j.Slf4j;
+import nl.novi.event_management_system.controllers.GlobalExceptionHandler;
 import nl.novi.event_management_system.dtos.feedbackDtos.FeedbackCreateDTO;
 import nl.novi.event_management_system.dtos.feedbackDtos.FeedbackResponseDTO;
 import nl.novi.event_management_system.exceptions.EventNotFoundException;
@@ -13,6 +13,8 @@ import nl.novi.event_management_system.models.Event;
 import nl.novi.event_management_system.repositories.FeedbackRepository;
 import nl.novi.event_management_system.repositories.UserRepository;
 import nl.novi.event_management_system.repositories.EventRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,13 +23,14 @@ import java.util.UUID;
 /**
  * This class contains the business logic for the Feedback entity.
  */
-@Slf4j
 @Service
 public class FeedbackService {
 
     private final FeedbackRepository feedbackRepository;
     private final UserRepository userRepository;
     private final EventRepository eventRepository;
+
+    Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     /**
      * Constructor for the FeedbackService class.
