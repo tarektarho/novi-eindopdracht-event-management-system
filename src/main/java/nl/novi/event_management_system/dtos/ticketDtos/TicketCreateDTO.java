@@ -34,8 +34,8 @@ public class TicketCreateDTO {
         return ticketCode;
     }
 
-    public void setTicketCode(String ticketCode) {
-        this.ticketCode = ticketCode;
+    public void setTicketCode() {
+        this.ticketCode = generateTicketCode();
     }
 
     public LocalDate getPurchaseDate() {

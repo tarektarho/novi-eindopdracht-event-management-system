@@ -55,7 +55,7 @@ class TicketServiceTest {
         });
 
         TicketCreateDTO ticketCreateDTO = new TicketCreateDTO();
-        ticketCreateDTO.setTicketCode(ticketCode);
+        ticketCreateDTO.setTicketCode();
         ticketCreateDTO.setPrice(price);
         ticketCreateDTO.setTicketType(ticketType);
         ticketCreateDTO.setPurchaseDate(purchaseDate);
@@ -103,7 +103,7 @@ class TicketServiceTest {
         //arrange
         Ticket ticket = mockTickets.getFirst();
         TicketCreateDTO ticketCreateDTO = new TicketCreateDTO();
-        ticketCreateDTO.setTicketCode(ticketCode);
+        ticketCreateDTO.setTicketCode();
         ticketCreateDTO.setPrice(price);
         ticketCreateDTO.setTicketType(ticketType);
         ticketCreateDTO.setPurchaseDate(purchaseDate);
@@ -128,7 +128,7 @@ class TicketServiceTest {
     void updateTicketShouldThrowExceptionWhenTicketNotFound() {
         // Arrange
         TicketCreateDTO ticketCreateDTO = new TicketCreateDTO();
-        ticketCreateDTO.setTicketCode(ticketCode);
+        ticketCreateDTO.setTicketCode();
         ticketCreateDTO.setPrice(price);
         ticketCreateDTO.setTicketType(ticketType);
         ticketCreateDTO.setPurchaseDate(purchaseDate);
