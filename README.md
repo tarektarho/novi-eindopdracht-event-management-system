@@ -1,3 +1,4 @@
+ [![Java CI with Maven Build and Test](https://github.com/tarektarho/novi-eindopdracht-event-management-system/actions/workflows/maven.yml/badge.svg)](https://github.com/tarektarho/novi-eindopdracht-event-management-system/actions/workflows/maven.yml)
 # **Event Management System API**
 A Spring Boot-based RESTful web service for managing events, participants, and organizers with role-based access control.
 
