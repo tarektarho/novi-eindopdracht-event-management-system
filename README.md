@@ -1,5 +1,6 @@
- [![Java CI with Maven Build and Test](https://github.com/tarektarho/novi-eindopdracht-event-management-system/actions/workflows/maven.yml/badge.svg)](https://github.com/tarektarho/novi-eindopdracht-event-management-system/actions/workflows/maven.yml)
-# **Event Management System API**
+[![Java CI with Maven Build and Test](https://github.com/tarektarho/novi-eindopdracht-event-management-system/actions/workflows/maven.yml/badge.svg)](https://github.com/tarektarho/novi-eindopdracht-event-management-system/actions/workflows/maven.yml)
+
+**Event Management System API**
 A Spring Boot-based RESTful web service for managing events, participants, and organizers with role-based access control.
 
 ---
@@ -82,9 +83,9 @@ mvn spring-boot:run
 
 ## **API Documentation**
 Swagger UI is available at:  
-[http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
+[http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
 
-API Docs:  
+API Docs (JSON):  
 [http://localhost:8080/api-docs](http://localhost:8080/api-docs)
 
 ---
@@ -118,39 +119,8 @@ API Docs:
 | **GET**    | `/api/v1/events/{id}` | Admin, Organizer, Participant |
 | **PUT**    | `/api/v1/events/{id}` | Admin, Organizer              |
 | **DELETE** | `/api/v1/events/{id}` | Admin, Organizer              |
-| **PATCH**  | `/api/v1/events/{eventId}/remove-tickets` | Admin, Organizer              |
-| **PATCH**  | `/api/v1/events/{eventId}/remove-participants` | Admin, Organizer              |
-| **PATCH**  | `/api/v1/events/{eventId}/remove-feedback` | Admin, Organizer              |
-| **PATCH**  | `/api/v1/events/{eventId}/assign-participants` | Admin, Organizer              |
-| **PATCH**  | `/api/v1/events/{eventId}/add-tickets` | Admin, Organizer              |
-| **PATCH**  | `/api/v1/events/{eventId}/add-feedback` | Admin, Organizer, Participant            |
 | **POST**   | `/api/v1/events/create` | Admin, Organizer              |
-| **GET**    | `/api/v1/events/organizer/{username}` | Admin, Organizer, Participant |
 | **GET**    | `/api/v1/events/all` | Admin, Organizer, Participant |
-
-### **Ticket API**
-| Method | Endpoint | Access                        |
-|--------|---------|-------------------------------|
-| **GET** | `/api/v1/tickets/{id}` | Admin, Organizer, Participant |
-| **PUT** | `/api/v1/tickets/{id}` | Admin, Organizer              |
-| **DELETE** | `/api/v1/tickets/{id}` | Admin, Organizer              |
-| **POST** | `/api/v1/tickets/create` | Admin, Organizer              |
-| **GET** | `/api/v1/tickets/user/{username}` | Admin, Organizer, Participant |
-| **GET** | `/api/v1/tickets/event/{eventId}` | Admin, Organizer, Participant |
-| **GET** | `/api/v1/tickets/all` | Admin, Organizer, Participant            |
-
-### **Feedback API**
-| Method | Endpoint | Access                        |
-|--------|---------|-------------------------------|
-| **GET** | `/api/v1/feedback/{id}` | Admin, Organizer, Participant |
-| **PUT** | `/api/v1/feedback/{id}` | Admin, Organizer              |
-| **DELETE** | `/api/v1/feedback/{id}` | Admin, Organizer              |
-| **POST** | `/api/v1/feedback/{feedbackId}/user/{username}` | Admin, Organizer, Participant |
-| **POST** | `/api/v1/feedback/{feedbackId}/event/{eventId}` | Admin, Organizer, Participant |
-| **POST** | `/api/v1/feedback/submit` | Admin, Organizer, Participant |
-| **GET** | `/api/v1/feedback/user/{username}` | Admin, Organizer, Participant |
-| **GET** | `/api/v1/feedback/event/{eventId}` | Admin, Organizer, Participant |
-| **GET** | `/api/v1/feedback/all` | Admin, Organizer, Participant                       |
 
 ---
 
