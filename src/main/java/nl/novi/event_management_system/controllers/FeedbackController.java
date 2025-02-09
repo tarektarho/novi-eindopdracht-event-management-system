@@ -21,10 +21,9 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/feedback")
 public class FeedbackController {
-    private final FeedbackService feedbackService;
-
     Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
+    private final FeedbackService feedbackService;
 
     public FeedbackController(FeedbackService feedbackService) {
         this.feedbackService = feedbackService;
