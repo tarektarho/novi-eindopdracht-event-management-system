@@ -86,7 +86,7 @@ class TicketServiceTest {
     @Test
     void getTicketById() {
         //arrange
-        when(ticketRepository.findById(mockTickets.getFirst().getId())).thenReturn(java.util.Optional.ofNullable(mockTickets.getFirst()));
+        when(ticketRepository.findById(mockTickets.getFirst().getId())).thenReturn(Optional.ofNullable(mockTickets.getFirst()));
 
         Ticket ticket = mockTickets.getFirst();
         TicketResponseDTO ticketResponseDTO = TicketMapper.toResponseDTO(ticket);

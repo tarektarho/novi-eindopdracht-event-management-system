@@ -2,7 +2,7 @@ package nl.novi.event_management_system.services;
 
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
-import lombok.extern.slf4j.Slf4j;
+import nl.novi.event_management_system.controllers.GlobalExceptionHandler;
 import nl.novi.event_management_system.dtos.eventDtos.*;
 import nl.novi.event_management_system.exceptions.EventNotFoundException;
 import nl.novi.event_management_system.exceptions.RecordNotFoundException;
@@ -16,6 +16,8 @@ import nl.novi.event_management_system.repositories.EventRepository;
 import nl.novi.event_management_system.repositories.FeedbackRepository;
 import nl.novi.event_management_system.repositories.TicketRepository;
 import nl.novi.event_management_system.repositories.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -23,10 +25,10 @@ import java.util.*;
 /**
  * This class contains the business logic for the Event entity.
  */
-@Slf4j
 @Service
 public class EventService {
     String LOG_MESSAGE_EVENT_NOT_FOUND = "Event not found with ID: {}";
+    Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     private final EventRepository eventRepository;
     private final UserRepository userRepository;

@@ -3,14 +3,12 @@ package nl.novi.event_management_system.models;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.*;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import java.util.*;
 
 @Entity
 @Table(name = "users")
-@Data
 public class User {
 
     @Id
@@ -74,4 +72,95 @@ public class User {
     public void removeRole(Role role) {
         this.roles.remove(role);
     }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+
+    public Boolean getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public UserPhoto getUserPhoto() {
+        return userPhoto;
+    }
+
+    public void setUserPhoto(UserPhoto userPhoto) {
+        this.userPhoto = userPhoto;
+    }
+
+    public List<Event> getEventsOrganized() {
+        return eventsOrganized;
+    }
+
+    public void setEventsOrganized(List<Event> eventsOrganized) {
+        this.eventsOrganized = eventsOrganized;
+    }
+
+    public List<Ticket> getTickets() {
+        return tickets;
+    }
+
+    public void setTickets(List<Ticket> tickets) {
+        this.tickets = tickets;
+    }
+
+    public List<Feedback> getFeedbackList() {
+        return feedbackList;
+    }
+
+    public void setFeedbackList(List<Feedback> feedbackList) {
+        this.feedbackList = feedbackList;
+    }
+
+    public void getEventsOrganized(List<Event> eventsOrganized) {
+        this.eventsOrganized = eventsOrganized;
+    }
+
+    public List<Event> setEventsOrganized() {
+        return eventsOrganized;
+    }
+
+    public void getTickets(List<Ticket> tickets) {
+        this.tickets = tickets;
+    }
+
+    public List<Ticket> setTickets() {
+        return tickets;
+    }
+
+    public void getFeedbackList(List<Feedback> feedbackList) {
+        this.feedbackList = feedbackList;
+    }
+
+
+
 }

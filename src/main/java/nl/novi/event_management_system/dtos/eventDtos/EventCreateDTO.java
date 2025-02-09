@@ -1,13 +1,9 @@
 package nl.novi.event_management_system.dtos.eventDtos;
 
 import jakarta.validation.constraints.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
-@Data
-@NoArgsConstructor
 public class EventCreateDTO {
     @NotBlank(message = "Event name cannot be empty")
     @Size(min = 3, max = 100, message = "Event name must be between 3 and 100 characters")
@@ -30,5 +26,56 @@ public class EventCreateDTO {
 
     @DecimalMin(value = "0.0", inclusive = false, message = "Price must be greater than 0")
     private double price;
+
+    public EventCreateDTO() {}
+
+    // Getters and Setters
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public LocalDate getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
+    }
+
+    public int getCapacity() {
+        return capacity;
+    }
+
+    public void setCapacity(int capacity) {
+        this.capacity = capacity;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
 
 }

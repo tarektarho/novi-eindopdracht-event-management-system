@@ -2,9 +2,10 @@ package nl.novi.event_management_system.controllers;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import lombok.extern.slf4j.Slf4j;
 import nl.novi.event_management_system.dtos.eventDtos.*;
 import nl.novi.event_management_system.services.EventService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -14,12 +15,11 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.util.*;
 
-@Slf4j
 @Tag(name = "Event API", description = "Event related endpoints")
 @RestController
 @RequestMapping("/api/v1/events")
 public class EventController {
-
+    Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
     private final EventService eventService;
 
     public EventController(EventService eventService) {
