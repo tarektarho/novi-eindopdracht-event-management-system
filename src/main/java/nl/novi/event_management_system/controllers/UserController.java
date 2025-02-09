@@ -124,7 +124,7 @@ public class UserController {
      * @return ResponseEntity<Object>
      */
     @PatchMapping(value = "/{username}/roles/{role}")
-    public ResponseEntity<Object> deleteUserRole(@PathVariable("username") String username, @PathVariable("role") String role) {
+    public ResponseEntity<Void> deleteUserRole(@PathVariable("username") String username, @PathVariable("role") String role) {
         userService.removeRole(username, role);
         return ResponseEntity.noContent().build();
     }
@@ -136,9 +136,9 @@ public class UserController {
      * @return String
      */
     @DeleteMapping("/{username}")
-    public String deleteUser(@PathVariable String username) {
+    public ResponseEntity<Void> deleteUser(@PathVariable String username) {
         userService.deleteUser(username);
-        return "User deleted successfully!";
+        return ResponseEntity.noContent().build();
     }
 
     /**

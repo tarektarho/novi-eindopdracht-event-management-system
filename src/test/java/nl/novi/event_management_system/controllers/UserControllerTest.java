@@ -161,7 +161,7 @@ class UserControllerTest {
         String role = "ROLE_ADMIN";
 
         // Act
-        ResponseEntity<Object> response = userController.deleteUserRole(username, role);
+        ResponseEntity<Void> response = userController.deleteUserRole(username, role);
 
         // Assert
         assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
@@ -174,10 +174,10 @@ class UserControllerTest {
         String username = "testUser";
 
         // Act
-        String response = userController.deleteUser(username);
+        ResponseEntity<Void> response = userController.deleteUser(username);
 
         // Assert
-        assertEquals("User deleted successfully!", response);
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
         verify(userService, times(1)).deleteUser(username);
     }
 

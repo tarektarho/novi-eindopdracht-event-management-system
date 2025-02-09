@@ -22,6 +22,8 @@ A Spring Boot-based RESTful web service for managing events, tickets, feedback, 
 ✅ User authentication & authorization (JWT)  
 ✅ Event creation, update, and deletion  
 ✅ Participant management for events  
+✅ Feedback submission for events
+✅ Ticket creation, update, and deletion
 ✅ Role-based access control (Admin, Participant, Organizer)  
 ✅ RESTful API with Swagger documentation  
 ✅ File upload & download support  
@@ -93,34 +95,65 @@ API Docs (JSON):
 ## **API Endpoints**
 
 ### **Authentication API**
-| Method | Endpoint | Access |
-|--------|---------|--------|
-| **POST** | `/api/v1/authenticate` | Public |
-| **GET** | `/api/v1/authenticated` | Any authenticated user |
+| Method | Endpoint | Description | Access | Response |
+|--------|---------|-------------|--------|----------|
+| **POST** | `/api/v1/authenticate` | Authenticate a user | Public | `200 OK` / `401 Unauthorized` |
+| **GET** | `/api/v1/authenticated` | Retrieve authenticated user details | Any authenticated user | `200 OK` |
 
 ### **User API**
-| Method     | Endpoint | Access                        |
-|------------|---------|-------------------------------|
-| **GET**    | `/api/v1/users/{username}` | Admin, Organizer                       |
-| **PUT**    | `/api/v1/users/{username}` | Admin, Organizer              |
-| **DELETE** | `/api/v1/users/{username}` | Admin                         |
-| **PATCH**  | `/api/v1/users/{username}/ticket/{ticketId}` | Admin, Organizer              |
-| **GET**    | `/api/v1/users/{username}/roles` | Admin                         |
-| **PATCH**  | `/api/v1/users/{username}/roles` | Admin                         |
-| **PATCH**  | `/api/v1/users/{username}/roles/{role}` | Admin                         |
-| **GET**    | `/api/v1/users/{username}/photo` | Admin, Organizer, Participant |
-| **POST**   | `/api/v1/users/{username}/photo` | Admin, Organizer, Participant |
-| **GET**    | `/api/v1/users/all` | Admin, Organizer              |
-| **POST**   | `/api/v1/users/create` | Public                        |
+| Method | Endpoint | Description | Access | Response |
+|--------|---------|-------------|--------|----------|
+| **GET** | `/api/v1/users/{username}` | Retrieve user details | Admin, Organizer | `200 OK` / `404 Not Found` |
+| **PUT** | `/api/v1/users/{username}` | Update user details | Admin, Organizer | `200 OK` / `400 Bad Request` / `404 Not Found` |
+| **DELETE** | `/api/v1/users/{username}` | Delete a user | Admin | `204 No Content` / `404 Not Found` |
+| **PATCH** | `/api/v1/users/{username}/ticket/{ticketId}` | Assign a ticket to a user | Admin, Organizer | `200 OK` / `400 Bad Request` |
+| **GET** | `/api/v1/users/{username}/roles` | Retrieve user roles | Admin | `200 OK` |
+| **PATCH** | `/api/v1/users/{username}/roles` | Add a role to a user | Admin | `200 OK` / `400 Bad Request` |
+| **PATCH** | `/api/v1/users/{username}/roles/{role}` | Remove a role from a user | Admin | `200 OK` / `400 Bad Request` |
+| **GET** | `/api/v1/users/{username}/photo` | Retrieve user’s profile photo | Admin, Organizer, Participant | `200 OK` / `404 Not Found` |
+| **POST** | `/api/v1/users/{username}/photo` | Upload user’s profile photo | Admin, Organizer, Participant | `201 Created` / `400 Bad Request` |
+| **GET** | `/api/v1/users/all` | Retrieve all users | Admin, Organizer | `200 OK` |
+| **POST** | `/api/v1/users/create` | Create a new user | Public | `201 Created` / `400 Bad Request` |
 
 ### **Event API**
-| Method     | Endpoint | Access                        |
-|------------|---------|-------------------------------|
-| **GET**    | `/api/v1/events/{id}` | Admin, Organizer, Participant |
-| **PUT**    | `/api/v1/events/{id}` | Admin, Organizer              |
-| **DELETE** | `/api/v1/events/{id}` | Admin, Organizer              |
-| **POST**   | `/api/v1/events/create` | Admin, Organizer              |
-| **GET**    | `/api/v1/events/all` | Admin, Organizer, Participant |
+| Method | Endpoint | Description | Access | Response |
+|--------|---------|-------------|--------|----------|
+| **GET** | `/api/v1/events/{id}` | Retrieve event details | Admin, Organizer, Participant | `200 OK` / `404 Not Found` |
+| **PUT** | `/api/v1/events/{id}` | Update event details | Admin, Organizer | `200 OK` / `400 Bad Request` / `404 Not Found` |
+| **DELETE** | `/api/v1/events/{id}` | Delete an event | Admin, Organizer | `204 No Content` / `404 Not Found` |
+| **PATCH** | `/api/v1/events/{eventId}/remove-tickets` | Remove tickets from an event | Admin, Organizer | `200 OK` / `400 Bad Request` |
+| **PATCH** | `/api/v1/events/{eventId}/remove-participants` | Remove participants from an event | Admin, Organizer | `200 OK` / `400 Bad Request` |
+| **PATCH** | `/api/v1/events/{eventId}/remove-feedback` | Remove feedback from an event | Admin, Organizer | `200 OK` / `400 Bad Request` |
+| **PATCH** | `/api/v1/events/{eventId}/assign-participants` | Assign participants to an event | Admin, Organizer | `200 OK` / `400 Bad Request` |
+| **PATCH** | `/api/v1/events/{eventId}/add-tickets` | Add tickets to an event | Admin, Organizer | `200 OK` / `400 Bad Request` |
+| **PATCH** | `/api/v1/events/{eventId}/add-feedback` | Add feedback for an event | Admin, Organizer, Participant | `200 OK` / `400 Bad Request` |
+| **POST** | `/api/v1/events/create` | Create a new event | Admin, Organizer | `201 Created` / `400 Bad Request` |
+| **GET** | `/api/v1/events/organizer/{username}` | Retrieve events by organizer | Admin, Organizer, Participant | `200 OK` |
+| **GET** | `/api/v1/events/all` | Retrieve all events | Admin, Organizer, Participant | `200 OK` |
+
+### **Ticket API**
+| Method | Endpoint | Description | Access | Response |
+|--------|---------|-------------|--------|----------|
+| **GET** | `/api/v1/tickets/{id}` | Retrieve ticket details | Admin, Organizer, Participant | `200 OK` / `404 Not Found` |
+| **PUT** | `/api/v1/tickets/{id}` | Update ticket details | Admin, Organizer | `200 OK` / `400 Bad Request` / `404 Not Found` |
+| **DELETE** | `/api/v1/tickets/{id}` | Delete a ticket | Admin, Organizer | `204 No Content` / `404 Not Found` |
+| **POST** | `/api/v1/tickets/create` | Create a new ticket | Admin, Organizer | `201 Created` / `400 Bad Request` |
+| **GET** | `/api/v1/tickets/user/{username}` | Retrieve tickets assigned to a user | Admin, Organizer, Participant | `200 OK` |
+| **GET** | `/api/v1/tickets/event/{eventId}` | Retrieve tickets for an event | Admin, Organizer, Participant | `200 OK` |
+| **GET** | `/api/v1/tickets/all` | Retrieve all tickets | Admin, Organizer, Participant | `200 OK` |
+
+### **Feedback API**
+| Method | Endpoint | Description | Access | Response |
+|--------|---------|-------------|--------|----------|
+| **GET** | `/api/v1/feedback/{id}` | Retrieve feedback by ID | Admin, Organizer, Participant | `200 OK` / `404 Not Found` |
+| **PUT** | `/api/v1/feedback/{id}` | Update feedback | Admin, Organizer | `200 OK` / `400 Bad Request` |
+| **DELETE** | `/api/v1/feedback/{id}` | Delete feedback | Admin, Organizer | `204 No Content` / `404 Not Found` |
+| **PATCH** | `/api/v1/feedback/{feedbackId}/user/{username}` | Assign feedback to a user | Admin, Organizer, Participant | `200 OK` / `400 Bad Request` |
+| **PATCH** | `/api/v1/feedback/{feedbackId}/event/{eventId}` | Assign feedback to an event | Admin, Organizer, Participant | `200 OK` / `400 Bad Request` |
+| **POST** | `/api/v1/feedback/submit` | Submit feedback | Admin, Organizer, Participant | `201 Created` / `400 Bad Request` |
+| **GET** | `/api/v1/feedback/user/{username}` | Retrieve feedback by user | Admin, Organizer, Participant | `200 OK` |
+| **GET** | `/api/v1/feedback/event/{eventId}` | Retrieve feedback for an event | Admin, Organizer, Participant | `200 OK` |
+| **GET** | `/api/v1/feedback/all` | Retrieve all feedback entries | Admin, Organizer, Participant | `200 OK` |
 
 ---
 
