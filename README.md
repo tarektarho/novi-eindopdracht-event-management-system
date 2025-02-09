@@ -53,7 +53,7 @@ cd novi-eindopdracht-event-management-system
 ```
 
 ### **Configure Environment Variables**
-Create a `.env` file and add the following:
+Create a `.env` file if it does not exist and add the following:
 ```ini
 DB_URL=jdbc:postgresql://localhost:5432/EventManagementSystem
 DB_USERNAME=your_db_username
@@ -61,7 +61,6 @@ DB_PASSWORD=your_db_password
 jwt.SecretKey=eengeheimesleuteldieniemandmagwetenenhijmoetheelerglangencomplexzijnomtevoldoenaanallenormenenwaardeninjavaland
 jwt.Audience=eventManagementSystem-api.com
 ```
-Also, create `.env.example` to guide other developers.
 
 ---
 
@@ -71,6 +70,12 @@ Also, create `.env.example` to guide other developers.
 1. Open the project in IntelliJ IDEA.
 2. Ensure Maven is installed and configured.
 3. Start the application using intelliJ IDEA by running the `EventManagementSystemApplication` class.
+
+### **Using Maven**
+Run the application using Maven:
+```bash
+mvn spring-boot:run
+```
 
 ---
 
@@ -183,6 +188,9 @@ spring.sql.init.mode=always
 ---
 
 ## **Testing**
-Run unit and integration tests using the IDE.
+Run unit and integration tests using the IDE or Maven:
+```bash
+mvn test
+```
 
 ---
