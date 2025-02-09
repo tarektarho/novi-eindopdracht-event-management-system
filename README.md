@@ -111,6 +111,8 @@ mvn spring-boot:run
 ## **Testing with Postman**
 Export file can be found in the root directory of the project inside docs -> postman -> event-management-system.postman_collection.json
 
+You can import this file in Postman to test the API endpoints.
+
 ---
 
 ## **API Documentation**
