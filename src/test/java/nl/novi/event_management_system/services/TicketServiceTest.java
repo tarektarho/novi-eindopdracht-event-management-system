@@ -117,7 +117,8 @@ class TicketServiceTest {
 
         //assert
         assertEquals(ticket.getId(), result.getId());
-        assertEquals(ticket.getTicketCode(), result.getTicketCode());
+
+        assertTrue(result.getTicketCode().startsWith("TICKET-"));
         assertEquals(ticket.getPrice(), result.getPrice());
         assertEquals(ticket.getTicketType(), result.getTicketType());
         assertEquals(ticket.getPurchaseDate(), result.getPurchaseDate());

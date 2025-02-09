@@ -1,5 +1,6 @@
 package nl.novi.event_management_system.dtos.ticketDtos;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotNull;
@@ -13,14 +14,13 @@ import java.util.UUID;
 public class TicketCreateDTO {
     @NotNull(message = "Price cannot be empty.")
     private BigDecimal price;
-    private String ticketCode = generateTicketCode();
+    @Schema(hidden = true)
+    private String ticketCode;
     @NotNull(message = "purchaseDate cannot be empty.")
     private LocalDate purchaseDate;
     @Enumerated(EnumType.STRING)
     @ValidTicketType
     private TicketType ticketType;
-
-    // Getters and Setters
 
     public BigDecimal getPrice() {
         return price;

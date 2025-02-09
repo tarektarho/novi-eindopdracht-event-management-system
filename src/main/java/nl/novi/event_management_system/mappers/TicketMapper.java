@@ -62,7 +62,7 @@ public class TicketMapper {
         ticket.setPrice(ticketCreateDTO.getPrice());
         ticket.setPurchaseDate(ticketCreateDTO.getPurchaseDate());
         ticket.setTicketType(ticketCreateDTO.getTicketType());
-        ticket.setTicketCode(ticketCreateDTO.getTicketCode());
+        ticket.setTicketCode();
 
 
         return ticket;

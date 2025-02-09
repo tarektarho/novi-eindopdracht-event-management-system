@@ -20,8 +20,6 @@ public class TicketResponseDTO {
     private UserProfileDTO user;
     private EventResponseDTO event;
 
-    // Getters and Setters
-
     public UUID getId() {
         return id;
     }

@@ -118,8 +118,8 @@ public class Ticket {
         this.price = price;
     }
 
-    public void setTicketCode(String ticketCode) {
-        this.ticketCode = ticketCode;
+    public void setTicketCode() {
+        this.ticketCode = generateTicketCode();
     }
 
     public void setPurchaseDate(LocalDate purchaseDate) {
