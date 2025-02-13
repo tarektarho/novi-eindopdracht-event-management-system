@@ -51,7 +51,7 @@ public class TicketControllerIntegrationTest {
 
     @Test
     void testCreateTicket() throws Exception {
-        mockMvc.perform(post("/api/v1/tickets/create")
+        mockMvc.perform(post("/api/v1/tickets")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\n" +
                                 "    \"price\": 100.11,\n" +
@@ -64,7 +64,7 @@ public class TicketControllerIntegrationTest {
 
     @Test
     void testCreateTicketReturnsBadRequest() throws Exception {
-        mockMvc.perform(post("/api/v1/tickets/create")
+        mockMvc.perform(post("/api/v1/tickets")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\n" +
                                 "    \"price\": 100.11,\n" +
@@ -75,7 +75,7 @@ public class TicketControllerIntegrationTest {
 
     @Test
     void testGetAllTickets() throws Exception {
-        mockMvc.perform(get("/api/v1/tickets/all")
+        mockMvc.perform(get("/api/v1/tickets")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))

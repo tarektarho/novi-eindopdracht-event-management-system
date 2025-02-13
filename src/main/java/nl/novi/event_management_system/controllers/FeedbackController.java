@@ -35,7 +35,7 @@ public class FeedbackController {
      * @param feedbackCreateDTO FeedbackCreateDTO
      * @return ResponseEntity<?>
      */
-    @PostMapping("/submit")
+    @PostMapping
     public ResponseEntity<?> submitFeedback(@Valid @RequestBody FeedbackCreateDTO feedbackCreateDTO, BindingResult result) {
         if (result.hasErrors()) {
             List<String> errors = result.getAllErrors().stream()
@@ -70,7 +70,7 @@ public class FeedbackController {
      *
      * @return ResponseEntity<List < FeedbackResponseDTO>>
      */
-    @GetMapping("/all")
+    @GetMapping
     public ResponseEntity<List<FeedbackResponseDTO>> getAllFeedbacks() {
         return ResponseEntity.ok().body(feedbackService.getAllFeedbacks());
     }
@@ -131,7 +131,7 @@ public class FeedbackController {
      * @param eventId    UUID
      * @return ResponseEntity<Void>
      */
-    @PatchMapping("/{feedbackId}/event/{eventId}")
+    @PostMapping("/{feedbackId}/event/{eventId}")
     public ResponseEntity<Void> assignEventToFeedback(@PathVariable UUID feedbackId, @PathVariable UUID eventId) {
         feedbackService.assignEventToFeedback(feedbackId, eventId);
         return ResponseEntity.noContent().build();
@@ -144,7 +144,7 @@ public class FeedbackController {
      * @param username   String
      * @return ResponseEntity<?>
      */
-    @PatchMapping("/{feedbackId}/user/{username}")
+    @PostMapping("/{feedbackId}/user/{username}")
     public ResponseEntity<?> assignUserToFeedback(@PathVariable UUID feedbackId, @PathVariable String username) {
         feedbackService.assignUserToFeedback(feedbackId, username);
         return ResponseEntity.noContent().build();

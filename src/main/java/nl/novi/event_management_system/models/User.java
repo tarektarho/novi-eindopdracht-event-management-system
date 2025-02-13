@@ -160,7 +160,4 @@ public class User {
     public void getFeedbackList(List<Feedback> feedbackList) {
         this.feedbackList = feedbackList;
     }
-
-
-
 }
