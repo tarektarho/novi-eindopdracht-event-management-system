@@ -113,7 +113,7 @@ public class EventController {
      * @param organizerUsername EventOrganizerUsernameDTO
      * @return ResponseEntity<String>
      */
-    @PatchMapping("/{eventId}/organizer/assign")
+    @PostMapping("/{eventId}/organizer")
     public ResponseEntity<String> assignOrganizerToEvent(
             @PathVariable UUID eventId,
             @RequestBody EventOrganizerUsernameDTO organizerUsername) {
@@ -128,7 +128,7 @@ public class EventController {
      * @param organizerUsername EventOrganizerUsernameDTO
      * @return ResponseEntity<String>
      */
-    @PatchMapping("/{eventId}/organizer/remove")
+    @DeleteMapping("/{eventId}/organizer")
     public ResponseEntity<String> removeOrganizerFromEvent(@PathVariable UUID eventId, @RequestBody EventOrganizerUsernameDTO organizerUsername) {
         eventService.removeOrganizerFromEvent(eventId, organizerUsername.getUsername());
         return ResponseEntity.noContent().build();
@@ -141,7 +141,7 @@ public class EventController {
      * @param wrapper EventParticipantUsernameWrapperDTO
      * @return ResponseEntity<String>
      */
-    @PatchMapping("/{eventId}/participants/assign")
+    @PostMapping("/{eventId}/participants")
     public ResponseEntity<String> assignParticipantToEvent(
             @PathVariable UUID eventId,
             @RequestBody EventParticipantUsernameWrapperDTO wrapper) {
@@ -157,7 +157,7 @@ public class EventController {
      * @param wrapper EventParticipantUsernameWrapperDTO
      * @return ResponseEntity<Map < String, Object>>
      */
-    @PatchMapping("/{eventId}/participants/remove")
+    @DeleteMapping("/{eventId}/participants")
     public ResponseEntity<Map<String, Object>> removeParticipantsFromEvent(
             @PathVariable UUID eventId,
             @RequestBody EventParticipantUsernameWrapperDTO wrapper) {
@@ -184,7 +184,7 @@ public class EventController {
      * @param wrapper EventTicketIdsWrapperDTO
      * @return ResponseEntity<?>
      */
-    @PatchMapping("/{eventId}/tickets/add")
+    @PostMapping("/{eventId}/tickets")
     public ResponseEntity<?> addTicketsToEvent(
             @PathVariable UUID eventId,
             @RequestBody EventTicketIdsWrapperDTO wrapper) {
@@ -200,7 +200,7 @@ public class EventController {
      * @param wrapper EventTicketIdsWrapperDTO
      * @return ResponseEntity<Map < String, Object>>
      */
-    @PatchMapping("/{eventId}/tickets/remove")
+    @DeleteMapping("/{eventId}/tickets")
     public ResponseEntity<Map<String, Object>> removeTicketsFromEvent(
             @PathVariable UUID eventId,
             @RequestBody EventTicketIdsWrapperDTO wrapper) {
@@ -226,7 +226,7 @@ public class EventController {
      * @param eventFeedbackIdWrapperDTO EventFeedbackIdWrapperDTO
      * @return ResponseEntity<?>
      */
-    @PatchMapping("/{eventId}/feedback/add")
+    @PostMapping("/{eventId}/feedback")
     public ResponseEntity<?> addFeedbackToEvent(
             @PathVariable UUID eventId,
             @RequestBody EventFeedbackIdWrapperDTO eventFeedbackIdWrapperDTO) {
@@ -242,7 +242,7 @@ public class EventController {
      * @param eventFeedbackIdWrapperDTO EventFeedbackIdWrapperDTO
      * @return ResponseEntity<Map < String, Object>>
      */
-    @PatchMapping("/{eventId}/feedback/remove")
+    @DeleteMapping("/{eventId}/feedback")
     public ResponseEntity<Map<String, Object>> removeFeedbackFromEvent(
             @PathVariable UUID eventId,
             @RequestBody EventFeedbackIdWrapperDTO eventFeedbackIdWrapperDTO) {

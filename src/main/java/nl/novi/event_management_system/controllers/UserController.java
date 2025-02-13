@@ -46,7 +46,7 @@ public class UserController {
      * @param userCreateDTO UserCreateDTO
      * @return ResponseEntity<UserResponseDTO>
      */
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<UserResponseDTO> createUser(@Valid @RequestBody UserCreateDTO userCreateDTO) {
         UserResponseDTO newUser = userService.createUser(userCreateDTO);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{username}")
@@ -59,7 +59,7 @@ public class UserController {
      *
      * @return ResponseEntity<List < UserResponseDTO>>
      */
-    @GetMapping("/all")
+    @GetMapping
     public ResponseEntity<List<UserResponseDTO>> getAllUsers() {
         List<UserResponseDTO> users = userService.getAllUsers();
         return ResponseEntity.ok().body(users);
@@ -107,7 +107,7 @@ public class UserController {
      * @param roleCreateDTO RoleCreateDTO
      * @return ResponseEntity<Void>
      */
-    @PatchMapping("/{username}/roles")
+    @PostMapping("/{username}/roles")
     public ResponseEntity<Void> addUserRole(
             @PathVariable("username") String username,
             @Valid @RequestBody RoleCreateDTO roleCreateDTO) {
@@ -123,7 +123,7 @@ public class UserController {
      * @param role     String
      * @return ResponseEntity<Object>
      */
-    @PatchMapping(value = "/{username}/roles/{role}")
+    @DeleteMapping(value = "/{username}/roles/{role}")
     public ResponseEntity<Void> deleteUserRole(@PathVariable("username") String username, @PathVariable("role") String role) {
         userService.removeRole(username, role);
         return ResponseEntity.noContent().build();
@@ -194,7 +194,7 @@ public class UserController {
      * @param username String
      * @return ResponseEntity<Object>
      */
-    @PatchMapping("/{username}/ticket/{ticketId}")
+    @PostMapping("/{username}/ticket/{ticketId}")
     public ResponseEntity<UserResponseDTO> assignTicketToUser(@PathVariable String username, @PathVariable UUID ticketId) {
         return ResponseEntity.ok().body(userService.assignTicketToUser(username, ticketId));
     }
@@ -206,7 +206,7 @@ public class UserController {
      * @param feedbackId UUID
      * @return ResponseEntity<UserResponseDTO>
      */
-    @PatchMapping("/{username}/feedback/{feedbackId}")
+    @PostMapping("/{username}/feedback/{feedbackId}")
     public ResponseEntity<UserResponseDTO> assignFeedbackToUser(@PathVariable String username, @PathVariable UUID feedbackId) {
         return ResponseEntity.ok().body(userService.assignFeedbackToUser(username, feedbackId));
     }

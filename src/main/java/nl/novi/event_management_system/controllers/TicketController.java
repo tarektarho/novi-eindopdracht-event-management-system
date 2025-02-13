@@ -30,7 +30,7 @@ public class TicketController {
      * @param ticketCreateDTO TicketCreateDTO
      * @return ResponseEntity<?>
      */
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<?> createTicket(@Valid @RequestBody TicketCreateDTO ticketCreateDTO, BindingResult result) {
         if (result.hasErrors()) {
             StringBuilder errorMessages = new StringBuilder();
@@ -45,7 +45,7 @@ public class TicketController {
      *
      * @return List<TicketResponseDTO>
      */
-    @GetMapping("/all")
+    @GetMapping
     public List<TicketResponseDTO> getTickets() {
         return ticketService.getTickets();
     }
