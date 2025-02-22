@@ -199,8 +199,6 @@ API Docs (JSON):
 | **GET**    | `/api/v1/feedback/{id}`                         | Retrieve feedback by ID        | Admin, Organizer, Participant | `200 OK` / `404 Not Found`         |
 | **PUT**    | `/api/v1/feedback/{id}`                         | Update feedback                | Admin, Organizer              | `200 OK` / `400 Bad Request`       |
 | **DELETE** | `/api/v1/feedback/{id}`                         | Delete feedback                | Admin, Organizer              | `204 No Content` / `404 Not Found` |
-| **POST**   | `/api/v1/feedback/{feedbackId}/user/{username}` | Assign feedback to a user      | Admin, Organizer, Participant | `200 OK` / `400 Bad Request`       |
-| **POST**   | `/api/v1/feedback/{feedbackId}/event/{eventId}` | Assign feedback to an event    | Admin, Organizer, Participant | `200 OK` / `400 Bad Request`       |
 | **POST**   | `/api/v1/feedback`                              | Submit feedback                | Admin, Organizer, Participant | `201 Created` / `400 Bad Request`  |
 | **GET**    | `/api/v1/feedback/user/{username}`              | Retrieve feedback by user      | Admin, Organizer, Participant | `200 OK`                           |
 | **GET**    | `/api/v1/feedback/event/{eventId}`              | Retrieve feedback for an event | Admin, Organizer, Participant | `200 OK`                           |
