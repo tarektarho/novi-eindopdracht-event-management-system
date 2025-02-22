@@ -24,8 +24,8 @@ INSERT INTO feedbacks (comment, rating, username, feedback_date, id)
 VALUES ('Great event! Learned a lot about new technologies.', 4, 'organizer', '2025-08-15', 'c4205e65-fee0-4c4f-9470-88edfc8280e3');
 
 -- -- Add Ticket
-INSERT INTO tickets (id, price, purchase_date, ticket_type, ticket_code)
-VALUES ('c4205e65-fee0-4c4f-9470-88edfc8280e5', 10, '2025-06-15', 'FREE', 'c4205e65-fee0-4c4f-9470-88edfc82822');
+INSERT INTO tickets (id, price, purchase_date, ticket_type, ticket_code, event_id, username)
+VALUES ('c4205e65-fee0-4c4f-9470-88edfc8280e5', 10, '2025-06-15', 'FREE', 'TICKET-DCFF5CE6', 'c4205e65-fee0-4c4f-9470-88edfc8280e6', 'participant');
 
-INSERT INTO tickets (id, price, purchase_date, ticket_type, ticket_code)
-VALUES ('c4205e65-fee0-4c4f-9470-88edfc8280e6', 100, '2025-06-15', 'VIP', 'c4205e65-fee0-4c4f-9470-88edfc82823');
+INSERT INTO tickets (id, price, purchase_date, ticket_type, ticket_code, event_id, username)
+VALUES ('c4205e65-fee0-4c4f-9470-88edfc8280e6', 100, '2025-06-15', 'VIP', 'TICKET-DCFF5CE5', 'c4205e65-fee0-4c4f-9470-88edfc8280e4', 'participant');

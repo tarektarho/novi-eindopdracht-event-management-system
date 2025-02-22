@@ -43,6 +43,10 @@ public class UserMapper {
             userResponseDTO.setFeedbackList(FeedbackMapper.toResponseDTOList(user.getFeedbackList()));
         }
 
+        if(user.getEventsOrganized() != null) {
+            userResponseDTO.setEventsOrganized(EventMapper.toResponseDTOList(user.getEventsOrganized()));
+        }
+
         return userResponseDTO;
     }
 
@@ -66,6 +70,9 @@ public class UserMapper {
      * @return UserProfileDTO
      */
     public static UserProfileDTO toUserProfileResponseDTO(User user) {
+        if (user == null) {
+            return null;
+        }
 
         UserProfileDTO userProfileDTO = new UserProfileDTO();
         userProfileDTO.setUsername(user.getUsername());

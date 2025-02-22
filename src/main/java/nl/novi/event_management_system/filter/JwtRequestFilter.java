@@ -24,10 +24,10 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
 
     /**
-     * Constructor
+     * Constructs a JwtRequestFilter with the specified dependencies.
      *
-     * @param userDetailsService
-     * @param jwtUtil
+     * @param userDetailsService the custom user details service
+     * @param jwtUtil           the JWT utility
      */
     public JwtRequestFilter(CustomUserDetailsService userDetailsService, JwtUtil jwtUtil) {
         this.userDetailsService = userDetailsService;

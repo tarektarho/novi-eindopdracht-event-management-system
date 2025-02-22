@@ -2,7 +2,6 @@ package nl.novi.event_management_system.services;
 
 import nl.novi.event_management_system.dtos.feedbackDtos.FeedbackCreateDTO;
 import nl.novi.event_management_system.dtos.feedbackDtos.FeedbackResponseDTO;
-import nl.novi.event_management_system.exceptions.EventNotFoundException;
 import nl.novi.event_management_system.exceptions.RecordNotFoundException;
 import nl.novi.event_management_system.models.Event;
 import nl.novi.event_management_system.models.Feedback;
@@ -47,6 +46,7 @@ class FeedbackServiceTest {
         feedbackCreateDTO.setUsername("testUser");
         feedbackCreateDTO.setComment("Great event!");
         feedbackCreateDTO.setRating(5);
+        feedbackCreateDTO.setEventId(UUID.randomUUID());
 
         feedback = new Feedback();
         feedback.setComment("Great event!");
@@ -55,7 +55,15 @@ class FeedbackServiceTest {
 
     @Test
     void submitFeedback_ShouldReturnFeedbackResponseDTO() {
+        User user = new User();
+        user.setUsername(feedbackCreateDTO.getUsername());
+
+        Event event = new Event();
+        event.setId(feedbackCreateDTO.getEventId());
+
         // Arrange
+        when(userRepository.findByUsername("testUser")).thenReturn(Optional.of(user));
+        when(eventRepository.findById(feedbackCreateDTO.getEventId())).thenReturn(Optional.of(event));
         when(feedbackRepository.save(any(Feedback.class))).thenAnswer(invocation -> {
             Feedback savedFeedback = invocation.getArgument(0);
             savedFeedback.setId(UUID.randomUUID());
@@ -68,6 +76,8 @@ class FeedbackServiceTest {
         // Assert
         assertEquals(feedbackCreateDTO.getComment(), response.getComment());
         assertEquals(feedbackCreateDTO.getRating(), response.getRating());
+        assertEquals(feedbackCreateDTO.getUsername(), response.getUsername());
+        assertEquals(feedbackCreateDTO.getEventId(), response.getEventId());
 
         // Verify that feedback was saved
         ArgumentCaptor<Feedback> feedbackCaptor = ArgumentCaptor.forClass(Feedback.class);
@@ -262,88 +272,4 @@ class FeedbackServiceTest {
 
         verify(feedbackRepository, times(1)).findByUserUsername(username);
     }
-
-    @Test
-    void assignEventToFeedback_ShouldAssignEventToFeedback() {
-        // Arrange
-        UUID feedbackId = UUID.randomUUID();
-        UUID eventId = UUID.randomUUID();
-
-        Event event = new Event();
-        event.setId(eventId);
-        when(feedbackRepository.findById(feedbackId)).thenReturn(Optional.of(feedback));
-        when(eventRepository.findById(eventId)).thenReturn(Optional.of(event));
-
-        // Act
-        feedbackService.assignEventToFeedback(feedbackId, eventId);
-
-        // Assert
-        assertEquals(eventId, feedback.getEvent().getId());
-
-        verify(feedbackRepository, times(1)).save(feedback);
-    }
-
-    @Test
-    void assignEventToFeedback_ShouldThrowRecordNotFoundExceptionForFeedback() {
-        // Arrange
-        UUID feedbackId = UUID.randomUUID();
-        UUID eventId = UUID.randomUUID();
-
-        when(feedbackRepository.findById(feedbackId)).thenReturn(Optional.empty());
-
-        // Act and Assert
-        assertThrows(RecordNotFoundException.class, () -> feedbackService.assignEventToFeedback(feedbackId, eventId));
-
-        verify(feedbackRepository, never()).save(any(Feedback.class));
-    }
-
-    @Test
-    void assignEventToFeedback_ShouldThrowEventNotFoundException() {
-        // Arrange
-        UUID feedbackId = UUID.randomUUID();
-        UUID eventId = UUID.randomUUID();
-
-        when(feedbackRepository.findById(feedbackId)).thenReturn(Optional.of(feedback));
-        when(eventRepository.findById(eventId)).thenReturn(Optional.empty());
-
-        // Act and Assert
-        assertThrows(EventNotFoundException.class, () -> feedbackService.assignEventToFeedback(feedbackId, eventId));
-
-        verify(feedbackRepository, never()).save(any(Feedback.class));
-    }
-
-    @Test
-    void assignUserToFeedback_ShouldAssignUserToFeedback() {
-        // Arrange
-        UUID feedbackId = UUID.randomUUID();
-        String username = "testUser";
-
-        User user = new User();
-        user.setUsername(username);
-        when(feedbackRepository.findById(feedbackId)).thenReturn(Optional.of(feedback));
-        when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
-
-        // Act
-        feedbackService.assignUserToFeedback(feedbackId, username);
-
-        // Assert
-        assertEquals(username, feedback.getUser().getUsername());
-
-        verify(feedbackRepository, times(1)).save(feedback);
-    }
-
-    @Test
-    void assignUserToFeedback_ShouldThrowRecordNotFoundExceptionForFeedback() {
-        // Arrange
-        UUID feedbackId = UUID.randomUUID();
-        String username = "testUser";
-
-        when(feedbackRepository.findById(feedbackId)).thenReturn(Optional.empty());
-
-        // Act and Assert
-        assertThrows(RecordNotFoundException.class, () -> feedbackService.assignUserToFeedback(feedbackId, username));
-
-        verify(feedbackRepository, never()).save(any(Feedback.class));
-    }
-
 }

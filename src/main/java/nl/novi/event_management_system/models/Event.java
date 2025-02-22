@@ -61,15 +61,6 @@ public class Event {
     )
     private List<User> participants = new ArrayList<>();
 
-    public Event(String name, String location, LocalDate startDate, LocalDate endDate, int capacity, double price) {
-        this.name = name;
-        this.location = location;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.capacity = capacity;
-        this.price = price;
-    }
-
     public Event() {
     }
 

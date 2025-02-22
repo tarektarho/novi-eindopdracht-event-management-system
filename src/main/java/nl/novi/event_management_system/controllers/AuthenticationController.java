@@ -5,6 +5,7 @@ import nl.novi.event_management_system.dtos.authentication.AuthenticationRequest
 import nl.novi.event_management_system.dtos.authentication.AuthenticationResponse;
 import nl.novi.event_management_system.services.CustomUserDetailsService;
 import nl.novi.event_management_system.utils.JwtUtil;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -58,10 +59,10 @@ public class AuthenticationController {
      *
      * @param authenticationRequest the authentication request containing username and password
      * @return a ResponseEntity containing the authentication response with the JWT token
-     * @throws Exception if authentication fails
+     * @throws BadCredentialsException if authentication fails
      */
     @PostMapping(value = "/authenticate")
-    public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
+    public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) {
 
         String username = authenticationRequest.getUsername();
         String password = authenticationRequest.getPassword();
@@ -71,7 +72,7 @@ public class AuthenticationController {
                     new UsernamePasswordAuthenticationToken(username, password)
             );
         } catch (BadCredentialsException ex) {
-            throw new Exception("Incorrect username or password", ex);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect username or password");
         }
 
         final UserDetails userDetails = userDetailsService.loadUserByUsername(username);

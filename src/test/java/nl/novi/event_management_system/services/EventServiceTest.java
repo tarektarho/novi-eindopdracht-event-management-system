@@ -5,10 +5,7 @@ import nl.novi.event_management_system.dtos.eventDtos.*;
 import nl.novi.event_management_system.exceptions.EventNotFoundException;
 import nl.novi.event_management_system.exceptions.RecordNotFoundException;
 import nl.novi.event_management_system.exceptions.UsernameNotFoundException;
-import nl.novi.event_management_system.models.Event;
-import nl.novi.event_management_system.models.Feedback;
-import nl.novi.event_management_system.models.Ticket;
-import nl.novi.event_management_system.models.User;
+import nl.novi.event_management_system.models.*;
 import nl.novi.event_management_system.repositories.EventRepository;
 import nl.novi.event_management_system.repositories.FeedbackRepository;
 import nl.novi.event_management_system.repositories.TicketRepository;
@@ -107,6 +104,7 @@ class EventServiceTest {
 
         organizer = new User();
         organizer.setUsername(organizerUsername);
+
     }
 
     @Test
@@ -147,6 +145,9 @@ class EventServiceTest {
 
     @Test
     void getEventsByOrganizerDoesReturnTheCorrectEvents() {
+        //Add organizer to the storedEvent
+        storedEvent.setOrganizer(organizer);
+
         // Arrange
         when(eventRepository.findByOrganizerUsername(organizerUsername)).thenReturn(listOfEvents);
 

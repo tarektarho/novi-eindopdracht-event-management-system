@@ -64,7 +64,6 @@ public class TicketMapper {
         ticket.setTicketType(ticketCreateDTO.getTicketType());
         ticket.setTicketCode();
 
-
         return ticket;
     }
 }

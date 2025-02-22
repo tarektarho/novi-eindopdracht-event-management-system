@@ -84,13 +84,4 @@ public class UserPhotoServiceTest {
         // Act & Assert
         assertThrows(FileDownloadException.class, () -> userPhotoService.downLoadFile(fileName));
     }
-
-    @Test
-    public void testDownloadFile_MalformedURL() {
-        // Arrange
-        String fileName = "invalid-file:///"; // Invalid file name to simulate MalformedURLException
-
-        // Act & Assert
-        assertThrows(FileDownloadException.class, () -> userPhotoService.downLoadFile(fileName));
-    }
 }

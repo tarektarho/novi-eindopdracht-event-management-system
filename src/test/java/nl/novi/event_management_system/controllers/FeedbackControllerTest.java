@@ -5,11 +5,9 @@ import nl.novi.event_management_system.dtos.feedbackDtos.FeedbackResponseDTO;
 import nl.novi.event_management_system.services.FeedbackService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -44,6 +42,8 @@ class FeedbackControllerTest {
         FeedbackCreateDTO feedbackCreateDTO = new FeedbackCreateDTO();
         FeedbackResponseDTO feedbackResponseDTO = new FeedbackResponseDTO();
         feedbackResponseDTO.setId(UUID.randomUUID());
+        feedbackResponseDTO.setComment("Test comment");
+        feedbackResponseDTO.setRating(5);
 
         when(feedbackService.submitFeedback(any(FeedbackCreateDTO.class))).thenReturn(feedbackResponseDTO);
 
@@ -177,35 +177,5 @@ class FeedbackControllerTest {
         // Assert
         assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
         verify(feedbackService, times(1)).deleteFeedback(feedbackId);
-    }
-
-    @Test
-    void testAssignEventToFeedback_Success() {
-        // Arrange
-        UUID feedbackId = UUID.randomUUID();
-        UUID eventId = UUID.randomUUID();
-        doNothing().when(feedbackService).assignEventToFeedback(feedbackId, eventId);
-
-        // Act
-        ResponseEntity<Void> response = feedbackController.assignEventToFeedback(feedbackId, eventId);
-
-        // Assert
-        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
-        verify(feedbackService, times(1)).assignEventToFeedback(feedbackId, eventId);
-    }
-
-    @Test
-    void testAssignUserToFeedback_Success() {
-        // Arrange
-        UUID feedbackId = UUID.randomUUID();
-        String username = "testUser";
-        doNothing().when(feedbackService).assignUserToFeedback(feedbackId, username);
-
-        // Act
-        ResponseEntity<?> response = feedbackController.assignUserToFeedback(feedbackId, username);
-
-        // Assert
-        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
-        verify(feedbackService, times(1)).assignUserToFeedback(feedbackId, username);
     }
 }

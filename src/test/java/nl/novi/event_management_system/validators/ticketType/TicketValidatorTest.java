@@ -29,4 +29,14 @@ public class TicketValidatorTest {
     void testInvalidTicketType_Null() {
         assertFalse(ticketValidator.isValid(null, context)); // Null should be invalid
     }
+
+    @Test
+    void testInvalidTicketType_NotInEnum() {
+
+        try {
+            assertFalse(ticketValidator.isValid(TicketType.valueOf("EXTRA"), context));
+        } catch (IllegalArgumentException e) {
+            assertEquals("No enum constant nl.novi.event_management_system.enums.TicketType.EXTRA", e.getMessage());
+        }
+    }
 }

@@ -1,6 +1,5 @@
 package nl.novi.event_management_system.dtos.ticketDtos;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import nl.novi.event_management_system.dtos.eventDtos.EventResponseDTO;
 import nl.novi.event_management_system.dtos.userDtos.UserProfileDTO;
 import nl.novi.event_management_system.enums.TicketType;
@@ -10,7 +9,6 @@ import java.time.LocalDate;
 import java.util.Objects;
 import java.util.UUID;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)  // This will exclude null fields from the response
 public class TicketResponseDTO {
     private UUID id;
     private BigDecimal price;
@@ -89,5 +87,18 @@ public class TicketResponseDTO {
     @Override
     public int hashCode() {
         return Objects.hash(id, event, price);
+    }
+
+    @Override
+    public String toString() {
+        return "TicketResponseDTO{" +
+                "id=" + id +
+                ", price=" + price +
+                ", ticketCode='" + ticketCode + '\'' +
+                ", purchaseDate=" + purchaseDate +
+                ", ticketType=" + ticketType +
+                ", user=" + user +
+                ", event=" + event +
+                '}';
     }
 }

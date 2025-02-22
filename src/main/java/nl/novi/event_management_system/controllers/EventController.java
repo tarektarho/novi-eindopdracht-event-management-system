@@ -32,7 +32,7 @@ public class EventController {
      * @param eventCreateDTO EventCreateDTO
      * @return ResponseEntity<?>
      */
-    @PostMapping("/create")
+    @PostMapping()
     public ResponseEntity<Object> createEvent(@Valid @RequestBody EventCreateDTO eventCreateDTO, BindingResult result) {
         if (result.hasErrors()) {
             List<String> errors = result.getAllErrors().stream()
@@ -76,7 +76,7 @@ public class EventController {
      *
      * @return ResponseEntity<List < EventResponseDTO>>
      */
-    @GetMapping("/all")
+    @GetMapping()
     public ResponseEntity<List<EventResponseDTO>> getAllEvents() {
         return ResponseEntity.ok(eventService.getAllEvents());
     }

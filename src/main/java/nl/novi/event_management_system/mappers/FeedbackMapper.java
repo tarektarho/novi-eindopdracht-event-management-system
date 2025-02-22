@@ -48,7 +48,6 @@ public class FeedbackMapper {
         Feedback feedback = new Feedback();
         feedback.setComment(feedbackCreateDTO.getComment());
         feedback.setRating(feedbackCreateDTO.getRating());
-
         return feedback;
     }
 }

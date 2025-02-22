@@ -22,17 +22,30 @@ role-based access control.
 
 ## **Features**
 
-✅ User authentication & authorization (JWT)  
-✅ Event creation, update, and deletion  
-✅ Participant management for events  
-✅ Feedback submission for events
-✅ Ticket creation, update, and deletion
-✅ Role-based access control (Admin, Participant, Organizer)  
-✅ RESTful API with Swagger documentation  
-✅ File upload & download support  
-✅ PostgreSQL/MySQL database integration  
-✅ Global Exception Handling with custom error responses  
-✅ Unit & Integration Testing (100% coverage)
+1. User authentication & authorization (JWT)
+2. Event creation, update, and deletion
+3. Participant management for events
+4. Feedback submission for events
+5. Ticket creation, update, and deletion
+6. Role-based access control (Admin, Participant, Organizer)
+7. RESTful API with Swagger documentation
+8. File upload & download support  
+9. PostgreSQL/MySQL database integration  
+10. Global Exception Handling with custom error responses  
+11. Unit & Integration Testing (100% coverage)
+
+---
+
+## **Database Schema**
+
+
+
+
+
+---
+## **Database Setup**
+
+
 
 ---
 
@@ -141,31 +154,31 @@ API Docs (JSON):
 | **GET**    | `/api/v1/users/{username}`                   | Retrieve user details         | Admin, Organizer              | `200 OK` / `404 Not Found`                     |
 | **PUT**    | `/api/v1/users/{username}`                   | Update user details           | Admin, Organizer              | `200 OK` / `400 Bad Request` / `404 Not Found` |
 | **DELETE** | `/api/v1/users/{username}`                   | Delete a user                 | Admin                         | `204 No Content` / `404 Not Found`             |
-| **PATCH**  | `/api/v1/users/{username}/ticket/{ticketId}` | Assign a ticket to a user     | Admin, Organizer              | `200 OK` / `400 Bad Request`                   |
+| **POST**   | `/api/v1/users/{username}/ticket/{ticketId}` | Assign a ticket to a user     | Admin, Organizer              | `200 OK` / `400 Bad Request`                   |
 | **GET**    | `/api/v1/users/{username}/roles`             | Retrieve user roles           | Admin                         | `200 OK`                                       |
-| **PATCH**  | `/api/v1/users/{username}/roles`             | Add a role to a user          | Admin                         | `200 OK` / `400 Bad Request`                   |
-| **PATCH**  | `/api/v1/users/{username}/roles/{role}`      | Remove a role from a user     | Admin                         | `200 OK` / `400 Bad Request`                   |
+| **POST**   | `/api/v1/users/{username}/roles`             | Add a role to a user          | Admin                         | `200 OK` / `400 Bad Request`                   |
+| **DELETE** | `/api/v1/users/{username}/roles/{role}`      | Remove a role from a user     | Admin                         | `200 OK` / `400 Bad Request`                   |
 | **GET**    | `/api/v1/users/{username}/photo`             | Retrieve user’s profile photo | Admin, Organizer, Participant | `200 OK` / `404 Not Found`                     |
 | **POST**   | `/api/v1/users/{username}/photo`             | Upload user’s profile photo   | Admin, Organizer, Participant | `201 Created` / `400 Bad Request`              |
-| **GET**    | `/api/v1/users/all`                          | Retrieve all users            | Admin, Organizer              | `200 OK`                                       |
-| **POST**   | `/api/v1/users/create`                       | Create a new user             | Public                        | `201 Created` / `400 Bad Request`              |
+| **GET**    | `/api/v1/users`                              | Retrieve all users            | Admin, Organizer              | `200 OK`                                       |
+| **POST**   | `/api/v1/users`                              | Create a new user             | Public                        | `201 Created` / `400 Bad Request`              |
 
 ### **Event API**
 
-| Method     | Endpoint                                       | Description                       | Access                        | Response                                       |
-|------------|------------------------------------------------|-----------------------------------|-------------------------------|------------------------------------------------|
-| **GET**    | `/api/v1/events/{id}`                          | Retrieve event details            | Admin, Organizer, Participant | `200 OK` / `404 Not Found`                     |
-| **PUT**    | `/api/v1/events/{id}`                          | Update event details              | Admin, Organizer              | `200 OK` / `400 Bad Request` / `404 Not Found` |
-| **DELETE** | `/api/v1/events/{id}`                          | Delete an event                   | Admin, Organizer              | `204 No Content` / `404 Not Found`             |
-| **PATCH**  | `/api/v1/events/{eventId}/remove-tickets`      | Remove tickets from an event      | Admin, Organizer              | `200 OK` / `400 Bad Request`                   |
-| **PATCH**  | `/api/v1/events/{eventId}/remove-participants` | Remove participants from an event | Admin, Organizer              | `200 OK` / `400 Bad Request`                   |
-| **PATCH**  | `/api/v1/events/{eventId}/remove-feedback`     | Remove feedback from an event     | Admin, Organizer              | `200 OK` / `400 Bad Request`                   |
-| **PATCH**  | `/api/v1/events/{eventId}/assign-participants` | Assign participants to an event   | Admin, Organizer              | `200 OK` / `400 Bad Request`                   |
-| **PATCH**  | `/api/v1/events/{eventId}/add-tickets`         | Add tickets to an event           | Admin, Organizer              | `200 OK` / `400 Bad Request`                   |
-| **PATCH**  | `/api/v1/events/{eventId}/add-feedback`        | Add feedback for an event         | Admin, Organizer, Participant | `200 OK` / `400 Bad Request`                   |
-| **POST**   | `/api/v1/events/create`                        | Create a new event                | Admin, Organizer              | `201 Created` / `400 Bad Request`              |
-| **GET**    | `/api/v1/events/organizer/{username}`          | Retrieve events by organizer      | Admin, Organizer, Participant | `200 OK`                                       |
-| **GET**    | `/api/v1/events/all`                           | Retrieve all events               | Admin, Organizer, Participant | `200 OK`                                       |
+| Method     | Endpoint                                | Description                       | Access                        | Response                                       |
+|------------|-----------------------------------------|-----------------------------------|-------------------------------|------------------------------------------------|
+| **GET**    | `/api/v1/events/{id}`                   | Retrieve event details            | Admin, Organizer, Participant | `200 OK` / `404 Not Found`                     |
+| **PUT**    | `/api/v1/events/{id}`                   | Update event details              | Admin, Organizer              | `200 OK` / `400 Bad Request` / `404 Not Found` |
+| **DELETE** | `/api/v1/events/{id}`                   | Delete an event                   | Admin, Organizer              | `204 No Content` / `404 Not Found`             |
+| **DELETE** | `/api/v1/events/{eventId}/tickets`      | Remove tickets from an event      | Admin, Organizer              | `200 OK` / `400 Bad Request`                   |
+| **DELETE** | `/api/v1/events/{eventId}/participants` | Remove participants from an event | Admin, Organizer              | `200 OK` / `400 Bad Request`                   |
+| **DELETE** | `/api/v1/events/{eventId}/feedback`     | Remove feedback from an event     | Admin, Organizer              | `200 OK` / `400 Bad Request`                   |
+| **POST**   | `/api/v1/events/{eventId}/participants` | Assign participants to an event   | Admin, Organizer              | `200 OK` / `400 Bad Request`                   |
+| **POST**   | `/api/v1/events/{eventId}/tickets`      | Assign tickets to an event        | Admin, Organizer              | `200 OK` / `400 Bad Request`                   |
+| **POST**   | `/api/v1/events/{eventId}/feedback`     | Assign feedback for an event      | Admin, Organizer, Participant | `200 OK` / `400 Bad Request`                   |
+| **POST**   | `/api/v1/events`                        | Create a new event                | Admin, Organizer              | `201 Created` / `400 Bad Request`              |
+| **GET**    | `/api/v1/events/organizer/{username}`   | Retrieve events by organizer      | Admin, Organizer, Participant | `200 OK`                                       |
+| **GET**    | `/api/v1/events`                        | Retrieve all events               | Admin, Organizer, Participant | `200 OK`                                       |
 
 ### **Ticket API**
 
@@ -174,10 +187,10 @@ API Docs (JSON):
 | **GET**    | `/api/v1/tickets/{id}`            | Retrieve ticket details             | Admin, Organizer, Participant | `200 OK` / `404 Not Found`                     |
 | **PUT**    | `/api/v1/tickets/{id}`            | Update ticket details               | Admin, Organizer              | `200 OK` / `400 Bad Request` / `404 Not Found` |
 | **DELETE** | `/api/v1/tickets/{id}`            | Delete a ticket                     | Admin, Organizer              | `204 No Content` / `404 Not Found`             |
-| **POST**   | `/api/v1/tickets/create`          | Create a new ticket                 | Admin, Organizer              | `201 Created` / `400 Bad Request`              |
+| **POST**   | `/api/v1/tickets`                 | Create a new ticket                 | Admin, Organizer              | `201 Created` / `400 Bad Request`              |
 | **GET**    | `/api/v1/tickets/user/{username}` | Retrieve tickets assigned to a user | Admin, Organizer, Participant | `200 OK`                                       |
 | **GET**    | `/api/v1/tickets/event/{eventId}` | Retrieve tickets for an event       | Admin, Organizer, Participant | `200 OK`                                       |
-| **GET**    | `/api/v1/tickets/all`             | Retrieve all tickets                | Admin, Organizer, Participant | `200 OK`                                       |
+| **GET**    | `/api/v1/tickets`                 | Retrieve all tickets                | Admin, Organizer, Participant | `200 OK`                                       |
 
 ### **Feedback API**
 
@@ -186,12 +199,12 @@ API Docs (JSON):
 | **GET**    | `/api/v1/feedback/{id}`                         | Retrieve feedback by ID        | Admin, Organizer, Participant | `200 OK` / `404 Not Found`         |
 | **PUT**    | `/api/v1/feedback/{id}`                         | Update feedback                | Admin, Organizer              | `200 OK` / `400 Bad Request`       |
 | **DELETE** | `/api/v1/feedback/{id}`                         | Delete feedback                | Admin, Organizer              | `204 No Content` / `404 Not Found` |
-| **PATCH**  | `/api/v1/feedback/{feedbackId}/user/{username}` | Assign feedback to a user      | Admin, Organizer, Participant | `200 OK` / `400 Bad Request`       |
-| **PATCH**  | `/api/v1/feedback/{feedbackId}/event/{eventId}` | Assign feedback to an event    | Admin, Organizer, Participant | `200 OK` / `400 Bad Request`       |
-| **POST**   | `/api/v1/feedback/submit`                       | Submit feedback                | Admin, Organizer, Participant | `201 Created` / `400 Bad Request`  |
+| **POST**   | `/api/v1/feedback/{feedbackId}/user/{username}` | Assign feedback to a user      | Admin, Organizer, Participant | `200 OK` / `400 Bad Request`       |
+| **POST**   | `/api/v1/feedback/{feedbackId}/event/{eventId}` | Assign feedback to an event    | Admin, Organizer, Participant | `200 OK` / `400 Bad Request`       |
+| **POST**   | `/api/v1/feedback`                              | Submit feedback                | Admin, Organizer, Participant | `201 Created` / `400 Bad Request`  |
 | **GET**    | `/api/v1/feedback/user/{username}`              | Retrieve feedback by user      | Admin, Organizer, Participant | `200 OK`                           |
 | **GET**    | `/api/v1/feedback/event/{eventId}`              | Retrieve feedback for an event | Admin, Organizer, Participant | `200 OK`                           |
-| **GET**    | `/api/v1/feedback/all`                          | Retrieve all feedback entries  | Admin, Organizer, Participant | `200 OK`                           |
+| **GET**    | `/api/v1/feedback`                              | Retrieve all feedback entries  | Admin, Organizer, Participant | `200 OK`                           |
 
 ---
 

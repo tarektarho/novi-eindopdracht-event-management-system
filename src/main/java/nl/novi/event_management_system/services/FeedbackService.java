@@ -53,6 +53,21 @@ public class FeedbackService {
      */
     public FeedbackResponseDTO submitFeedback(FeedbackCreateDTO feedbackCreateDTO) {
         Feedback feedback = FeedbackMapper.toEntity(feedbackCreateDTO);
+
+        // Assign the event and user to the feedback if they are provided
+        if(feedbackCreateDTO.getEventId() != null) {
+            Event event = eventRepository.findById(feedbackCreateDTO.getEventId())
+                    .orElseThrow(() -> new EventNotFoundException(feedbackCreateDTO.getEventId()));
+            feedback.setEvent(event);
+        }
+
+        // Assign the user to the feedback if it is provided
+        if(feedbackCreateDTO.getUsername() != null) {
+            User user = userRepository.findByUsername(feedbackCreateDTO.getUsername())
+                    .orElseThrow(() -> new UsernameNotFoundException(feedbackCreateDTO.getUsername()));
+            feedback.setUser(user);
+        }
+
         feedbackRepository.save(feedback);
         return FeedbackMapper.toResponseDTO(feedback);
     }
@@ -143,39 +158,5 @@ public class FeedbackService {
      */
     public List<FeedbackResponseDTO> getUserFeedback(String username) {
         return FeedbackMapper.toResponseDTOList(feedbackRepository.findByUserUsername(username));
-    }
-
-    /**
-     * Assigns an event to a feedback.
-     *
-     * @param feedbackId The ID of the feedback to assign the event to.
-     * @param eventId    The ID of the event to assign to the feedback.
-     */
-    public void assignEventToFeedback(UUID feedbackId, UUID eventId) {
-        Feedback feedback = feedbackRepository.findById(feedbackId)
-                .orElseThrow(() -> new RecordNotFoundException("Feedback not found with ID: " + feedbackId));
-
-        Event event = eventRepository.findById(eventId)
-                .orElseThrow(() -> new EventNotFoundException(eventId));
-
-        feedback.setEvent(event);
-        feedbackRepository.save(feedback);
-    }
-
-    /**
-     * Assigns a user to a feedback.
-     *
-     * @param feedbackId The ID of the feedback to assign the user to.
-     * @param username   The username of the user to assign to the feedback.
-     */
-    public void assignUserToFeedback(UUID feedbackId, String username) {
-        Feedback feedback = feedbackRepository.findById(feedbackId)
-                .orElseThrow(() -> new RecordNotFoundException("Feedback not found with ID: " + feedbackId));
-
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException(username));
-
-        feedback.setUser(user);
-        feedbackRepository.save(feedback);
     }
 }

@@ -93,7 +93,7 @@ class UserControllerTest {
     }
 
     @Test
-    void testGetUser_Success() {
+    void testGetUser_ByUsername_Success() {
         // Arrange
         String username = "testUser";
         UserResponseDTO userResponseDTO = new UserResponseDTO();
@@ -102,7 +102,7 @@ class UserControllerTest {
         when(userService.getUserByUsername(username)).thenReturn(userResponseDTO);
 
         // Act
-        ResponseEntity<UserResponseDTO> response = userController.getUser(username);
+        ResponseEntity<UserResponseDTO> response = userController.getUserByUsername(username);
 
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -124,12 +124,12 @@ class UserControllerTest {
     }
 
     @Test
-    void testGetUserRoles_Success() {
+    void testGetUserByUsernameRoles_Success() {
         // Arrange
         String username = "testUser";
         Set<Role> roles = Collections.singleton(new Role("admin", "ROLE_ADMIN"));
 
-        when(userService.getRoles(username)).thenReturn(roles);
+        when(userService.getUserRoles(username)).thenReturn(roles);
 
         // Act
         ResponseEntity<Object> response = userController.getUserRoles(username);
@@ -140,18 +140,18 @@ class UserControllerTest {
     }
 
     @Test
-    void testAddUserRole_Success() {
+    void testAddRole_ToUser_Success() {
         // Arrange
         String username = "testUser";
         RoleCreateDTO roleCreateDTO = new RoleCreateDTO();
         roleCreateDTO.setRole("ROLE_ADMIN");
 
         // Act
-        ResponseEntity<Void> response = userController.addUserRole(username, roleCreateDTO);
+        ResponseEntity<Void> response = userController.addRoleToUser(username, roleCreateDTO);
 
         // Assert
         assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
-        verify(userService, times(1)).addRole(username, roleCreateDTO.getRole());
+        verify(userService, times(1)).addRoleToUser(username, roleCreateDTO.getRole());
     }
 
     @Test
@@ -165,7 +165,7 @@ class UserControllerTest {
 
         // Assert
         assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
-        verify(userService, times(1)).removeRole(username, role);
+        verify(userService, times(1)).deleteUserRole(username, role);
     }
 
     @Test
@@ -222,7 +222,7 @@ class UserControllerTest {
 
 
     @Test
-    void testGetPhotoOfUser_Success() {
+    void testGetUser_Photo_Success() {
         // Arrange
         String username = "testUser";
         Resource resource = mock(Resource.class);
@@ -234,7 +234,7 @@ class UserControllerTest {
         MockHttpServletRequest request = new MockHttpServletRequest();
         RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
         // Act
-        ResponseEntity<Resource> response = userController.getPhotoOfUser(username, request);
+        ResponseEntity<Resource> response = userController.getUserPhoto(username, request);
 
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -261,21 +261,4 @@ class UserControllerTest {
         assertEquals(userResponseDTO, response.getBody());
     }
 
-    @Test
-    void testAssignFeedbackToUser_Success() {
-        // Arrange
-        String username = "testUser";
-        UUID feedbackId = UUID.randomUUID();
-        UserResponseDTO userResponseDTO = new UserResponseDTO();
-        userResponseDTO.setUsername(username);
-
-        when(userService.assignFeedbackToUser(username, feedbackId)).thenReturn(userResponseDTO);
-
-        // Act
-        ResponseEntity<UserResponseDTO> response = userController.assignFeedbackToUser(username, feedbackId);
-
-        // Assert
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(userResponseDTO, response.getBody());
-    }
 }
