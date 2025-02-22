@@ -1,5 +1,6 @@
 package nl.novi.event_management_system.dtos.ticketDtos;
 
+import lombok.Data;
 import nl.novi.event_management_system.dtos.eventDtos.EventResponseDTO;
 import nl.novi.event_management_system.dtos.userDtos.UserProfileDTO;
 import nl.novi.event_management_system.enums.TicketType;
@@ -9,6 +10,7 @@ import java.time.LocalDate;
 import java.util.Objects;
 import java.util.UUID;
 
+@Data
 public class TicketResponseDTO {
     private UUID id;
     private BigDecimal price;
@@ -17,62 +19,6 @@ public class TicketResponseDTO {
     private TicketType ticketType;
     private UserProfileDTO user;
     private EventResponseDTO event;
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
-
-    public String getTicketCode() {
-        return ticketCode;
-    }
-
-    public void setTicketCode(String ticketCode) {
-        this.ticketCode = ticketCode;
-    }
-
-    public LocalDate getPurchaseDate() {
-        return purchaseDate;
-    }
-
-    public void setPurchaseDate(LocalDate purchaseDate) {
-        this.purchaseDate = purchaseDate;
-    }
-
-    public TicketType getTicketType() {
-        return ticketType;
-    }
-
-    public void setTicketType(TicketType ticketType) {
-        this.ticketType = ticketType;
-    }
-
-    public UserProfileDTO getUser() {
-        return user;
-    }
-
-    public void setUser(UserProfileDTO user) {
-        this.user = user;
-    }
-
-    public EventResponseDTO getEvent() {
-        return event;
-    }
-
-    public void setEvent(EventResponseDTO event) {
-        this.event = event;
-    }
 
     @Override
     public boolean equals(Object obj) {
@@ -87,18 +33,5 @@ public class TicketResponseDTO {
     @Override
     public int hashCode() {
         return Objects.hash(id, event, price);
-    }
-
-    @Override
-    public String toString() {
-        return "TicketResponseDTO{" +
-                "id=" + id +
-                ", price=" + price +
-                ", ticketCode='" + ticketCode + '\'' +
-                ", purchaseDate=" + purchaseDate +
-                ", ticketType=" + ticketType +
-                ", user=" + user +
-                ", event=" + event +
-                '}';
     }
 }
