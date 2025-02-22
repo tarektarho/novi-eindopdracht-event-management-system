@@ -17,17 +17,6 @@ public class FeedbackResponseDTO {
     public FeedbackResponseDTO() {
     }
 
-    public FeedbackResponseDTO(UUID id, String comment, int rating, String username, LocalDate feedbackDate, UUID eventId) {
-        this.id = id;
-        this.comment = comment;
-        this.rating = rating;
-        this.username = username;
-        this.feedbackDate = feedbackDate;
-        this.eventId = eventId;
-    }
-
-    // Getters and Setters
-
     public UUID getId() {
         return id;
     }

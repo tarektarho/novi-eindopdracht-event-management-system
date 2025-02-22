@@ -1,6 +1,7 @@
 package nl.novi.event_management_system.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -21,10 +22,12 @@ public class User {
     @Column(nullable = false, unique = true)
     @NotBlank(message = "Email cannot be blank")
     @Size(max = 100, message = "Email must not exceed 100 characters")
+    @Email(message = "Invalid email format")
     private String email;
 
     @Column(nullable = false)
     @NotBlank(message = "Password cannot be blank")
+    @Size(min = 8, message = "Password must be at least 8 characters long")
     private String password; // Store as a hashed value
 
     @OneToMany(
