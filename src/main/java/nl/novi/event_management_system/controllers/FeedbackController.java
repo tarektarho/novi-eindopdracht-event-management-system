@@ -123,30 +123,4 @@ public class FeedbackController {
         log.info("Successfully deleted feedback with ID: {}", id);
         return ResponseEntity.noContent().build(); // 204 No Content
     }
-
-    /**
-     * Assign an event to a feedback
-     *
-     * @param feedbackId UUID
-     * @param eventId    UUID
-     * @return ResponseEntity<Void>
-     */
-    @PostMapping("/{feedbackId}/event/{eventId}")
-    public ResponseEntity<Void> assignEventToFeedback(@PathVariable UUID feedbackId, @PathVariable UUID eventId) {
-        feedbackService.assignEventToFeedback(feedbackId, eventId);
-        return ResponseEntity.noContent().build();
-    }
-
-    /**
-     * Assign a user to a feedback
-     *
-     * @param feedbackId UUID
-     * @param username   String
-     * @return ResponseEntity<?>
-     */
-    @PostMapping("/{feedbackId}/user/{username}")
-    public ResponseEntity<?> assignUserToFeedback(@PathVariable UUID feedbackId, @PathVariable String username) {
-        feedbackService.assignUserToFeedback(feedbackId, username);
-        return ResponseEntity.noContent().build();
-    }
 }

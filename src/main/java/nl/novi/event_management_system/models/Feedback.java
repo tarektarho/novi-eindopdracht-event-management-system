@@ -1,6 +1,7 @@
 package nl.novi.event_management_system.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -22,23 +23,17 @@ public class Feedback {
     private Event event;
 
     @Column(nullable = false)
+    @NotNull(message = "Rating is mandatory")
     private int rating; // 1 to 5 stars
 
     @Column(columnDefinition = "TEXT")
+    @NotNull(message = "Comment is mandatory")
     private String comment;
 
     @Column(nullable = false)
     private LocalDate feedbackDate = LocalDate.now();
 
     public Feedback() {
-    }
-
-    public Feedback(User user, Event event, int rating, String comment) {
-        this.user = user;
-        this.event = event;
-        this.rating = rating;
-        this.comment = comment;
-        this.feedbackDate = LocalDate.now();
     }
 
     // Getters and Setters
@@ -85,9 +80,4 @@ public class Feedback {
     public LocalDate getFeedbackDate() {
         return feedbackDate;
     }
-
-    public void setFeedbackDate(LocalDate feedbackDate) {
-        this.feedbackDate = feedbackDate;
-    }
-
 }

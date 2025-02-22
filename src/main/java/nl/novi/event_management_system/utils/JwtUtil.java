@@ -47,9 +47,10 @@ public class JwtUtil {
         return extractClaim(token, Claims::getAudience);
     }
 
+
     private Claims extractAllClaims(String token) {
         return Jwts.parserBuilder()
-                .setSigningKey(SECRET_KEY)
+                .setSigningKey(getSigningKey())
                 .build()
                 .parseClaimsJws(token)
                 .getBody();

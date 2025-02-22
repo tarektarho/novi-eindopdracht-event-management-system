@@ -195,7 +195,7 @@ class UserServiceTest {
     }
 
     @Test
-    void getRolesReturnsRoles() {
+    void getRolesReturnsUserRoles() {
         // Arrange
         User user = new User(username, email, password);
         user.setRoles(Set.of(new Role("admin", RoleEnum.getRoleName(RoleEnum.ADMIN))));
@@ -204,7 +204,7 @@ class UserServiceTest {
         when(userRepository.findById(username)).thenReturn(java.util.Optional.of(user));
 
         // Act
-        Set<Role> roles = userService.getRoles(username);
+        Set<Role> roles = userService.getUserRoles(username);
 
         // Assert
         assertNotNull(roles);
@@ -212,16 +212,16 @@ class UserServiceTest {
     }
 
     @Test
-    void getRolesThrowsExceptionWhenUserNotFound() {
+    void getUserRolesThrowsExceptionWhenUserNotFound() {
         // Arrange
         when(userRepository.existsById(username)).thenReturn(false);
 
         // Act & Assert
-        assertThrows(UsernameNotFoundException.class, () -> userService.getRoles(username));
+        assertThrows(UsernameNotFoundException.class, () -> userService.getUserRoles(username));
     }
 
     @Test
-    void addRoleSuccessfullyAddsRole() {
+    void addRoleSuccessfullyAddsRoleToUser() {
         // Arrange
         User user = new User(username, email, password);
 
@@ -229,23 +229,23 @@ class UserServiceTest {
         when(userRepository.findById(username)).thenReturn(java.util.Optional.of(user));
 
         // Act
-        userService.addRole(username, "admin");
+        userService.addRoleToUser(username, "admin");
 
         // Assert
         verify(userRepository).save(any(User.class));
     }
 
     @Test
-    void addRoleThrowsExceptionWhenUserNotFound() {
+    void addRoleToUserThrowsExceptionWhenUserNotFound() {
         // Arrange
         when(userRepository.existsById(username)).thenReturn(false);
 
         // Act & Assert
-        assertThrows(UsernameNotFoundException.class, () -> userService.addRole(username, "admin"));
+        assertThrows(UsernameNotFoundException.class, () -> userService.addRoleToUser(username, "admin"));
     }
 
     @Test
-    void removeRoleSuccessfullyRemovesRole() {
+    void deleteUserRoleSuccessfullyRemovesRole() {
         // Arrange
         User user = new User(username, email, password);
         user.addRole(new Role(username, "admin"));
@@ -254,19 +254,19 @@ class UserServiceTest {
         when(userRepository.findById(username)).thenReturn(java.util.Optional.of(user));
 
         // Act
-        userService.removeRole(username, "admin");
+        userService.deleteUserRole(username, "admin");
 
         // Assert
         verify(userRepository).save(any(User.class));
     }
 
     @Test
-    void removeRoleThrowsExceptionWhenUserNotFound() {
+    void deleteUserRoleThrowsExceptionWhenUserNotFound() {
         // Arrange
         when(userRepository.existsById(username)).thenReturn(false);
 
         // Act & Assert
-        assertThrows(UsernameNotFoundException.class, () -> userService.removeRole(username, "admin"));
+        assertThrows(UsernameNotFoundException.class, () -> userService.deleteUserRole(username, "admin"));
     }
 
     @Test
@@ -386,41 +386,4 @@ class UserServiceTest {
         // Act & Assert
         assertThrows(RecordNotFoundException.class, () -> userService.assignTicketToUser(username, id));
     }
-
-    @Test
-    void assignFeedbackToUser() {
-        // Arrange
-        User user = new User(username, email, password);
-        user.setUsername(username);
-        user.setRoles(Set.of(new Role("admin", RoleEnum.getRoleName(RoleEnum.ADMIN))));
-
-        when(userRepository.save(any(User.class))).thenReturn(user);
-
-        Feedback feedback = new Feedback();
-        UUID id = UUID.randomUUID();
-        feedback.setId(id);
-
-        when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
-        when(feedbackRepository.findById(any())).thenReturn(Optional.of(feedback));
-
-        // Act
-        UserResponseDTO userResponseDTO = userService.assignFeedbackToUser(username, id);
-
-        // Assert
-        assertNotNull(userResponseDTO);
-        assertEquals(username, userResponseDTO.getUsername());
-        assertEquals(email, userResponseDTO.getEmail());
-        assertEquals(user.getRoles(), userResponseDTO.getRoles());
-    }
-
-    @Test
-    void assignFeedbackToUserThrowsExceptionWhenUserNotFound() {
-        // Arrange
-        UUID id = UUID.randomUUID();
-        when(userRepository.findByUsername(username)).thenReturn(Optional.empty());
-
-        // Act & Assert
-        assertThrows(UsernameNotFoundException.class, () -> userService.assignFeedbackToUser(username, id));
-    }
-
 }

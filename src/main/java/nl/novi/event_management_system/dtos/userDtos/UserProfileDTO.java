@@ -1,13 +1,11 @@
 package nl.novi.event_management_system.dtos.userDtos;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import nl.novi.event_management_system.models.Role;
 import nl.novi.event_management_system.models.UserPhoto;
 
 import java.util.HashSet;
 import java.util.Set;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserProfileDTO {
         private String username;
         private String email;
@@ -44,5 +42,15 @@ public class UserProfileDTO {
 
         public void setUserPhoto(UserPhoto userPhoto) {
                 this.userPhoto = userPhoto;
+        }
+
+        @Override
+        public String toString() {
+                return "UserProfileDTO{" +
+                        "username='" + username + '\'' +
+                        ", email='" + email + '\'' +
+                        ", roles=" + roles +
+                        ", userPhoto=" + userPhoto +
+                        '}';
         }
 }

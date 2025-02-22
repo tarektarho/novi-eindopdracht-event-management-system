@@ -137,4 +137,22 @@ public class EventResponseDTO {
         this.participants = participants;
     }
 
+    @Override
+    public String toString() {
+        return "EventResponseDTO{" +
+                "id=" + id +
+                ", organizerUsername='" + organizerUsername + '\'' +
+                ", name='" + name + '\'' +
+                ", location='" + location + '\'' +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
+                ", capacity=" + capacity +
+                ", price=" + price +
+                ", organizer=" + organizer +
+                ", ticketList=" + ticketList +
+                ", feedbackList=" + feedbackList +
+                ", participants=" + participants +
+                '}';
+    }
+
 }

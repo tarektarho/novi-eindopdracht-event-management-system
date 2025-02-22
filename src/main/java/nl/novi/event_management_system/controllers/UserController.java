@@ -72,7 +72,7 @@ public class UserController {
      * @return ResponseEntity<UserResponseDTO>
      */
     @GetMapping("/{username}")
-    public ResponseEntity<UserResponseDTO> getUser(@PathVariable String username) {
+    public ResponseEntity<UserResponseDTO> getUserByUsername(@PathVariable String username) {
         return ResponseEntity.ok().body(userService.getUserByUsername(username));
     }
 
@@ -97,7 +97,7 @@ public class UserController {
      */
     @GetMapping(value = "/{username}/roles")
     public ResponseEntity<Object> getUserRoles(@PathVariable("username") String username) {
-        return ResponseEntity.ok().body(userService.getRoles(username));
+        return ResponseEntity.ok().body(userService.getUserRoles(username));
     }
 
     /**
@@ -108,11 +108,11 @@ public class UserController {
      * @return ResponseEntity<Void>
      */
     @PostMapping("/{username}/roles")
-    public ResponseEntity<Void> addUserRole(
+    public ResponseEntity<Void> addRoleToUser(
             @PathVariable("username") String username,
             @Valid @RequestBody RoleCreateDTO roleCreateDTO) {
 
-        userService.addRole(username, roleCreateDTO.getRole());
+        userService.addRoleToUser(username, roleCreateDTO.getRole());
         return ResponseEntity.noContent().build();
     }
 
@@ -125,7 +125,7 @@ public class UserController {
      */
     @DeleteMapping(value = "/{username}/roles/{role}")
     public ResponseEntity<Void> deleteUserRole(@PathVariable("username") String username, @PathVariable("role") String role) {
-        userService.removeRole(username, role);
+        userService.deleteUserRole(username, role);
         return ResponseEntity.noContent().build();
     }
 
@@ -175,7 +175,7 @@ public class UserController {
      * @return ResponseEntity<Resource>
      */
     @GetMapping("/{username}/photo")
-    public ResponseEntity<Resource> getPhotoOfUser(@PathVariable String username, HttpServletRequest request) {
+    public ResponseEntity<Resource> getUserPhoto(@PathVariable String username, HttpServletRequest request) {
         Resource resource = userService.getUserPhoto(username);
 
         // Determine file MIME type
@@ -198,17 +198,4 @@ public class UserController {
     public ResponseEntity<UserResponseDTO> assignTicketToUser(@PathVariable String username, @PathVariable UUID ticketId) {
         return ResponseEntity.ok().body(userService.assignTicketToUser(username, ticketId));
     }
-
-    /**
-     * Assign a feedback to a user
-     *
-     * @param username   String
-     * @param feedbackId UUID
-     * @return ResponseEntity<UserResponseDTO>
-     */
-    @PostMapping("/{username}/feedback/{feedbackId}")
-    public ResponseEntity<UserResponseDTO> assignFeedbackToUser(@PathVariable String username, @PathVariable UUID feedbackId) {
-        return ResponseEntity.ok().body(userService.assignFeedbackToUser(username, feedbackId));
-    }
-
 }

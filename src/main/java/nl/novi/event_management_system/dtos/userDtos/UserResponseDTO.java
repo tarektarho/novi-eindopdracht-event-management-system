@@ -1,6 +1,6 @@
 package nl.novi.event_management_system.dtos.userDtos;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
+import nl.novi.event_management_system.dtos.eventDtos.EventResponseDTO;
 import nl.novi.event_management_system.dtos.feedbackDtos.FeedbackResponseDTO;
 import nl.novi.event_management_system.dtos.ticketDtos.TicketResponseDTO;
 import nl.novi.event_management_system.models.Role;
@@ -8,7 +8,6 @@ import nl.novi.event_management_system.models.UserPhoto;
 
 import java.util.*;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserResponseDTO {
     private String username;
     private String email;
@@ -18,19 +17,9 @@ public class UserResponseDTO {
     private UserPhoto userPhoto;
     private List<TicketResponseDTO> tickets = new ArrayList<>();
     private List<FeedbackResponseDTO> feedbackList = new ArrayList<>();
+    private List<EventResponseDTO> eventsOrganized = new ArrayList<>();
 
     public UserResponseDTO() {
-    }
-
-    public UserResponseDTO(String username, String email, String password, Boolean enabled, Set<Role> roles, UserPhoto userPhoto, List<TicketResponseDTO> tickets, List<FeedbackResponseDTO> feedbackList) {
-        this.username = username;
-        this.email = email;
-        this.password = password;
-        this.enabled = enabled;
-        this.roles = roles;
-        this.userPhoto = userPhoto;
-        this.tickets = tickets;
-        this.feedbackList = feedbackList;
     }
 
     public String getUsername() {
@@ -97,6 +86,14 @@ public class UserResponseDTO {
         this.feedbackList = feedbackList;
     }
 
+    public List<EventResponseDTO> getEventsOrganized() {
+        return eventsOrganized;
+    }
+
+    public void setEventsOrganized(List<EventResponseDTO> eventsOrganized) {
+        this.eventsOrganized = eventsOrganized;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
@@ -112,6 +109,14 @@ public class UserResponseDTO {
         return Objects.hash(username, email, userPhoto);
     }
 
+    @Override
+    public String toString() {
+        return "UserResponseDTO{" +
+                "username='" + username + '\'' +
+                ", email='" + email + '\'' +
+                ", userPhoto=" + userPhoto +
+                '}';
+    }
 
 
 }

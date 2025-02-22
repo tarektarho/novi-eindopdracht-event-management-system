@@ -40,4 +40,15 @@ public class AuthenticationControllerIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.jwt").exists());
     }
+
+    @Test
+    void testCreateAuthenticationTokenThrowIncorrectUsernameOrPassword() throws Exception {
+        mockMvc.perform(post("/api/v1/authenticate")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\n" +
+                        "    \"username\": \"admin\",\n" +
+                        "    \"password\": \"wrongpassword\"\n" +
+                        "}"))
+                .andExpect(status().isUnauthorized());
+    }
 }

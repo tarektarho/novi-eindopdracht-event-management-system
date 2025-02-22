@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
 import nl.novi.event_management_system.enums.TicketType;
 import nl.novi.event_management_system.validators.ticketType.ValidTicketType;
 
@@ -14,13 +15,18 @@ import java.util.UUID;
 public class TicketCreateDTO {
     @NotNull(message = "Price cannot be empty.")
     private BigDecimal price;
-    @Schema(hidden = true)
-    private String ticketCode;
     @NotNull(message = "purchaseDate cannot be empty.")
-    private LocalDate purchaseDate;
+    @PastOrPresent(message = "Purchase date cannot be in the future")
+    private LocalDate purchaseDate = LocalDate.now();
     @Enumerated(EnumType.STRING)
     @ValidTicketType
     private TicketType ticketType;
+
+    @Schema(description = "The ID of the event this ticket is for.", example = "123e4567-e89b-12d3-a456-426614174000")
+    @NotNull(message = "eventId cannot be empty.")
+    private UUID eventId;
+    @Schema(description = "The username of the user who purchased this ticket. This can be empty. Since, we have to create ticket so, the user can buy it", example = "jack")
+    private String username;
 
     public BigDecimal getPrice() {
         return price;
@@ -28,14 +34,6 @@ public class TicketCreateDTO {
 
     public void setPrice(BigDecimal price) {
         this.price = price;
-    }
-
-    public String getTicketCode() {
-        return ticketCode;
-    }
-
-    public void setTicketCode() {
-        this.ticketCode = generateTicketCode();
     }
 
     public LocalDate getPurchaseDate() {
@@ -54,7 +52,19 @@ public class TicketCreateDTO {
         this.ticketType = ticketType;
     }
 
-    private String generateTicketCode() {
-        return "TICKET-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+    public UUID getEventId() {
+        return eventId;
+    }
+
+    public void setEventId(UUID eventId) {
+        this.eventId = eventId;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

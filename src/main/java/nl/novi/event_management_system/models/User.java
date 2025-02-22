@@ -2,6 +2,7 @@ package nl.novi.event_management_system.models;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
@@ -23,6 +24,7 @@ public class User {
     private String email;
 
     @Column(nullable = false)
+    @NotBlank(message = "Password cannot be blank")
     private String password; // Store as a hashed value
 
     @OneToMany(
@@ -34,6 +36,7 @@ public class User {
     private Set<Role> roles = new HashSet<>();
 
     @Column(nullable = false)
+    @NotNull(message = "Enabled status is mandatory")
     private Boolean enabled = true; // Account activation status
 
     @OneToOne
@@ -117,14 +120,6 @@ public class User {
         this.userPhoto = userPhoto;
     }
 
-    public List<Event> getEventsOrganized() {
-        return eventsOrganized;
-    }
-
-    public void setEventsOrganized(List<Event> eventsOrganized) {
-        this.eventsOrganized = eventsOrganized;
-    }
-
     public List<Ticket> getTickets() {
         return tickets;
     }
@@ -141,23 +136,11 @@ public class User {
         this.feedbackList = feedbackList;
     }
 
-    public void getEventsOrganized(List<Event> eventsOrganized) {
-        this.eventsOrganized = eventsOrganized;
-    }
-
-    public List<Event> setEventsOrganized() {
+    public List<Event> getEventsOrganized() {
         return eventsOrganized;
     }
 
-    public void getTickets(List<Ticket> tickets) {
-        this.tickets = tickets;
-    }
-
-    public List<Ticket> setTickets() {
-        return tickets;
-    }
-
-    public void getFeedbackList(List<Feedback> feedbackList) {
-        this.feedbackList = feedbackList;
+    public void setEventsOrganized(List<Event> eventsOrganized) {
+        this.eventsOrganized = eventsOrganized;
     }
 }
