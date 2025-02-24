@@ -21,21 +21,14 @@ public class FeedbackMapper {
             return null;
         }
 
-        FeedbackResponseDTO feedbackResponseDTO = new FeedbackResponseDTO();
-        feedbackResponseDTO.setFeedbackDate(feedback.getFeedbackDate());
-        feedbackResponseDTO.setId(feedback.getId());
-        feedbackResponseDTO.setComment(feedback.getComment());
-        feedbackResponseDTO.setRating(feedback.getRating());
-
-        if (feedback.getUser() != null) {
-            feedbackResponseDTO.setUsername(feedback.getUser().getUsername());
-        }
-
-        if (feedback.getEvent() != null) {
-            feedbackResponseDTO.setEventId(feedback.getEvent().getId());
-        }
-
-        return feedbackResponseDTO;
+        return FeedbackResponseDTO.builder()
+                .id(feedback.getId())
+                .comment(feedback.getComment())
+                .rating(feedback.getRating())
+                .username(feedback.getUser() != null ? feedback.getUser().getUsername() : null)
+                .feedbackDate(feedback.getFeedbackDate())
+                .eventId(feedback.getEvent() != null ? feedback.getEvent().getId() : null)
+                .build();
     }
 
     public static List<FeedbackResponseDTO> toResponseDTOList(List<Feedback> feedbacks) {

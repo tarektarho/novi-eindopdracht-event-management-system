@@ -67,8 +67,8 @@ class TicketServiceTest {
         event.setName("Test Event");
 
         mockTickets = Arrays.asList(
-                new Ticket(user, event, price, ticketType, purchaseDate),
-                new Ticket(user, event, price, TicketType.VIP, purchaseDate)
+                new Ticket(user, event, price, ticketType),
+                new Ticket(user, event, price, TicketType.VIP)
         );
 
     }

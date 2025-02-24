@@ -1,5 +1,8 @@
 package nl.novi.event_management_system.dtos.userDtos;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nl.novi.event_management_system.dtos.eventDtos.EventResponseDTO;
@@ -12,6 +15,8 @@ import java.util.*;
 
 @Data
 @NoArgsConstructor
+@Builder
+@AllArgsConstructor
 public class UserResponseDTO {
     private String username;
     private String email;

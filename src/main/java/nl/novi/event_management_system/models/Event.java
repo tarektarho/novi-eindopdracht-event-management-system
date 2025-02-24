@@ -1,6 +1,11 @@
 package nl.novi.event_management_system.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -9,8 +14,11 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "events")
+@Data
+@NoArgsConstructor
+@Builder
+@AllArgsConstructor
 public class Event {
-
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -20,21 +28,27 @@ public class Event {
     private User organizer;
 
     @Column(nullable = false)
+    @NotNull(message = "Name cannot be empty")
     private String name;
 
     @Column(nullable = false)
+    @NotNull(message = "Location cannot be empty")
     private String location;
 
     @Column(nullable = false)
+    @NotNull(message = "Start date cannot be empty")
     private LocalDate startDate;
 
     @Column(nullable = false)
+    @NotNull(message = "End date cannot be empty")
     private LocalDate endDate;
 
     @Column(nullable = false)
+    @NotNull(message = "Capacity cannot be empty")
     private int capacity;
 
     @Column(nullable = false)
+    @NotNull(message = "Price cannot be empty")
     private double price;
 
     @ManyToMany
@@ -60,97 +74,4 @@ public class Event {
             inverseJoinColumns = @JoinColumn(name = "username")
     )
     private List<User> participants = new ArrayList<>();
-
-    public Event() {
-    }
-
-    // Getters and Setters
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public User getOrganizer() {
-        return organizer;
-    }
-
-    public void setOrganizer(User organizer) {
-        this.organizer = organizer;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public LocalDate getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(LocalDate startDate) {
-        this.startDate = startDate;
-    }
-
-    public LocalDate getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(LocalDate endDate) {
-        this.endDate = endDate;
-    }
-
-    public int getCapacity() {
-        return capacity;
-    }
-
-    public void setCapacity(int capacity) {
-        this.capacity = capacity;
-    }
-
-    public double getPrice() {
-        return price;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
-    public List<Ticket> getTickets() {
-        return tickets;
-    }
-
-    public void setTickets(List<Ticket> tickets) {
-        this.tickets = tickets;
-    }
-
-    public List<Feedback> getFeedbacks() {
-        return feedbacks;
-    }
-
-    public void setFeedbacks(List<Feedback> feedbacks) {
-        this.feedbacks = feedbacks;
-    }
-
-    public List<User> getParticipants() {
-        return participants;
-    }
-
-    public void setParticipants(List<User> participants) {
-        this.participants = participants;
-    }
-
 }

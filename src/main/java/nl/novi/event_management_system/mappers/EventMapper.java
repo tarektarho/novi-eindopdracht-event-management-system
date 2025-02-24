@@ -24,33 +24,20 @@ public class EventMapper {
             return null;
         }
 
-        EventResponseDTO dto = new EventResponseDTO();
-        dto.setId(event.getId());
-        dto.setName(event.getName());
-        dto.setLocation(event.getLocation());
-        dto.setStartDate(event.getStartDate());
-        dto.setEndDate(event.getEndDate());
-        dto.setCapacity(event.getCapacity());
-        dto.setPrice(event.getPrice());
-
-        if (event.getOrganizer() != null) {
-            dto.setOrganizerUsername(event.getOrganizer().getUsername());
-        }
-
-        // Map organizer
-        Optional.ofNullable(event.getOrganizer())
-                .ifPresent(organizer -> dto.setOrganizer(UserMapper.toUserProfileResponseDTO(organizer)));
-
-        // Map tickets
-        dto.setTicketList(mapTicketsToDTO(event.getTickets()));
-
-        // Map feedbacks
-        dto.setFeedbackList(mapFeedbacksToDTO(event.getFeedbacks()));
-
-        // Map participants
-        dto.setParticipants(mapParticipantsToDTO(event.getParticipants()));
-
-        return dto;
+        return EventResponseDTO.builder()
+                .id(event.getId())
+                .name(event.getName())
+                .location(event.getLocation())
+                .startDate(event.getStartDate())
+                .endDate(event.getEndDate())
+                .capacity(event.getCapacity())
+                .price(event.getPrice())
+                .organizerUsername(Optional.ofNullable(event.getOrganizer()).map(User::getUsername).orElse(null))
+                .organizer(Optional.ofNullable(event.getOrganizer()).map(UserMapper::toUserProfileResponseDTO).orElse(null))
+                .ticketList(mapTicketsToDTO(event.getTickets()))
+                .feedbackList(mapFeedbacksToDTO(event.getFeedbacks()))
+                .participants(mapParticipantsToDTO(event.getParticipants()))
+                .build();
     }
 
     /**
@@ -75,15 +62,14 @@ public class EventMapper {
      * @return The corresponding Event entity.
      */
     public static Event toEntity(@Valid EventCreateDTO eventCreateDTO) {
-        Event event = new Event();
-        event.setName(eventCreateDTO.getName());
-        event.setLocation(eventCreateDTO.getLocation());
-        event.setStartDate(eventCreateDTO.getStartDate());
-        event.setEndDate(eventCreateDTO.getEndDate());
-        event.setCapacity(eventCreateDTO.getCapacity());
-        event.setPrice(eventCreateDTO.getPrice());
-
-        return event;
+        return Event.builder()
+                .name(eventCreateDTO.getName())
+                .location(eventCreateDTO.getLocation())
+                .startDate(eventCreateDTO.getStartDate())
+                .endDate(eventCreateDTO.getEndDate())
+                .capacity(eventCreateDTO.getCapacity())
+                .price(eventCreateDTO.getPrice())
+                .build();
     }
 
     /**

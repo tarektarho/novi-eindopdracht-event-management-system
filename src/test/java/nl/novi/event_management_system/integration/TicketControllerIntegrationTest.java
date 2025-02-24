@@ -76,8 +76,8 @@ public class TicketControllerIntegrationTest {
 
         // Create and save Tickets after persisting User and Event
         List<Ticket> testTickets = List.of(
-                new Ticket(user, event, price, ticketType, purchaseDate),
-                new Ticket(user, event, price, TicketType.VIP, purchaseDate)
+                new Ticket(user, event, price, ticketType),
+                new Ticket(user, event, price, TicketType.VIP)
         );
         ticketRepository.saveAll(testTickets);
     }

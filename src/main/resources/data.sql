@@ -18,10 +18,10 @@ INSERT INTO events (id, name, organizer_username, location, start_date, end_date
 VALUES ('c4205e65-fee0-4c4f-9470-88edfc8280e4','Annual Tech Conference - 2', 'organizer', 'Netherlands', '2025-06-12', '2025-06-15', 500, 300);
 --
 -- -- Add Feedback
-INSERT INTO feedbacks (comment, rating, username, feedback_date, id)
-VALUES ('Great event! Learned a lot about new technologies.', 5, 'admin', '2025-06-15', 'c4205e65-fee0-4c4f-9470-88edfc8280e2');
-INSERT INTO feedbacks (comment, rating, username, feedback_date, id)
-VALUES ('Great event! Learned a lot about new technologies.', 4, 'organizer', '2025-08-15', 'c4205e65-fee0-4c4f-9470-88edfc8280e3');
+INSERT INTO feedbacks (comment, rating, username, feedback_date, id, event_id)
+VALUES ('Great event! Learned a lot about new technologies.', 5, 'admin', '2025-06-15', 'c4205e65-fee0-4c4f-9470-88edfc8280e2', 'c4205e65-fee0-4c4f-9470-88edfc8280e6');
+INSERT INTO feedbacks (comment, rating, username, feedback_date, id, event_id)
+VALUES ('Great event! Learned a lot about new technologies.', 4, 'organizer', '2025-08-15', 'c4205e65-fee0-4c4f-9470-88edfc8280e3', 'c4205e65-fee0-4c4f-9470-88edfc8280e4');
 
 -- -- Add Ticket
 INSERT INTO tickets (id, price, purchase_date, ticket_type, ticket_code, event_id, username)
