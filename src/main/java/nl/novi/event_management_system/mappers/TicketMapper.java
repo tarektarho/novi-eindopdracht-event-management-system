@@ -21,22 +21,15 @@ public class TicketMapper {
             return null;
         }
 
-        TicketResponseDTO ticketResponseDTO = new TicketResponseDTO();
-        ticketResponseDTO.setId(ticket.getId());
-        ticketResponseDTO.setTicketCode(ticket.getTicketCode());
-        ticketResponseDTO.setTicketType(ticket.getTicketType());
-        ticketResponseDTO.setPurchaseDate(ticket.getPurchaseDate());
-        ticketResponseDTO.setPrice(ticket.getPrice());
-
-        if (ticket.getUser() != null) {
-            ticketResponseDTO.setUser(UserMapper.toUserProfileResponseDTO(ticket.getUser()));
-        }
-
-        if (ticket.getEvent() != null) {
-            ticketResponseDTO.setEvent(EventMapper.toResponseDTO(ticket.getEvent()));
-        }
-
-        return ticketResponseDTO;
+        return TicketResponseDTO.builder()
+                .id(ticket.getId())
+                .ticketCode(ticket.getTicketCode())
+                .ticketType(ticket.getTicketType())
+                .purchaseDate(ticket.getPurchaseDate())
+                .price(ticket.getPrice())
+                .user(ticket.getUser() != null ? UserMapper.toUserProfileResponseDTO(ticket.getUser()) : null)
+                .event(ticket.getEvent() != null ? EventMapper.toResponseDTO(ticket.getEvent()) : null)
+                .build();
     }
 
     /**
@@ -62,7 +55,6 @@ public class TicketMapper {
         ticket.setPrice(ticketCreateDTO.getPrice());
         ticket.setPurchaseDate(ticketCreateDTO.getPurchaseDate());
         ticket.setTicketType(ticketCreateDTO.getTicketType());
-        ticket.setTicketCode();
 
         return ticket;
     }

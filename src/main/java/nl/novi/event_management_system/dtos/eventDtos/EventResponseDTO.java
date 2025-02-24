@@ -1,5 +1,7 @@
 package nl.novi.event_management_system.dtos.eventDtos;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nl.novi.event_management_system.dtos.userDtos.UserProfileDTO;
@@ -10,6 +12,8 @@ import java.util.UUID;
 
 @Data
 @NoArgsConstructor
+@Builder
+@AllArgsConstructor
 public class EventResponseDTO {
     private UUID id;
     private String organizerUsername;

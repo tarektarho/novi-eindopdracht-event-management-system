@@ -1,5 +1,6 @@
 package nl.novi.event_management_system.dtos.ticketDtos;
 
+import lombok.Builder;
 import lombok.Data;
 import nl.novi.event_management_system.dtos.eventDtos.EventResponseDTO;
 import nl.novi.event_management_system.dtos.userDtos.UserProfileDTO;
@@ -10,6 +11,7 @@ import java.time.LocalDate;
 import java.util.Objects;
 import java.util.UUID;
 
+@Builder
 @Data
 public class TicketResponseDTO {
     private UUID id;

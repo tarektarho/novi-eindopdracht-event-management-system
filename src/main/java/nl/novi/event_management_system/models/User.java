@@ -1,22 +1,25 @@
 package nl.novi.event_management_system.models;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import java.util.*;
 
 @Entity
 @Table(name = "users")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class User {
 
     @Id
     @Column(nullable = false, unique = true)
     @NotBlank(message = "Username cannot be blank")
-    @Size(max = 100, message = "Username must not exceed 100 characters")
+    @Pattern(regexp = "^[a-zA-Z0-9._&@!]{3,50}$", message = "Username must be between 3 and 50 characters and may not contain spaces.")
     private String username;
 
     @Column(nullable = false, unique = true)
@@ -57,9 +60,6 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Feedback> feedbackList;
 
-    public User() {
-    }
-
     public User(String username, String email, String password) {
         this.username = username;
         this.email = email;
@@ -77,73 +77,5 @@ public class User {
 
     public void removeRole(Role role) {
         this.roles.remove(role);
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public Set<Role> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
-    }
-
-    public Boolean getEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(Boolean enabled) {
-        this.enabled = enabled;
-    }
-
-    public UserPhoto getUserPhoto() {
-        return userPhoto;
-    }
-
-    public void setUserPhoto(UserPhoto userPhoto) {
-        this.userPhoto = userPhoto;
-    }
-
-    public List<Ticket> getTickets() {
-        return tickets;
-    }
-
-    public void setTickets(List<Ticket> tickets) {
-        this.tickets = tickets;
-    }
-
-    public List<Feedback> getFeedbackList() {
-        return feedbackList;
-    }
-
-    public void setFeedbackList(List<Feedback> feedbackList) {
-        this.feedbackList = feedbackList;
-    }
-
-    public List<Event> getEventsOrganized() {
-        return eventsOrganized;
-    }
-
-    public void setEventsOrganized(List<Event> eventsOrganized) {
-        this.eventsOrganized = eventsOrganized;
     }
 }

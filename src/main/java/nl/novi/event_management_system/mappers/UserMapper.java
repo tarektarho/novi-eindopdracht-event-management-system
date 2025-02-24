@@ -24,30 +24,17 @@ public class UserMapper {
             return null;
         }
 
-        UserResponseDTO userResponseDTO = new UserResponseDTO();
-        userResponseDTO.setUsername(user.getUsername());
-        userResponseDTO.setEmail(user.getEmail());
-        userResponseDTO.setPassword(user.getPassword());
-        userResponseDTO.setEnabled(user.getEnabled());
-        userResponseDTO.setRoles(user.getRoles());
-
-        if (user.getUserPhoto() != null) {
-            userResponseDTO.setUserPhoto(user.getUserPhoto());
-        }
-
-        if (user.getTickets() != null) {
-            userResponseDTO.setTickets(TicketMapper.toResponseDTOList(user.getTickets()));
-        }
-
-        if (user.getFeedbackList() != null) {
-            userResponseDTO.setFeedbackList(FeedbackMapper.toResponseDTOList(user.getFeedbackList()));
-        }
-
-        if(user.getEventsOrganized() != null) {
-            userResponseDTO.setEventsOrganized(EventMapper.toResponseDTOList(user.getEventsOrganized()));
-        }
-
-        return userResponseDTO;
+        return UserResponseDTO.builder()
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .password(user.getPassword())
+                .enabled(user.getEnabled())
+                .roles(user.getRoles())
+                .userPhoto(user.getUserPhoto())
+                .tickets(user.getTickets() != null ? TicketMapper.toResponseDTOList(user.getTickets()) : null)
+                .feedbackList(user.getFeedbackList() != null ? FeedbackMapper.toResponseDTOList(user.getFeedbackList()) : null)
+                .eventsOrganized(user.getEventsOrganized() != null ? EventMapper.toResponseDTOList(user.getEventsOrganized()) : null)
+                .build();
     }
 
     /**
