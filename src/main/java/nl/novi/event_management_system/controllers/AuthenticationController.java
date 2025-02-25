@@ -5,6 +5,8 @@ import nl.novi.event_management_system.dtos.authentication.AuthenticationRequest
 import nl.novi.event_management_system.dtos.authentication.AuthenticationResponse;
 import nl.novi.event_management_system.services.CustomUserDetailsService;
 import nl.novi.event_management_system.utils.JwtUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,6 +26,7 @@ import java.security.Principal;
 @RestController
 @RequestMapping("/api/v1")
 public class AuthenticationController {
+    Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     private final AuthenticationManager authenticationManager;
     private final CustomUserDetailsService userDetailsService;
@@ -72,6 +75,7 @@ public class AuthenticationController {
                     new UsernamePasswordAuthenticationToken(username, password)
             );
         } catch (BadCredentialsException ex) {
+            log.error("Incorrect username or password", ex);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect username or password");
         }
 

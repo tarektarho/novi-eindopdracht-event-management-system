@@ -22,6 +22,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
@@ -69,13 +70,31 @@ class UserControllerTest {
         MockHttpServletRequest request = new MockHttpServletRequest();
         RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
 
+        BindingResult result = mock(BindingResult.class);
+        when(result.hasErrors()).thenReturn(false);
+
         // Act
-        ResponseEntity<UserResponseDTO> response = userController.createUser(userCreateDTO);
+        ResponseEntity<?> response = userController.createUser(userCreateDTO, result);
 
         // Assert
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertEquals(userResponseDTO, response.getBody());
         assertNotNull(response.getHeaders().getLocation());
+    }
+
+    @Test
+    void testCreateUser_Failure() {
+        // Arrange
+        UserCreateDTO userCreateDTO = new UserCreateDTO();
+        BindingResult result = mock(BindingResult.class);
+        when(result.hasErrors()).thenReturn(true);
+
+        // Act
+        ResponseEntity<?> response = userController.createUser(userCreateDTO, result);
+
+        // Assert
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertNotNull(response.getBody());
     }
 
     @Test
