@@ -30,29 +30,16 @@ role-based access control.
 6. Role-based access control (Admin, Participant, Organizer)
 7. RESTful API with Swagger documentation
 8. File upload & download support  
-9. PostgreSQL/MySQL database integration  
+9. PostgreSQL database integration  
 10. Global Exception Handling with custom error responses  
 11. Unit & Integration Testing (100% coverage)
-
----
-
-## **Database Schema**
-
-
-
-
-
----
-## **Database Setup**
-
-
 
 ---
 
 ## **Tech Stack**
 
 - **Backend:** Java 21, Spring Boot, Spring Security, Spring Data JPA
-- **Database:** PostgreSQL/MySQL
+- **Database:** PostgreSQL
 - **Build Tool:** Maven
 - **Testing:** JUnit, Mockito
 - **API Documentation:** Swagger (Springdoc OpenAPI)
@@ -65,7 +52,7 @@ role-based access control.
 
 - Java 21
 - Maven
-- PostgreSQL (or MySQL)
+- PostgreSQL
 - IntelliJ IDEA (Recommended)
 
 ### **Clone the Repository**
@@ -74,6 +61,42 @@ role-based access control.
 git clone https://github.com/tarektarho/novi-eindopdracht-event-management-system.git
 cd novi-eindopdracht-event-management-system
 ```
+
+---
+
+## **Setting Up and Connecting the Database**
+
+To run the **Event Management System API**, you need to configure a **PostgreSQL** database. Follow these steps to **download, install, and configure PostgreSQL and pgAdmin**, and connect it to the application.
+
+---
+
+## **Download & Install PostgreSQL and pgAdmin**
+
+### **Download PostgreSQL**
+1. Go to the [official PostgreSQL website](https://www.postgresql.org/download/).
+2. Choose your operating system (Windows, macOS, or Linux).
+3. Download and run the installer.
+
+### **Install PostgreSQL**
+1. Follow the installation wizard.
+2. During setup, **choose a password for the PostgreSQL superuser (`postgres`)**.
+3. Keep the default port **5432** unless you need a different one.
+4. Install **pgAdmin** (it comes with the PostgreSQL installer).
+
+### **Download pgAdmin** (Optional if not installed with PostgreSQL)
+- If you need **pgAdmin** separately, download it from [pgAdmin Official Site](https://www.pgadmin.org/download/).
+
+---
+
+## **Configure the PostgreSQL Database**
+
+### Open pgAdmin and Connect to PostgreSQL
+1. Open **pgAdmin** from the start menu.
+2. On the left panel, find the **"Servers"** section and click on **"PostgreSQL 16"** (or your version).
+3. Enter the password you set during installation.
+
+
+---
 
 ### **Configure Environment Variables**
 
