@@ -10,9 +10,13 @@ import nl.novi.event_management_system.mappers.UserMapper;
 import nl.novi.event_management_system.models.User;
 import nl.novi.event_management_system.services.UserPhotoService;
 import nl.novi.event_management_system.services.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -25,6 +29,7 @@ import java.util.*;
 @RestController
 @RequestMapping("/api/v1/users")
 public class UserController {
+    Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     private final UserService userService;
     private final UserPhotoService userPhotoService;
@@ -47,7 +52,14 @@ public class UserController {
      * @return ResponseEntity<UserResponseDTO>
      */
     @PostMapping
-    public ResponseEntity<UserResponseDTO> createUser(@Valid @RequestBody UserCreateDTO userCreateDTO) {
+    public ResponseEntity<?> createUser(@Valid @RequestBody UserCreateDTO userCreateDTO,  BindingResult result) {
+        if (result.hasErrors()) {
+            List<String> errors = result.getAllErrors().stream()
+                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                    .toList();
+            log.error(errors.toString());
+            return ResponseEntity.badRequest().body(errors);
+        }
         UserResponseDTO newUser = userService.createUser(userCreateDTO);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{username}")
                 .buildAndExpand(newUser.getUsername()).toUri();

@@ -38,6 +38,7 @@ public class EventController {
             List<String> errors = result.getAllErrors().stream()
                     .map(DefaultMessageSourceResolvable::getDefaultMessage)
                     .toList();
+            log.error("Error creating event: {}", errors);
             return ResponseEntity.badRequest().body(errors);
         }
 
@@ -169,11 +170,8 @@ public class EventController {
             removedParticipants.add(participant.getUsername());
         });
 
-        // Construct response
         Map<String, Object> response = new HashMap<>();
         response.put("removed", removedParticipants);
-
-        log.info("All participants removed successfully from event '{}'", eventId);
         return ResponseEntity.ok(response);
     }
 
@@ -212,7 +210,6 @@ public class EventController {
             removedTickets.add(ticket.getTicketId().toString());
         });
 
-        // Construct response
         Map<String, Object> response = new HashMap<>();
         response.put("removed", removedTickets);
         return ResponseEntity.ok(response);
@@ -256,7 +253,6 @@ public class EventController {
 
         Map<String, Object> response = new HashMap<>();
         response.put("removed", removedFeedbacks);
-
         return ResponseEntity.ok(response);
     }
 }

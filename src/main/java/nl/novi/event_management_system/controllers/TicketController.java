@@ -5,6 +5,8 @@ import jakarta.validation.Valid;
 import nl.novi.event_management_system.dtos.ticketDtos.TicketCreateDTO;
 import nl.novi.event_management_system.dtos.ticketDtos.TicketResponseDTO;
 import nl.novi.event_management_system.services.TicketService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -17,6 +19,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/tickets")
 public class TicketController {
+    Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     private final TicketService ticketService;
 
@@ -35,6 +38,7 @@ public class TicketController {
         if (result.hasErrors()) {
             StringBuilder errorMessages = new StringBuilder();
             result.getAllErrors().forEach(error -> errorMessages.append(error.getDefaultMessage()).append(" "));
+            log.error(errorMessages.toString());
             return ResponseEntity.badRequest().body(errorMessages.toString());
         }
         return ResponseEntity.status(HttpStatus.CREATED).body(ticketService.createTicket(ticketCreateDTO));
