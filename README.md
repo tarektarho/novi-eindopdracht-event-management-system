@@ -38,7 +38,7 @@ role-based access control.
 
 ## **Tech Stack**
 
-- **Backend:** Java 21, Spring Boot, Spring Security, Spring Data JPA
+- **Backend:** Java 21, Spring Boot 3.3.5, Spring Security, Spring Data JPA
 - **Database:** PostgreSQL
 - **Build Tool:** Maven
 - **Testing:** JUnit, Mockito
