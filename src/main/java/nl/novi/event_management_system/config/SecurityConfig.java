@@ -58,30 +58,33 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/authenticate").permitAll()
                         .requestMatchers("/api/v1/authenticated").authenticated()
 
-                        // Ensure that admin access all endpoints
-                        .requestMatchers("/api/v1/**").hasAuthority(RoleEnum.getRoleName(RoleEnum.ADMIN))
-
                         //User endpoints
-                        .requestMatchers(HttpMethod.POST,"/api/v1/users/create").permitAll()
-                        .requestMatchers(HttpMethod.GET,"/api/v1/users/all").hasAnyAuthority(RoleEnum.getRoleName(RoleEnum.ORGANIZER))
-                        .requestMatchers(HttpMethod.GET,"/api/v1/users/photo").hasAnyAuthority(RoleEnum.getRoleName(RoleEnum.PARTICIPANT), RoleEnum.getRoleName(RoleEnum.ORGANIZER))
-                        .requestMatchers(HttpMethod.POST,"/api/v1/users/photo").hasAnyAuthority(RoleEnum.getRoleName(RoleEnum.PARTICIPANT), RoleEnum.getRoleName(RoleEnum.ORGANIZER))
-                        .requestMatchers(HttpMethod.PATCH,"/api/v1/users/{username}/ticket/{ticketId}").hasAnyAuthority(RoleEnum.getRoleName(RoleEnum.ORGANIZER))
-                        .requestMatchers(HttpMethod.PUT,"/api/v1/users/{username}").hasAnyAuthority(RoleEnum.getRoleName(RoleEnum.ORGANIZER))
-                        .requestMatchers(HttpMethod.GET,"/api/v1/users/{username}").hasAnyAuthority(RoleEnum.getRoleName(RoleEnum.ORGANIZER))
+                        .requestMatchers(HttpMethod.POST, "/api/v1/users").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/users").hasAnyAuthority(RoleEnum.getRoleName(RoleEnum.ORGANIZER), RoleEnum.getRoleName(RoleEnum.ADMIN))
+                        .requestMatchers(HttpMethod.GET, "/api/v1/users/{username}/photo").hasAnyAuthority(RoleEnum.getRoleName(RoleEnum.PARTICIPANT), RoleEnum.getRoleName(RoleEnum.ORGANIZER), RoleEnum.getRoleName(RoleEnum.ADMIN))
+                        .requestMatchers(HttpMethod.POST, "/api/v1/users/{username}/photo").hasAnyAuthority(RoleEnum.getRoleName(RoleEnum.PARTICIPANT), RoleEnum.getRoleName(RoleEnum.ORGANIZER), RoleEnum.getRoleName(RoleEnum.ADMIN))
+                        .requestMatchers(HttpMethod.POST, "/api/v1/users/{username}/ticket/{ticketId}").hasAnyAuthority(RoleEnum.getRoleName(RoleEnum.ORGANIZER), RoleEnum.getRoleName(RoleEnum.ADMIN))
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/users/{username}").hasAnyAuthority(RoleEnum.getRoleName(RoleEnum.ORGANIZER), RoleEnum.getRoleName(RoleEnum.ADMIN))
+                        .requestMatchers(HttpMethod.GET, "/api/v1/users/{username}").hasAnyAuthority(RoleEnum.getRoleName(RoleEnum.ORGANIZER), RoleEnum.getRoleName(RoleEnum.ADMIN))
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/users/{username}").hasAuthority(RoleEnum.getRoleName(RoleEnum.ADMIN))
 
                         //Event endpoints
-                        .requestMatchers("/api/v1/events/**").hasAuthority(RoleEnum.getRoleName(RoleEnum.ORGANIZER))
-                        .requestMatchers(HttpMethod.GET, "/api/v1/events/**").hasAuthority(RoleEnum.getRoleName(RoleEnum.PARTICIPANT))
+                        .requestMatchers(HttpMethod.POST, "/api/v1/events/**").hasAnyAuthority(RoleEnum.getRoleName(RoleEnum.ORGANIZER), RoleEnum.getRoleName(RoleEnum.ADMIN))
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/events/**").hasAnyAuthority(RoleEnum.getRoleName(RoleEnum.ORGANIZER), RoleEnum.getRoleName(RoleEnum.ADMIN))
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/events/**").hasAnyAuthority(RoleEnum.getRoleName(RoleEnum.ORGANIZER), RoleEnum.getRoleName(RoleEnum.ADMIN))
+                        .requestMatchers(HttpMethod.GET, "/api/v1/events/**").hasAnyAuthority(RoleEnum.getRoleName(RoleEnum.PARTICIPANT), RoleEnum.getRoleName(RoleEnum.ORGANIZER), RoleEnum.getRoleName(RoleEnum.ADMIN))
 
                         //Ticket endpoints
-                        .requestMatchers(HttpMethod.GET, "/api/v1/tickets/**").hasAnyAuthority(RoleEnum.getRoleName(RoleEnum.PARTICIPANT), RoleEnum.getRoleName(RoleEnum.ORGANIZER))
-                        .requestMatchers("/api/v1/tickets/**").hasAuthority(RoleEnum.getRoleName(RoleEnum.ORGANIZER))
+                        .requestMatchers(HttpMethod.GET, "/api/v1/tickets/**").hasAnyAuthority(RoleEnum.getRoleName(RoleEnum.PARTICIPANT), RoleEnum.getRoleName(RoleEnum.ORGANIZER), RoleEnum.getRoleName(RoleEnum.ADMIN))
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/tickets/**").hasAnyAuthority(RoleEnum.getRoleName(RoleEnum.ORGANIZER), RoleEnum.getRoleName(RoleEnum.ADMIN))
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/tickets/**").hasAnyAuthority(RoleEnum.getRoleName(RoleEnum.ORGANIZER), RoleEnum.getRoleName(RoleEnum.ADMIN))
+                        .requestMatchers(HttpMethod.POST, "/api/v1/tickets/**").hasAnyAuthority(RoleEnum.getRoleName(RoleEnum.ORGANIZER), RoleEnum.getRoleName(RoleEnum.ADMIN))
 
                         //Feedback endpoints
-                        .requestMatchers(HttpMethod.POST, "/api/v1/feedback/**").hasAnyAuthority(RoleEnum.getRoleName(RoleEnum.PARTICIPANT), RoleEnum.getRoleName(RoleEnum.ORGANIZER))
-                        .requestMatchers(HttpMethod.PUT, "/api/v1/feedback/**").hasAnyAuthority(RoleEnum.getRoleName(RoleEnum.PARTICIPANT), RoleEnum.getRoleName(RoleEnum.ORGANIZER))
-                        .requestMatchers(HttpMethod.GET, "/api/v1/feedback/**").hasAuthority(RoleEnum.getRoleName(RoleEnum.ORGANIZER))
+                        .requestMatchers(HttpMethod.POST, "/api/v1/feedback/**").hasAnyAuthority(RoleEnum.getRoleName(RoleEnum.PARTICIPANT), RoleEnum.getRoleName(RoleEnum.ORGANIZER), RoleEnum.getRoleName(RoleEnum.ADMIN))
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/feedback/**").hasAnyAuthority(RoleEnum.getRoleName(RoleEnum.PARTICIPANT), RoleEnum.getRoleName(RoleEnum.ORGANIZER), RoleEnum.getRoleName(RoleEnum.ADMIN))
+                        .requestMatchers(HttpMethod.GET, "/api/v1/feedback/**").hasAnyAuthority(RoleEnum.getRoleName(RoleEnum.ORGANIZER), RoleEnum.getRoleName(RoleEnum.ADMIN), RoleEnum.getRoleName(RoleEnum.PARTICIPANT))
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/feedback/**").hasAnyAuthority(RoleEnum.getRoleName(RoleEnum.ORGANIZER), RoleEnum.getRoleName(RoleEnum.ADMIN))
 
                         .anyRequest().denyAll()
                 )
