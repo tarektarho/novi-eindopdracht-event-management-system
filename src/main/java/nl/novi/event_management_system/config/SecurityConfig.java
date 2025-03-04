@@ -79,7 +79,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/v1/tickets/**").hasAnyAuthority(RoleEnum.getRoleName(RoleEnum.PARTICIPANT), RoleEnum.getRoleName(RoleEnum.ORGANIZER), RoleEnum.getRoleName(RoleEnum.ADMIN))
                         .requestMatchers(HttpMethod.PUT, "/api/v1/tickets/**").hasAnyAuthority(RoleEnum.getRoleName(RoleEnum.ORGANIZER), RoleEnum.getRoleName(RoleEnum.ADMIN))
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/tickets/**").hasAnyAuthority(RoleEnum.getRoleName(RoleEnum.ORGANIZER), RoleEnum.getRoleName(RoleEnum.ADMIN))
-                        .requestMatchers(HttpMethod.PUT, "/api/v1/tickets/**").hasAnyAuthority(RoleEnum.getRoleName(RoleEnum.ORGANIZER), RoleEnum.getRoleName(RoleEnum.ADMIN))
+                        .requestMatchers(HttpMethod.POST, "/api/v1/tickets/**").hasAnyAuthority(RoleEnum.getRoleName(RoleEnum.ORGANIZER), RoleEnum.getRoleName(RoleEnum.ADMIN))
 
                         //Feedback endpoints
                         .requestMatchers(HttpMethod.POST, "/api/v1/feedback/**").hasAnyAuthority(RoleEnum.getRoleName(RoleEnum.PARTICIPANT), RoleEnum.getRoleName(RoleEnum.ORGANIZER), RoleEnum.getRoleName(RoleEnum.ADMIN))
