@@ -1,5 +1,6 @@
 package nl.novi.event_management_system.controllers;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import nl.novi.event_management_system.dtos.eventDtos.*;
@@ -33,7 +34,10 @@ public class EventController {
      * @return ResponseEntity<?>
      */
     @PostMapping()
-    public ResponseEntity<Object> createEvent(@Valid @RequestBody EventCreateDTO eventCreateDTO, BindingResult result) {
+    @Operation(
+            summary = "Create a new event",
+            description = "Allows an admin or organizer to create a new event by providing event details."
+    )    public ResponseEntity<Object> createEvent(@Valid @RequestBody EventCreateDTO eventCreateDTO, BindingResult result) {
         if (result.hasErrors()) {
             List<String> errors = result.getAllErrors().stream()
                     .map(DefaultMessageSourceResolvable::getDefaultMessage)
@@ -68,6 +72,10 @@ public class EventController {
      * @return ResponseEntity<List < EventResponseDTO>>
      */
     @GetMapping("/organizer/{username}")
+    @Operation(
+            summary = "Get events by organizer",
+            description = "Allows an admin or organizer to get all events created by a specific organizer."
+    )
     public ResponseEntity<List<EventResponseDTO>> getEventsByOrganizer(@PathVariable String username) {
         return ResponseEntity.ok(eventService.getEventsByOrganizer(username));
     }
@@ -110,63 +118,79 @@ public class EventController {
     /**
      * Assign organizer to event
      *
-     * @param eventId           UUID
+     * @param id           UUID
      * @param organizerUsername EventOrganizerUsernameDTO
      * @return ResponseEntity<String>
      */
-    @PostMapping("/{eventId}/organizer")
+    @PostMapping("/{id}/organizer")
+    @Operation(
+            summary = "Assign organizer to event",
+            description = "Allows an admin to assign an organizer to an event by providing the event ID and organizer username."
+    )
     public ResponseEntity<String> assignOrganizerToEvent(
-            @PathVariable UUID eventId,
+            @PathVariable UUID id,
             @RequestBody EventOrganizerUsernameDTO organizerUsername) {
-        eventService.assignOrganizerToEvent(eventId, organizerUsername.getUsername());
+        eventService.assignOrganizerToEvent(id, organizerUsername.getUsername());
         return ResponseEntity.noContent().build();
     }
 
     /**
      * Remove organizer from event
      *
-     * @param eventId           UUID
+     * @param id           UUID
      * @param organizerUsername EventOrganizerUsernameDTO
      * @return ResponseEntity<String>
      */
-    @DeleteMapping("/{eventId}/organizer")
-    public ResponseEntity<String> removeOrganizerFromEvent(@PathVariable UUID eventId, @RequestBody EventOrganizerUsernameDTO organizerUsername) {
-        eventService.removeOrganizerFromEvent(eventId, organizerUsername.getUsername());
+    @DeleteMapping("/{id}/organizer")
+    @Operation(
+            summary = "Remove organizer from event",
+            description = "Allows an admin to remove an organizer from an event by providing the event ID and organizer username."
+    )
+    public ResponseEntity<String> removeOrganizerFromEvent(@PathVariable UUID id, @RequestBody EventOrganizerUsernameDTO organizerUsername) {
+        eventService.removeOrganizerFromEvent(id, organizerUsername.getUsername());
         return ResponseEntity.noContent().build();
     }
 
     /**
      * Assign participant to event
      *
-     * @param eventId UUID
+     * @param id UUID
      * @param wrapper EventParticipantUsernameWrapperDTO
      * @return ResponseEntity<String>
      */
-    @PostMapping("/{eventId}/participants")
+    @PostMapping("/{id}/participants")
+    @Operation(
+            summary = "Assign participant to event",
+            description = "Allows an admin or organizer to assign participants to an event by providing the event ID and participant usernames."
+    )
     public ResponseEntity<String> assignParticipantToEvent(
-            @PathVariable UUID eventId,
+            @PathVariable UUID id,
             @RequestBody EventParticipantUsernameWrapperDTO wrapper) {
 
-        eventService.assignParticipantToEvent(eventId, wrapper.getParticipants());
+        eventService.assignParticipantToEvent(id, wrapper.getParticipants());
         return ResponseEntity.noContent().build();
     }
 
     /**
      * Remove participants from event
      *
-     * @param eventId UUID
+     * @param id UUID
      * @param wrapper EventParticipantUsernameWrapperDTO
      * @return ResponseEntity<Map < String, Object>>
      */
-    @DeleteMapping("/{eventId}/participants")
+    @DeleteMapping("/{id}/participants")
+    @Operation(
+            summary = "Remove participants from event",
+            description = "Allows an admin or organizer to remove participants from an event by providing the event ID and participant usernames."
+    )
     public ResponseEntity<Map<String, Object>> removeParticipantsFromEvent(
-            @PathVariable UUID eventId,
+            @PathVariable UUID id,
             @RequestBody EventParticipantUsernameWrapperDTO wrapper) {
 
         List<String> removedParticipants = new ArrayList<>();
 
         wrapper.getParticipants().forEach(participant -> {
-            eventService.removeParticipantFromEvent(eventId, participant);
+            eventService.removeParticipantFromEvent(id, participant);
             removedParticipants.add(participant.getUsername());
         });
 
@@ -178,35 +202,43 @@ public class EventController {
     /**
      * Add tickets to event
      *
-     * @param eventId UUID
+     * @param id UUID
      * @param wrapper EventTicketIdsWrapperDTO
      * @return ResponseEntity<?>
      */
-    @PostMapping("/{eventId}/tickets")
+    @PostMapping("/{id}/tickets")
+    @Operation(
+            summary = "Add tickets to event",
+            description = "Allows an admin or organizer to add tickets to an event by providing the event ID and ticket IDs."
+    )
     public ResponseEntity<?> addTicketsToEvent(
-            @PathVariable UUID eventId,
+            @PathVariable UUID id,
             @RequestBody EventTicketIdsWrapperDTO wrapper) {
 
-        eventService.addTicketsToEvent(eventId, wrapper.getTicketIds());
+        eventService.addTicketsToEvent(id, wrapper.getTicketIds());
         return ResponseEntity.noContent().build();
     }
 
     /**
      * Remove tickets from event
      *
-     * @param eventId UUID
+     * @param id UUID
      * @param wrapper EventTicketIdsWrapperDTO
      * @return ResponseEntity<Map < String, Object>>
      */
-    @DeleteMapping("/{eventId}/tickets")
+    @DeleteMapping("/{id}/tickets")
+    @Operation(
+            summary = "Remove tickets from event",
+            description = "Allows an admin or organizer to remove tickets from an event by providing the event ID and ticket IDs."
+    )
     public ResponseEntity<Map<String, Object>> removeTicketsFromEvent(
-            @PathVariable UUID eventId,
+            @PathVariable UUID id,
             @RequestBody EventTicketIdsWrapperDTO wrapper) {
 
         List<String> removedTickets = new ArrayList<>();
 
         wrapper.getTicketIds().forEach(ticket -> {
-            eventService.removeTicketFromEvent(eventId, ticket);
+            eventService.removeTicketFromEvent(id, ticket);
             removedTickets.add(ticket.getTicketId().toString());
         });
 
@@ -219,35 +251,43 @@ public class EventController {
     /**
      * Add feedbacks to event
      *
-     * @param eventId                   UUID
+     * @param id                   UUID
      * @param eventFeedbackIdWrapperDTO EventFeedbackIdWrapperDTO
      * @return ResponseEntity<?>
      */
-    @PostMapping("/{eventId}/feedback")
+    @PostMapping("/{id}/feedback")
+    @Operation(
+            summary = "Add feedbacks to event",
+            description = "Allows an admin or organizer to add feedbacks to an event by providing the event ID and feedback IDs."
+    )
     public ResponseEntity<?> addFeedbackToEvent(
-            @PathVariable UUID eventId,
+            @PathVariable UUID id,
             @RequestBody EventFeedbackIdWrapperDTO eventFeedbackIdWrapperDTO) {
 
-        eventService.AddFeedbacksToEvent(eventId, eventFeedbackIdWrapperDTO.getFeedbackIds());
+        eventService.AddFeedbacksToEvent(id, eventFeedbackIdWrapperDTO.getFeedbackIds());
         return ResponseEntity.noContent().build();
     }
 
     /**
      * Remove feedbacks from event
      *
-     * @param eventId                   UUID
+     * @param id                   UUID
      * @param eventFeedbackIdWrapperDTO EventFeedbackIdWrapperDTO
      * @return ResponseEntity<Map < String, Object>>
      */
-    @DeleteMapping("/{eventId}/feedback")
+    @DeleteMapping("/{id}/feedback")
+    @Operation(
+            summary = "Remove feedbacks from event",
+            description = "Allows an admin or organizer to remove feedbacks from an event by providing the event ID and feedback IDs."
+    )
     public ResponseEntity<Map<String, Object>> removeFeedbackFromEvent(
-            @PathVariable UUID eventId,
+            @PathVariable UUID id,
             @RequestBody EventFeedbackIdWrapperDTO eventFeedbackIdWrapperDTO) {
 
         List<String> removedFeedbacks = new ArrayList<>();
 
         eventFeedbackIdWrapperDTO.getFeedbackIds().forEach(feedback -> {
-            eventService.removeFeedbackFromEvent(eventId, feedback);
+            eventService.removeFeedbackFromEvent(id, feedback);
             removedFeedbacks.add(feedback.getFeedbackId().toString());
         });
 
