@@ -52,7 +52,7 @@ public class UserController {
      * @return ResponseEntity<UserResponseDTO>
      */
     @PostMapping
-    public ResponseEntity<?> createUser(@Valid @RequestBody UserCreateDTO userCreateDTO,  BindingResult result) {
+    public ResponseEntity<?> createUser(@Valid @RequestBody UserCreateDTO userCreateDTO, BindingResult result) {
         if (result.hasErrors()) {
             List<String> errors = result.getAllErrors().stream()
                     .map(DefaultMessageSourceResolvable::getDefaultMessage)
@@ -129,7 +129,7 @@ public class UserController {
     }
 
     /**
-     *  Delete a role from a user
+     * Delete a role from a user
      *
      * @param username String
      * @param role     String
